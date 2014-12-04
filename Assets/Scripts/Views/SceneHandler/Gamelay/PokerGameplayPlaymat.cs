@@ -55,8 +55,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     ResponseUpdatePot currentUpdatePot = null;
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
-
-        if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0)
+        if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0 && obj.pot[0].value > 0)
         {
             currentUpdatePot = obj;
             //PokerPlayerUI[] players = GameObject.FindObjectsOfType<PokerPlayerUI>();
@@ -170,21 +169,25 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     IEnumerator _onFinishGame(ResponseFinishGame responseData)
     {
+        PokerObserver.Game.StartFinishGame();
         PokerObserver.Instance.isWaitingFinishGame = true;
-     
 
         float time = responseData.time/1000f;
         float waitTimeViewCard = time > 1 ? 1f : 0f;
         float timeEffectPot = responseData.pots.Length > 0 ? time - (waitTimeViewCard / responseData.pots.Length) : time - waitTimeViewCard;
 
+        bool isFaceUp = PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
+        if (isFaceUp)
+            CreateCardDeal(responseData.dealComminityCards);
+
         #region SET RESULT TITLE
-        PokerPlayerUI[] playerUI =  GameObject.FindObjectsOfType<PokerPlayerUI> ();
-		for (int i = 0; i < playerUI.Length ;i++) {
-			for(int j= 0 ;j<responseData.players.Length;j++){
-				if(playerUI[i].UserName == responseData.players[j].userName){
-                    playerUI[i].SetTitle(UTF8Encoder.DecodeEncodedNonAsciiCharacters(responseData.players[j].ranking));
-				}
-			}
+        PokerPlayerUI[] playerUI = GameObject.FindObjectsOfType<PokerPlayerUI>();
+        if (isFaceUp)
+        {
+            for (int i = 0; i < playerUI.Length; i++)
+                for (int j = 0; j < responseData.players.Length; j++)
+                    if (playerUI[i].UserName == responseData.players[j].userName)
+                        playerUI[i].SetTitle(UTF8Encoder.DecodeEncodedNonAsciiCharacters(responseData.players[j].ranking));
         }
         #endregion
 
@@ -203,50 +206,48 @@ public class PokerGameplayPlaymat : MonoBehaviour
         yield return new WaitForSeconds(waitTimeViewCard /2f);
 
         #region UPDATE CARD 
-        bool isFoldAll = PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() == PokerPlayerState.fold).Count == 0;
-        if (isFoldAll || PokerObserver.Game.ListPlayer.FindAll(p => p.userName != PokerObserver.Game.MainPlayer.userName).Count == 0)
+        foreach (ResponseResultSummary summary in responseData.pots)
         {
+            ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
 
-        }
-        else
-        {
-            CreateCardDeal(responseData.dealComminityCards);
-            foreach (ResponseResultSummary summary in responseData.pots)
+            if (potContainer != null && playerWin != null)
             {
-                ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
+                string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players, rdp => rdp.userName == playerWin.userName).ranking;
 
-                if (potContainer != null && playerWin != null)
+                string text = isFaceUp ? UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin) : "Chiến thắng";
+                RankEndGameModel playerWinRank = new RankEndGameModel(text);
+                DialogService.Instance.ShowDialog(playerWinRank);
+
+                if (isFaceUp)
                 {
-                   
-                        string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players, rdp => rdp.userName == playerWin.userName).ranking;
-                        RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
-                        DialogService.Instance.ShowDialog(playerWinRank);
-                        dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
-
-                        List<int> list = new List<int>(playerWin.cards);
-                        List<GameObject> listCardObject = cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId));
-                        for (int i = 0; i < 20; i++)
-                        {
-                            listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
-                            yield return new WaitForSeconds(timeEffectPot / 20f);
-                        }
-                        listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
-                        dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
-
-                        playerWinRank.DestroyUI();
-                    
+                    dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
+                    List<int> list = new List<int>(playerWin.cards);
+                    List<GameObject> listCardObject = cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId));
+                    for (int i = 0; i < 20; i++)
+                    {
+                        listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
+                        yield return new WaitForSeconds(timeEffectPot / 20f);
+                    }
+                    listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
+                    dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
                 }
+                else
+                    yield return new WaitForSeconds(timeEffectPot);
+
+                playerWinRank.DestroyUI();
             }
         }
-            yield return new WaitForSeconds(waitTimeViewCard / 2);
+        yield return new WaitForSeconds(waitTimeViewCard / 2);
         
         #endregion
 
         // Reset Result title
-        Array.ForEach<PokerPlayerUI>(playerUI, p => { if (p != null) p.SetTitle(null); });
+        if (isFaceUp)
+            Array.ForEach<PokerPlayerUI>(playerUI, p => { if (p != null) p.SetTitle(null); });
 
         ResetNewRound();
         PokerObserver.Instance.isWaitingFinishGame = false;
+        PokerObserver.Game.EndFinishGame();
     }
 
     void Instance_onFirstJoinGame(ResponseUpdateGame data)

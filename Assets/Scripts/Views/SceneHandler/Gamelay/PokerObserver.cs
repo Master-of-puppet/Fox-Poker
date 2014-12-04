@@ -51,11 +51,12 @@ public class PokerObserver
     {
         mUserInfo = Puppet.API.Client.APIUser.GetUserInformation();
         Puppet.Poker.EventDispatcher.onGameEvent += EventDispatcher_onGameEvent;
-        Puppet.API.Client.APIPokerGame.StartListenerEvent();
+        Game.StartListenerEvent();
     }
 
     void EventDispatcher_onGameEvent(string command, object data)
     {
+        //Logger.Log(ELogColor.YELLOW, "Client handled: " + command + " - " + DateTime.Now.ToString("hh:mm:ss"));
         if (data is ResponseUpdateGame)
         {
             ResponseUpdateGame dataGame = (ResponseUpdateGame)data;

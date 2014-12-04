@@ -9,11 +9,13 @@ public class PokerPotItem : MonoBehaviour
     public UISprite spriteIcon;
     public UILabel labelCurrentbet;
     #endregion
+    double _currentBet = 0;
     private string[] nameChipArr = { "icon_chip_1", "icon_chip_2", "icon_chip_3", "icon_chip_4" };
-    Puppet.Poker.Datagram.ResponseUpdatePot.DataPot pot;
+    Puppet.Poker.Datagram.ResponseUpdatePot.DataPot _pot;
+
     public Puppet.Poker.Datagram.ResponseUpdatePot.DataPot Pot
     {
-        get { return pot; }
+        get { return _pot; }
     }
     public static PokerPotItem Create(Puppet.Poker.Datagram.ResponseUpdatePot.DataPot pot)
     {
@@ -25,17 +27,15 @@ public class PokerPotItem : MonoBehaviour
     }
     public void SetValue(Puppet.Poker.Datagram.ResponseUpdatePot.DataPot pot)
     {
-        this.pot = pot;
+        this._pot = pot;
         SetBet(pot.value);
-
     }
     public void SetBet(double value)
     {
         string[] money = Utility.Convert.ConvertMoneyAndShortCut(value);
-        currentBet = value;
+        _currentBet = value;
         labelCurrentbet.text = string.Format("{0:f2}{1}", money[0], money[1]);
     }
     
-    double currentBet = 0;
-    public double CurrentBet { get { return currentBet; } }
+    public double CurrentBet { get { return _currentBet; } }
 }

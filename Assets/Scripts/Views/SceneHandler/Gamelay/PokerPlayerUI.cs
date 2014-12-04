@@ -25,7 +25,6 @@ public class PokerPlayerUI : MonoBehaviour
     [HideInInspector]
     public PokerGPSide side;
     public PokerPotItem currentBet;
-    protected double lastMyBetting = 0;
     public string UserName
     {
         get { return data.userName; }
@@ -40,16 +39,12 @@ public class PokerPlayerUI : MonoBehaviour
     void OnEnable()
     {
         PokerObserver.Instance.onTurnChange += Instance_dataTurnGame;
-        PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
-        PokerObserver.Instance.onUpdateUserInfo += Instance_onUpdateUserInfo;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
     }
 
     void OnDisable()
     {
         PokerObserver.Instance.onTurnChange -= Instance_dataTurnGame;
-        PokerObserver.Instance.onUpdatePot -= Instance_onUpdatePot;
-        PokerObserver.Instance.onUpdateUserInfo -= Instance_onUpdateUserInfo;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
     }
 
@@ -108,14 +103,6 @@ public class PokerPlayerUI : MonoBehaviour
         labelUsername.text = string.IsNullOrEmpty(title) ? data.userName : title;
     }
 
-    void Instance_onUpdatePot(ResponseUpdatePot data)
-    {
-    }
-
-    void Instance_onUpdateUserInfo(ResponseUpdateUserInfo data)
-    {
-    }
-
     void Instance_onFinishGame(ResponseFinishGame data)
     {
         StopTimer();
@@ -126,10 +113,8 @@ public class PokerPlayerUI : MonoBehaviour
         ResponseFinishCardPlayer cardPlayer = Array.Find<ResponseFinishCardPlayer>(data.players, p => p.userName == this.data.userName);
         if (cardPlayer != null && cardPlayer.cards != null)
         {
-            bool isFoldAll = PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() == PokerPlayerState.fold).Count == 0;
-            if (isFoldAll || PokerObserver.Game.ListPlayer.FindAll(p => p.userName != PokerObserver.Game.MainPlayer.userName).Count == 0)
-            { }
-            else
+            bool isFaceUp = PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
+            if (isFaceUp)
             {
                 for (int i = 0; i < cardPlayer.cards.Length; i++)
                 {
@@ -152,15 +137,12 @@ public class PokerPlayerUI : MonoBehaviour
             StopTimer();
     }
 
-
     void LoadCurrentBet(double value)
     {
         if (side != null)
         {
             if (currentBet == null)
-            {
                 currentBet = NGUITools.AddChild(side.positionMoney, playmat.prefabBetObject).GetComponent<PokerPotItem>();
-            }
             else
             {
                 currentBet.transform.parent = side.positionMoney.transform;
@@ -169,46 +151,47 @@ public class PokerPlayerUI : MonoBehaviour
         }
 
         if (currentBet != null)
-        {
-            addBetAnim(value);
-        }
+            addBetAnim();
     }
     public void addMoneyToMainPot() {
         currentBet.labelCurrentbet.transform.parent.gameObject.SetActive(false);
         iTween.MoveTo(currentBet.gameObject, iTween.Hash("position", playmat.potContainer.tablePot.transform.position, "time", 1.0f, "oncomplete", "onMoneyToMainPotComplete", "oncompletetarget", gameObject));
-
     }
     void onMoneyToMainPotComplete()
     {
         currentBet.transform.localPosition = Vector3.zero;
         currentBet.labelCurrentbet.transform.parent.gameObject.SetActive(true);
-        SetCurrentBet(0);
+        StartCoroutine(SetCurrentBet());
     }
-    IEnumerator SetCurrentBet(double value)
-    {
-        yield return new WaitForSeconds(value > 0 ? 1.0f:0f);
-        currentBet.gameObject.SetActive(value > 0);
-        currentBet.SetBet(value);
 
+    IEnumerator SetCurrentBet()
+    {
+        yield return new WaitForSeconds(data.currentBet > 0 ? 1.0f : 0f);
+        currentBet.gameObject.SetActive(data.currentBet > 0);
+        currentBet.SetBet(data.currentBet);
     }
     PokerPotItem betAnim;
-    public void addBetAnim(double value)
+    void addBetAnim()
     {
-        if (currentBet.CurrentBet < value)
+        Logger.Log("Betting Player: " + data.userName + " - " + data.currentBet);
+        tweenComplete();
+        if (currentBet.CurrentBet < data.currentBet)
         {
-            if (betAnim != null && betAnim.gameObject != null)
-                tweenComplete();
-            betAnim = NGUITools.AddChild(gameObject, playmat.prefabBetObject).GetComponent<PokerPotItem>();
+            if (betAnim == null)
+                betAnim = NGUITools.AddChild(gameObject, playmat.prefabBetObject).GetComponent<PokerPotItem>();
+            NGUITools.SetActive(betAnim.gameObject, true);
             betAnim.labelCurrentbet.transform.parent.gameObject.SetActive(false);
             iTween.MoveTo(betAnim.gameObject, iTween.Hash("position", side.positionMoney.transform.localPosition, "islocal", true, "time", 1.0f, "oncomplete", "tweenComplete", "oncompletetarget", gameObject));
-         
         }
-        StartCoroutine(SetCurrentBet(value));
-
+        StartCoroutine(SetCurrentBet());
     }
     void tweenComplete()
     {
-        GameObject.Destroy(betAnim.gameObject);
+        if (betAnim != null)
+        {
+            betAnim.gameObject.transform.localPosition = transform.localPosition;
+            NGUITools.SetActive(betAnim.gameObject, false);
+        }
     }
     public void SetResult(bool isWinner)
     {
