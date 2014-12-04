@@ -274,8 +274,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_onUpdateRoomMaster(ResponseUpdateRoomMaster data)
     {
-        if (data.player.isMaster)
-            SetDealerObjectToPlayer(data.player);
     }
 
     void Instance_onPlayerListChanged(ResponsePlayerListChanged dataPlayer)
