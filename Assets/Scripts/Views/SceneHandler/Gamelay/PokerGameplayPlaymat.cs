@@ -176,7 +176,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
         float waitTimeViewCard = time > 1 ? 1f : 0f;
         float timeEffectPot = responseData.pots.Length > 0 ? time - (waitTimeViewCard / responseData.pots.Length) : time - waitTimeViewCard;
 
-        bool isFaceUp = PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
+        int numberPlayerNotFold = PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() != PokerPlayerState.fold && p.GetPlayerState() != PokerPlayerState.none).Count;
+        bool isFaceUp = numberPlayerNotFold > 1 && PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
+
         if (isFaceUp)
             CreateCardDeal(responseData.dealComminityCards);
 
@@ -214,13 +216,13 @@ public class PokerGameplayPlaymat : MonoBehaviour
             {
                 string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players, rdp => rdp.userName == playerWin.userName).ranking;
 
-                string text = isFaceUp ? UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin) : "Chiến thắng";
-                RankEndGameModel playerWinRank = new RankEndGameModel(text);
-                DialogService.Instance.ShowDialog(playerWinRank);
+                RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
+
+                dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
 
                 if (isFaceUp)
                 {
-                    dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
+                    DialogService.Instance.ShowDialog(playerWinRank);
                     List<int> list = new List<int>(playerWin.cards);
                     List<GameObject> listCardObject = cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId));
                     for (int i = 0; i < 20; i++)
@@ -229,12 +231,13 @@ public class PokerGameplayPlaymat : MonoBehaviour
                         yield return new WaitForSeconds(timeEffectPot / 20f);
                     }
                     listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
-                    dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
+                    playerWinRank.DestroyUI();
                 }
                 else
                     yield return new WaitForSeconds(timeEffectPot);
 
-                playerWinRank.DestroyUI();
+                dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
+
             }
         }
         yield return new WaitForSeconds(waitTimeViewCard / 2);
