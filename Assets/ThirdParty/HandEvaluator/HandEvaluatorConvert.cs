@@ -10,6 +10,7 @@ namespace HoldemHand
 	{
         public static string ConvertPokerCardToString(PokerCard card) {
             string suit = "";
+            string rank = "";
             switch (card.GetSuit()) { 
                 case Puppet.ECardSuit.Bitch :
                     suit = "c";
@@ -24,7 +25,24 @@ namespace HoldemHand
                     suit = "s";
                     break;
             }
-            return card.GetRank()+suit;
+            switch (card.GetRank()) {
+                case Puppet.ECardRank.King:
+                    rank = "K";
+                    break;
+                case Puppet.ECardRank.Queen:
+                    rank = "Q";
+                    break;
+                case Puppet.ECardRank.Ace:
+                    rank = "A";
+                    break;
+                case Puppet.ECardRank.Jack:
+                    rank = "J";
+                    break;
+                default :
+                    rank = ((int)card.GetRank()).ToString();
+                    break;
+            }
+            return rank + suit;
         }
         public static string ConvertPokerCardsToString(List<PokerCard> cards) {
             string hand = "";
