@@ -127,6 +127,7 @@ public class PokerGameplayView : MonoBehaviour
             string pocket = HandEvaluatorConvert.ConvertPokerCardsToString(playmat.pocket);
             DialogService.Instance.ShowDialog(new DialogGameplayRankModel(pocket,boards));
         }
+
     }
 
     private void OnButtonGameMiniClickCallBack(GameObject go)
