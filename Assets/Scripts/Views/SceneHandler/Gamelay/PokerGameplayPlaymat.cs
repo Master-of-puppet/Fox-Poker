@@ -184,13 +184,15 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
         #region SET RESULT TITLE
         PokerPlayerUI[] playerUI = GameObject.FindObjectsOfType<PokerPlayerUI>();
-        if (isFaceUp)
+        for (int i = 0; i < playerUI.Length; i++)
         {
-            for (int i = 0; i < playerUI.Length; i++)
-                for (int j = 0; j < responseData.players.Length; j++)
-                    if (playerUI[i].UserName == responseData.players[j].userName)
-                        playerUI[i].SetTitle(UTF8Encoder.DecodeEncodedNonAsciiCharacters(responseData.players[j].ranking));
+            for (int j = 0; j < responseData.players.Length; j++)
+            {
+                if (playerUI[i].UserName == responseData.players[j].userName)
+                    playerUI[i].SetTitle(isFaceUp ? UTF8Encoder.DecodeEncodedNonAsciiCharacters(responseData.players[j].ranking) : null);
+            }
         }
+        
         #endregion
 
         #region UPDATE POTS WHEN FINISH GAME
