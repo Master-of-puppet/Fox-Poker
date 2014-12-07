@@ -68,18 +68,14 @@ public class PokerPlayerUI : MonoBehaviour
                     customTitle = "Big Blind";
                 else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.smallBlind)
                     customTitle = "Small Blind";
-                else if (PokerObserver.Game.LastPlayer != null && PokerObserver.Game.LastPlayer.userName == player.userName)
-                {
-                    if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.call)
-                        customTitle = "Theo cược";
-                    else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.allIn ||
-                        (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise && player.currentBet == 0))
-                        customTitle = "All-in";
-                    else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise)
-                        customTitle = "Thêm cược";
-                    else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
-                        customTitle = "Xem bài";
-                }
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.call)
+                    customTitle = "Theo cược";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.allIn)
+                    customTitle = "All-in";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise)
+                    customTitle = "Thêm cược";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
+                    customTitle = "Xem bài";
                 else if (PokerObserver.Game.IsPlayerInGame(player.userName) && player.currentBet == 0)
                     customTitle = "Chờ đặt cược";
                 else
@@ -93,7 +89,7 @@ public class PokerPlayerUI : MonoBehaviour
 
             LoadCurrentBet(player.currentBet);
 
-            if (PokerObserver.Game.Dealer == player.userName)
+            if (PokerObserver.Game.Dealer == player.userName && PokerObserver.Game.IsPlayerInGame(player.userName))
                 playmat.SetDealerObjectToPlayer(player);
         }
     }
