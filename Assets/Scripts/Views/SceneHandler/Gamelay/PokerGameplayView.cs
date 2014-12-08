@@ -10,6 +10,7 @@ using UnityEngine;
 using Puppet;
 using Puppet.API.Client;
 using Puppet.Core.Model;
+using HoldemHand;
 
 
 public class PokerGameplayView : MonoBehaviour
@@ -51,14 +52,13 @@ public class PokerGameplayView : MonoBehaviour
     void OnEnable() 
     {
         PokerObserver.Instance.onEncounterError += Instance_onEncounterError;
-
         //UIEventListener.Get(btnView).onClick += OnButtonViewClickCallBack;
         //UIEventListener.Get(btnLeaveTurn).onClick += OnButtonLeaveTurnClickCallBack;
         //UIEventListener.Get(btnAddBet).onClick += OnButtonAddBetClickCallBack;
         //UIEventListener.Get(btnFollowBet).onClick += OnButtonFollowBetClickCallBack;
         //UIEventListener.Get(btnConvertMoney).onClick += OnButtonConvertMoneyClickCallBack;
         //UIEventListener.Get(btnGameMini).onClick += OnButtonGameMiniClickCallBack;
-        //UIEventListener.Get(btnRule).onClick += OnButtonRuleClickCallBack;
+        UIEventListener.Get(btnRule).onClick += OnButtonRuleClickCallBack;
         //UIEventListener.Get(btnSendMessage).onClick += OnButtonSendMessageClickCallBack;
         //UIEventListener.Get(headerMenuBtnBack).onClick += OnButtonHeaderBackClickCallBack;
         //UIEventListener.Get(headerMenuBtnUp).onClick += OnButtonHeaderUpClickCallBack;
@@ -70,14 +70,14 @@ public class PokerGameplayView : MonoBehaviour
     void OnDisable()
     {
         PokerObserver.Instance.onEncounterError -= Instance_onEncounterError;
-
+        
         //UIEventListener.Get(btnView).onClick -= OnButtonViewClickCallBack;
         //UIEventListener.Get(btnLeaveTurn).onClick -= OnButtonLeaveTurnClickCallBack;
         //UIEventListener.Get(btnAddBet).onClick -= OnButtonAddBetClickCallBack;
         //UIEventListener.Get(btnFollowBet).onClick -= OnButtonFollowBetClickCallBack;
         //UIEventListener.Get(btnConvertMoney).onClick -= OnButtonConvertMoneyClickCallBack;
         //UIEventListener.Get(btnGameMini).onClick -= OnButtonGameMiniClickCallBack;
-        //UIEventListener.Get(btnRule).onClick -= OnButtonRuleClickCallBack;
+        UIEventListener.Get(btnRule).onClick -= OnButtonRuleClickCallBack;
         //UIEventListener.Get(btnSendMessage).onClick -= OnButtonSendMessageClickCallBack;
         //UIEventListener.Get(headerMenuBtnBack).onClick -= OnButtonHeaderBackClickCallBack;
         //UIEventListener.Get(headerMenuBtnUp).onClick -= OnButtonHeaderUpClickCallBack;
@@ -119,6 +119,15 @@ public class PokerGameplayView : MonoBehaviour
 
     private void OnButtonRuleClickCallBack(GameObject go)
     {
+        double[] player = new double[9];
+        double[] opponent = new double[9];
+        if (playmat.pocket != null && playmat.pocket.Count > 0)
+        {
+            string boards = HandEvaluatorConvert.ConvertPokerCardsToString(PokerObserver.Game.DealComminityCards);
+            string pocket = HandEvaluatorConvert.ConvertPokerCardsToString(playmat.pocket);
+            DialogService.Instance.ShowDialog(new DialogGameplayRankModel(pocket,boards));
+        }
+
     }
 
     private void OnButtonGameMiniClickCallBack(GameObject go)
@@ -173,5 +182,18 @@ public class PokerGameplayView : MonoBehaviour
         }
         APIPokerGame.GetOrderHand(dictHand);        
     }
+    private string FormatPercent(double v)
+    {
+        if (v != 0.0)
+        {
+            if (v * 100.0 >= 1.0)
+                return string.Format("{0:##0.0}%", v * 100.0);
+            else
+                return "<1%";
+        }
+        return "n/a";
+    }
+
+    
 }
 

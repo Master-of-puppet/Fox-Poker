@@ -9,6 +9,7 @@ using Puppet.Poker.Datagram;
 using Puppet;
 using Puppet.Service;
 using Puppet.Utils;
+using HoldemHand;
 
 public class PokerGameplayPlaymat : MonoBehaviour
 {
@@ -104,8 +105,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     private void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
-        if(data.dealComminityCards != null && data.dealComminityCards.Length > 0)
+        if (data.dealComminityCards != null && data.dealComminityCards.Length > 0)
+        {
             CreateCardDeal(data.dealComminityCards);
+            ShowRank();
+        }
     }
 
     List<GameObject> cardsDeal = new List<GameObject>();
@@ -126,12 +130,81 @@ public class PokerGameplayPlaymat : MonoBehaviour
             cardsDeal.Add(card);
         }
     }
-
+    public List<PokerCard> pocket;
     void Instance_onEventUpdateHand(ResponseUpdateHand data)
     {
+        if (pocket == null)
+            pocket = new List<PokerCard>();
+        pocket.Clear();
+        for (int i = 0; i < data.hand.Length; i++)
+        {
+            pocket.Add(new PokerCard(data.hand[i]));
+        }
+        ShowRank();
         CreateHand(data.players, data.hand);
     }
 
+    void ShowRank() {
+        string pocketHand = HandEvaluatorConvert.ConvertPokerCardsToString(pocket);
+        string boards = HandEvaluatorConvert.ConvertPokerCardsToString(PokerObserver.Game.DealComminityCards);
+        int count = 0;
+        double[] player = new double[9];
+        double[] opponent = new double[9];
+        if (!Hand.ValidateHand(pocketHand + " " + boards))
+        {
+            lbMyRanking.text = "";
+            return;
+        }
+        Hand.ParseHand(pocketHand + " " + boards, ref count);
+
+        // Don't allow these configurations because of calculation time.
+        if (count == 0 || count == 1 || count == 3 || count == 4 || count > 7)
+        {
+            lbMyRanking.text = "";
+            return;
+        }
+        Hand.HandPlayerOpponentOdds(pocketHand, boards, ref player, ref opponent);
+        var indexAtMax = player.ToList().IndexOf(player.Max());
+        string myRank = "";
+        switch ((Hand.HandTypes)indexAtMax)
+        {
+            case Hand.HandTypes.HighCard:
+            case Hand.HandTypes.Pair:
+            case Hand.HandTypes.TwoPair:
+                myRank = "Hai đôi : " + FormatPercent(player[2]);
+                break;
+            case Hand.HandTypes.Trips:
+                myRank = "Ba lá : " + FormatPercent(player[indexAtMax]);
+                break;
+            case Hand.HandTypes.Straight:
+                myRank = "Sảnh  : " + FormatPercent(player[indexAtMax]);
+                break;
+            case Hand.HandTypes.Flush:
+                myRank = "Đồng hoa  : " + FormatPercent(player[indexAtMax]);
+                break;
+            case Hand.HandTypes.FullHouse:
+                myRank = "Cù lũ  : " + FormatPercent(player[indexAtMax]);
+                break;
+            case Hand.HandTypes.FourOfAKind:
+                myRank = "Tứ quý  : " + FormatPercent(player[indexAtMax]);
+                break;
+            case Hand.HandTypes.StraightFlush:
+                myRank = "Sảnh thông  : " + FormatPercent(player[indexAtMax]);
+                break;
+        }
+        lbMyRanking.text = myRank;
+    }
+    private string FormatPercent(double v)
+    {
+        if (v != 0.0)
+        {
+            if (v * 100.0 >= 1.0)
+                return string.Format("{0:##0.0}%", v * 100.0);
+            else
+                return "<1%";
+        }
+        return "n/a";
+    }
     void CreateHand(PokerPlayerController[] players, int [] hands)
     {
         foreach(PokerPlayerController p in players)

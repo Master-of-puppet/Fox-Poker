@@ -7,6 +7,8 @@ using Puppet.Utils;
 using System.Collections.Generic;
 using Puppet.Service;
 using System;
+using HoldemHand;
+using Puppet.Poker.Models;
 
 public class LoginScene : MonoBehaviour, ILoginView
 {
@@ -15,7 +17,7 @@ public class LoginScene : MonoBehaviour, ILoginView
     public UIInput txtUsername, txtPassword;
 
     LoginPresenter presenter;
-
+   
     void Awake()
     {
         if (Application.platform == RuntimePlatform.WindowsPlayer)
@@ -55,8 +57,27 @@ public class LoginScene : MonoBehaviour, ILoginView
     void OnGUI()
     {
         PuSetting.UniqueDeviceId = GUI.TextField(new Rect(0, 0, Screen.width / 4, Screen.height / 15), PuSetting.UniqueDeviceId);
+        if (GUI.Button(new Rect(0, 150, Screen.width - Screen.width * 0.9f, 35f), "TEST MODE"))
+        {
+            Logger.Log("========> " + APIPokerGame.GetPokerGameplay().ListPlayer.Count);
+            TestModeGUI.Create(ActionRequestOrderHand);
+        }
     }
+    public void ActionRequestOrderHand(Dictionary<string, int[]> obj) {
+        List<PokerCard> idsCard = new List<PokerCard>();
+        foreach (var item in obj.Keys)
+        {
 
+            foreach (var items in obj[item])
+            {
+                idsCard.Add(new PokerCard(items));
+            }
+
+        }
+       
+        Logger.Log("========> " + HandEvaluatorConvert.ConvertPokerCardsToString(idsCard)); 
+        
+    }
 
     void onBtnLoginClick(GameObject gobj)
     {
@@ -105,6 +126,8 @@ public class LoginScene : MonoBehaviour, ILoginView
 
     public void ShowConfirm(string message, Action<bool?> action)
     {
-        throw new NotImplementedException();
     }
+
+
+  
 }
