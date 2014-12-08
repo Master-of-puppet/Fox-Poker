@@ -53,7 +53,8 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
 	}
     void OnSliderChange()
     {
-		labelMoney.text = GetCurrentMoney >= data.MaxBetting ? "All In" : GetCurrentMoney.ToString("#,###");
+
+        labelMoney.text = GetCurrentMoney >= data.MaxBetting ? (data.MaxBetting >= PokerObserver.Game.MainPlayer.GetMoney() ? "All In" : data.MaxBetting.ToString("#,###")) : GetCurrentMoney.ToString("#,###");
     }
 
     public override void ShowDialog(DialogBetting data)
