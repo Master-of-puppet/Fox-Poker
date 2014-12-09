@@ -62,8 +62,12 @@ public class PokerPlayerUI : MonoBehaviour
                 customTitle = "Chờ ván mới";
             else if (PokerObserver.Game.IsPlayerInGame(player.userName))
             {
-                if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.fold)
+                if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
+                    customTitle = "Xem bài";
+                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.fold)
                     customTitle = "Bỏ bài";
+                else if (PokerObserver.Game.IsPlayerInGame(player.userName) && player.currentBet == 0)
+                    customTitle = "Chờ đặt cược";
                 else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.bigBlind)
                     customTitle = "Big Blind";
                 else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.smallBlind)
@@ -74,10 +78,6 @@ public class PokerPlayerUI : MonoBehaviour
                     customTitle = "All-in";
                 else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.raise)
                     customTitle = "Thêm cược";
-                else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
-                    customTitle = "Xem bài";
-                else if (PokerObserver.Game.IsPlayerInGame(player.userName) && player.currentBet == 0)
-                    customTitle = "Chờ đặt cược";
                 else
                     labelUsername.text = data.userName;
             }
