@@ -12,6 +12,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     public UILabel labelMoney;
     #endregion
 
+
     double smallBlind;
     EventDelegate del;
     void Awake()
@@ -19,7 +20,6 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
         del = new EventDelegate(this, "OnSliderChange");
         smallBlind = PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind;
     }
-
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -32,7 +32,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
         sliderBar.onChange.Remove(del);
     }
 
-    double GetCurrentMoney
+    public double GetCurrentMoney
     {
         get
         {
@@ -53,15 +53,14 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
 	}
     void OnSliderChange()
     {
-
-        labelMoney.text = GetCurrentMoney >= data.MaxBetting ? (data.MaxBetting >= PokerObserver.Game.MainPlayer.GetMoney() ? "All In" : data.MaxBetting.ToString("#,###")) : GetCurrentMoney.ToString("#,###");
+        Logger.Log("==========" + GetCurrentMoney);
+        labelMoney.text = GetCurrentMoney >= data.MaxBetting ? "All In" : GetCurrentMoney.ToString("#,###");
     }
 
     public override void ShowDialog(DialogBetting data)
     {
         base.ShowDialog(data);
-
-		sliderBar.numberOfSteps = (int)(data.MaxBetting / smallBlind);
+        sliderBar.numberOfSteps = (int)((data.MaxBetting - data.MaxBinded) / smallBlind);
         gameObject.transform.parent = data.parent;
         gameObject.transform.localPosition = new Vector3(0f, 280f, 0f);
         gameObject.transform.localScale = Vector3.one;
@@ -81,7 +80,7 @@ public class DialogBetting : AbstractDialogData
 	public double MaxBinded, MaxBetting;
     public Action<double> onBetting;
     public Transform parent;
-
+    public double currentMoney;
     public DialogBetting(double maxBinded, double max, Action<double> onBetting, Transform parent)
     {
 		this.MaxBinded = maxBinded;
