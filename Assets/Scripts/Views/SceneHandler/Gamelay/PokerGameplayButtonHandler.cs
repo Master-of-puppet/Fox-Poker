@@ -149,8 +149,14 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 			maxBinded = maxBinded - PokerObserver.Game.MainPlayer.currentBet;
 		return maxBinded;
 	}
-	double GetMaxRaise(){
-
+	double GetMaxRaise()
+    {
+        if (PokerObserver.Game.MainPlayer.GetMoney() <= 0)
+            return 0;
+        int countPlayerUnAllIn = PokerObserver.Game.ListPlayer.FindAll(p => PokerObserver.Game.IsPlayerInGame(p.userName) && p.userName != PokerObserver.Game.MainPlayer.userName && p.GetPlayerState() != PokerPlayerState.fold && p.GetPlayerState() != PokerPlayerState.allIn).Count;
+        if (countPlayerUnAllIn == 0) //Nếu tất cả các người chơi khác đã All-In thì mình chỉ được theo cược
+            return 0;
+        
         double maxOtherMoney = PokerObserver.Game.ListPlayer
 			.Where<PokerPlayerController>(p => p.userName != PokerObserver.Game.MainPlayer.userName && p.GetPlayerState() != PokerPlayerState.fold )
                 .Max<PokerPlayerController>(p => p.GetMoney() + p.currentBet);
@@ -159,9 +165,11 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 		double maxRaise = myMoney;
 		if(myMoney > maxOtherMoney)
 			maxRaise = maxOtherMoney;
-		if (PokerObserver.Game.MainPlayer.currentBet != 0) {
+		if (PokerObserver.Game.MainPlayer.currentBet != 0)
 			maxRaise = maxRaise - PokerObserver.Game.MainPlayer.currentBet;
-		}
+        if (maxRaise <= PokerObserver.Game.MaxCurrentBetting)
+            return 0;
+
 		return maxRaise;
 	}
     void SetEnableButtonType(EButtonType type)
@@ -221,7 +229,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         if (slot == EButtonSlot.Third && type == EButtonType.InTurn) {
 			try 
             {
-                if (GetMaxRaise() == 0 || PokerObserver.Game.MainPlayer.GetMoney() <= 0)
+                if (GetMaxRaise() <= 0)
 					return false;				
 				else
                     return PokerObserver.Game.MainPlayer.GetMoney() + PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting;
