@@ -133,9 +133,13 @@ public class PokerGameplayButtonHandler : MonoBehaviour
             {
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
-
-            if(DialogService.Instance.IsShowing(bettingDialog) == false)
+            DialogBettingView bettingView = GameObject.FindObjectOfType<DialogBettingView>();
+            if (bettingView == null)
                 DialogService.Instance.ShowDialog(bettingDialog);
+            else {
+                Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, bettingView.GetCurrentMoney);
+                GameObject.Destroy(bettingView.gameObject);
+            }
         }
         else if(currentType == EButtonType.OutGame)
         {
