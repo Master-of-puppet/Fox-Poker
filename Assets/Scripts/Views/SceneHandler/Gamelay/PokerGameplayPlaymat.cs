@@ -19,11 +19,22 @@ public class PokerGameplayPlaymat : MonoBehaviour
     public PokerPotManager potContainer;
     public GameObject objectDealer;
     public UILabel lbMyRanking;
+    public Transform Dealer;
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
     bool isWaitingFinishGame = false;
 
+    #region Effect deal cards to hand and table
+    //hand
+    int indexDealer = -1;
+    List<GameObject> ListCardsDeal = new List<GameObject>();//List chứa cards được chia theo đúng thứ tự
+    Dictionary<int, GameObject[]> dCardsDeal = new Dictionary<int, GameObject[]>();
+
+    //table
+    List<GameObject> cardsDealToTable = new List<GameObject>();
+    int NumberCardsInTable = 0;
+    #endregion
     void Awake()
     {
         objectDealer.SetActive(false);
@@ -105,27 +116,38 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         if (data.dealComminityCards != null && data.dealComminityCards.Length > 0)
         {
-            CreateCardDeal(data.dealComminityCards);
+            CreateCardDeal(data.dealComminityCards,false);
             ShowRank();
         }
     }
 
     List<GameObject> cardsDeal = new List<GameObject>();
     int countGenericCard = 0;
-    void CreateCardDeal(int [] cards)
-    {
-        for(int i=0;i<cards.Length;i++)
-        {
-            if (cardsDeal.Find(o => o.GetComponent<PokerCardObject>().card.cardId == cards[i]) != null)
-                continue;
 
-            GameObject card = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
-            card.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cards[i]));
-            card.transform.parent = positionDealCards[countGenericCard++].transform;
-            card.transform.localRotation = Quaternion.identity;
-            card.transform.localPosition = Vector3.zero;
-            card.transform.localScale = Vector3.one * 0.9f;
-            cardsDeal.Add(card);
+    void CreateCardDeal(int[] cards, bool isAllIn)
+    {
+        if (!isAllIn)
+        {
+            for (int i = 0; i < cards.Length; i++)
+            {
+                if (cardsDeal.Find(o => o.GetComponent<PokerCardObject>().card.cardId == cards[i]) != null)
+                    continue;
+
+                GameObject card = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
+                card.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cards[i]));
+                card.transform.parent = positionDealCards[countGenericCard++].transform;
+                card.transform.localRotation = Quaternion.identity;
+                card.transform.localPosition = Vector3.zero;
+                card.transform.localScale = Vector3.one * 0.9f;
+                cardsDeal.Add(card);
+                cardsDealToTable.Add(card);
+                NumberCardsInTable++;
+            }
+            StartCoroutine(OnDealCardToTable());
+        }
+        else
+        {
+            StartCoroutine(OnDealCardToTable_AllIn(cards));
         }
     }
     public List<PokerCard> pocket;
@@ -139,7 +161,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
             pocket.Add(new PokerCard(data.hand[i]));
         }
         ShowRank();
-        CreateHand(data.players, data.hand);
+        //StartCoroutine(_Instance_onEventUpdateHand(data));
+        CreateHand(data.players, data.hand, data.timeForAnimation);
     }
 
     void ShowRank() {
@@ -203,8 +226,14 @@ public class PokerGameplayPlaymat : MonoBehaviour
         }
         return "n/a";
     }
-    void CreateHand(PokerPlayerController[] players, int [] hands)
+    void CreateHand(PokerPlayerController[] players, int[] hands, float timeForAnimation)
     {
+        //for deal carl to hand
+        List<int> ListSlotIndex = new List<int>();
+        indexDealer = -1;
+        ListCardsDeal.Clear();
+        dCardsDeal.Clear();//
+
         foreach(PokerPlayerController p in players)
         {
             int handSize = p.handSize;
@@ -230,8 +259,170 @@ public class PokerGameplayPlaymat : MonoBehaviour
             dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().UpdateSetCardObject(cardObjects);
 
             cardsDeal.AddRange(cardObjects);
+
+            //for deal card to hand
+            if (PokerObserver.Game.Dealer == p.userName)
+            {
+                indexDealer = p.slotIndex;
+                ListCardsDeal.AddRange(cardObjects);
+            }
+            else
+                dCardsDeal.Add(p.slotIndex, cardObjects);
+            ListSlotIndex.Add(p.slotIndex);
+        }
+        if (timeForAnimation == -1) timeForAnimation = 2000;
+        float time = (timeForAnimation / 1000) / 2;
+        time = time / players.Count();
+        DealCardToHand(ListSlotIndex, time);/////////
+    }
+    #region EFFECT DEAL CARD TO HAND
+    void SortSlotIndex(List<int> ListSlotIndex)
+    {
+        List<int> largerNumber = new List<int>();
+        List<int> smallerNumber = new List<int>();
+        for (int i = 0; i < ListSlotIndex.Count; i++)
+        {
+            if (ListSlotIndex[i] > indexDealer)
+                largerNumber.Add(ListSlotIndex[i]);
+            else if (ListSlotIndex[i] < indexDealer)
+                smallerNumber.Add(ListSlotIndex[i]);
+        }
+        if (largerNumber.Count > 0)
+        {
+            largerNumber.Sort();
+            for (int i = 0; i < largerNumber.Count; i++)
+                ListCardsDeal.AddRange(dCardsDeal[largerNumber[i]]);
+        }
+
+        if (smallerNumber.Count > 0)
+        {
+            smallerNumber.Sort();
+            for (int i = 0; i < smallerNumber.Count; i++)
+                ListCardsDeal.AddRange(dCardsDeal[smallerNumber[i]]);
+        }
+
+    }
+    IEnumerator OnDealCardToHand(float timeForAnimation)
+    {
+        for (int i = 0; i <= 1; i++)
+        {
+            for (int j = i; j < ListCardsDeal.Count(); j += 2)
+            {
+                yield return new WaitForSeconds(timeForAnimation);
+                if (ListCardsDeal[j].GetComponent<PokerCardObject>().gameObject != null)
+                {
+                    iTween.MoveFrom(ListCardsDeal[j].GetComponent<PokerCardObject>().gameObject, Dealer.position, timeForAnimation);
+                    ListCardsDeal[j].GetComponent<PokerCardObject>().gameObject.SetActive(true);
+                }
+            }
         }
     }
+    void DealCardToHand(List<int> ListSlotIndex, float timeForAnimation)
+    {
+        foreach (GameObject item in cardsDeal)
+            item.GetComponent<PokerCardObject>().gameObject.SetActive(false);
+        SortSlotIndex(ListSlotIndex);
+        StartCoroutine(OnDealCardToHand(timeForAnimation));
+    }
+    #endregion
+
+    #region EFFECT DEAL CARD TO Table
+    float timeRotate = 0.5f;
+    float timeShowFace = 0.1f;
+    float timeDealCard = 0.3f;
+    IEnumerator OnDealCardToTable()
+    {
+        foreach (GameObject item in cardsDealToTable)
+            item.GetComponent<PokerCardObject>().gameObject.SetActive(false);
+
+        //Chia bài
+        for (int i = 0; i < cardsDealToTable.Count; i++)
+        {
+            yield return new WaitForSeconds(0.3f);
+            if (cardsDealToTable[i].GetComponent<PokerCardObject>().gameObject != null)
+            {
+                iTween.MoveFrom(cardsDealToTable[i].GetComponent<PokerCardObject>().gameObject, Dealer.position, timeDealCard);
+                cardsDealToTable[i].GetComponent<PokerCardObject>().gameObject.SetActive(true);
+                cardsDealToTable[i].GetComponent<PokerCardObject>().spriteBackground.depth = 14;
+                cardsDealToTable[i].GetComponent<PokerCardObject>().spriteBackground.transform.localRotation = new Quaternion(0, -180, 0, 0);
+                cardsDealToTable[i].GetComponent<PokerCardObject>().spriteBackground.spriteName = "card_up";
+            }
+        }
+        yield return new WaitForSeconds(0.5f);
+        //Lật bài
+        for (int i = 0; i < cardsDealToTable.Count; i++)
+        {
+            if (cardsDealToTable[i].GetComponent<PokerCardObject>().gameObject != null)
+            {
+                iTween.RotateTo(cardsDealToTable[i].GetComponent<PokerCardObject>().spriteBackground.gameObject, new Vector3(0, 0, 0), timeRotate);//quay object
+                yield return new WaitForSeconds(timeShowFace); //hiện mặt card_empty 
+                cardsDealToTable[i].GetComponent<PokerCardObject>().spriteBackground.spriteName = "card_empty";
+                cardsDealToTable[i].GetComponent<PokerCardObject>().spriteBackground.depth = 10;
+            }
+        }
+
+        cardsDealToTable.Clear();
+    }
+
+    IEnumerator OnDealCardToTable_AllIn(int[] cards)
+    {
+        if (NumberCardsInTable == 0 || NumberCardsInTable > 3)
+        {
+            for (int i = NumberCardsInTable; i < cards.Count(); i++)
+            {
+                if (i == 3 || i == 4) yield return new WaitForSeconds(0.6f);
+                if (cardsDeal.Find(o => o.GetComponent<PokerCardObject>().card.cardId == cards[i]) != null)
+                    continue;
+
+                GameObject card = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
+                card.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cards[i]));
+                card.transform.parent = positionDealCards[countGenericCard++].transform;
+                card.transform.localRotation = Quaternion.identity;
+                card.transform.localPosition = Vector3.zero;
+                card.transform.localScale = Vector3.one * 0.9f;
+                cardsDeal.Add(card);
+                cardsDealToTable.Add(card);
+
+                if (i > 1)
+                {
+                    foreach (GameObject item in cardsDealToTable)
+                        item.GetComponent<PokerCardObject>().gameObject.SetActive(false);
+
+                    //Chia bài
+                    for (int j = 0; j < cardsDealToTable.Count; j++)
+                    {
+
+                        yield return new WaitForSeconds(0.3f);
+                        if (cardsDealToTable[j].GetComponent<PokerCardObject>().gameObject != null)
+                        {
+                            iTween.MoveFrom(cardsDealToTable[j].GetComponent<PokerCardObject>().gameObject, Dealer.position, timeDealCard);
+                            cardsDealToTable[j].GetComponent<PokerCardObject>().gameObject.SetActive(true);
+                            cardsDealToTable[j].GetComponent<PokerCardObject>().spriteBackground.depth = 14;
+                            cardsDealToTable[j].GetComponent<PokerCardObject>().spriteBackground.transform.localRotation = new Quaternion(0, -180, 0, 0);
+                            cardsDealToTable[j].GetComponent<PokerCardObject>().spriteBackground.spriteName = "card_up";
+                        }
+                    }
+                    yield return new WaitForSeconds(0.5f);
+                    //Lật bài
+                    for (int j = 0; j < cardsDealToTable.Count; j++)
+                    {
+                        if (cardsDealToTable[j].GetComponent<PokerCardObject>().gameObject != null)
+                        {
+                            iTween.RotateTo(cardsDealToTable[j].GetComponent<PokerCardObject>().spriteBackground.gameObject, new Vector3(0, 0, 0), timeRotate);//quay object
+                            yield return new WaitForSeconds(timeShowFace); //hiện mặt card_empty 
+                            cardsDealToTable[j].GetComponent<PokerCardObject>().spriteBackground.spriteName = "card_empty";
+                            cardsDealToTable[j].GetComponent<PokerCardObject>().spriteBackground.depth = 10;
+                        }
+                    }
+
+                    cardsDealToTable.Clear();
+                }
+            }
+        }
+
+
+    }
+    #endregion 
 
     void Instance_onFinishGame(ResponseFinishGame responseData)
     {
@@ -251,8 +442,15 @@ public class PokerGameplayPlaymat : MonoBehaviour
         bool isFaceUp = numberPlayerNotFold > 1 && PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
 
         if (isFaceUp)
-            CreateCardDeal(responseData.dealComminityCards);
-
+        {
+            CreateCardDeal(responseData.dealComminityCards, isFaceUp);
+            float waitingTimeSetResult = 6f;
+            if (NumberCardsInTable == 3) waitingTimeSetResult = waitingTimeSetResult / 2;
+            if (NumberCardsInTable == 4) waitingTimeSetResult = waitingTimeSetResult / 3;
+            
+            yield return new WaitForSeconds(waitingTimeSetResult);
+        }
+        NumberCardsInTable = 0;
         #region SET RESULT TITLE
         PokerPlayerUI[] playerUI = GameObject.FindObjectsOfType<PokerPlayerUI>();
         for (int i = 0; i < playerUI.Length; i++)
@@ -340,8 +538,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
                 SetPositionAvatarPlayer(player.userName);
             }
-            CreateHand(data.players, hands);
-            CreateCardDeal(data.dealComminityCards);
+            CreateHand(data.players, hands,-1);
+            CreateCardDeal(data.dealComminityCards,false);
         }
     }
 
