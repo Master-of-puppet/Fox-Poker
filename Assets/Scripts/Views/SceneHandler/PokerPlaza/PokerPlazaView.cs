@@ -22,7 +22,7 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 
     private void OnBtnLeagueClick(GameObject go)
     {
-        throw new System.NotImplementedException();
+		AndroidLocalPushNotification.sendPushNotification (10, "Fox Poker", "Ban vua bam tham gia giai dau");
     }
 	void OnDestroy(){
         UIEventListener.Get(btnPlayNow).onClick -= this.OnBtnPlayNowClick;
