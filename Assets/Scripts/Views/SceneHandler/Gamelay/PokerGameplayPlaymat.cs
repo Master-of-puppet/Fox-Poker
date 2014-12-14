@@ -30,7 +30,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
         arrayPokerSide = GameObject.FindObjectsOfType<PokerGPSide>();
 
-        PokerObserver.Instance.onFirstJoinGame += Instance_onFirstJoinGame;
         PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
         PokerObserver.Instance.dataUpdateGameChange += Instance_dataUpdateGame;
         PokerObserver.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
@@ -43,7 +42,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void OnDestroy()
     {
-        PokerObserver.Instance.onFirstJoinGame -= Instance_onFirstJoinGame;
         PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
         PokerObserver.Instance.dataUpdateGameChange -= Instance_dataUpdateGame;
         PokerObserver.Instance.onEventUpdateHand -= Instance_onEventUpdateHand;
@@ -293,7 +291,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
                 RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
 
-                dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
+                if(dictPlayerObject.ContainsKey(playerWin.userName))
+                    dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
 
                 if (isFaceUp)
                 {
@@ -311,8 +310,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 else
                     yield return new WaitForSeconds(timeEffectPot);
 
-                dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
-
+                if (dictPlayerObject.ContainsKey(playerWin.userName))
+                    dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
             }
         }
         yield return new WaitForSeconds(waitTimeViewCard / 2);
@@ -328,7 +327,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Game.EndFinishGame();
     }
 
-    void Instance_onFirstJoinGame(ResponseUpdateGame data)
+    void Instance_onJoinGamePlaying(ResponseUpdateGame data)
     {
         if (data.players != null && data.players.Length > 0 && Array.FindAll<PokerPlayerController>(data.players, p => p.GetPlayerState() != PokerPlayerState.none).Length > 0)
         {
@@ -348,7 +347,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
     void Instance_dataUpdateGame(ResponseUpdateGame data)
     {
         ResetNewRound();
-        //Instance_onFirstJoinGame(data);
     }
 
     void Instance_onUpdateRoomMaster(ResponseUpdateRoomMaster data)
