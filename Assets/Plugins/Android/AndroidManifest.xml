@@ -21,6 +21,13 @@
     <activity android:name="com.facebook.unity.FBUnityDeepLinkingActivity" android:exported="true">
     </activity>
     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="\ 482366671866368" />
+    <service android:name="com.puppet.congnt.localpushnotification.service.ServicePushNotification"  android:exported="true" >
+  <intent-filter>
+   <action android:name="com.puppet.congnt.localpushnotification.run_push_notification"></action>
+     </intent-filter>
+  </service>
   </application>
   <uses-permission android:name="android.permission.INTERNET" />
+  
+  <uses-permission android:name="android.permission.VIBRATE" /> 
 </manifest>
