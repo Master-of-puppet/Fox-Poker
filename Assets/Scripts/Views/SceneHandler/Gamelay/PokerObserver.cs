@@ -30,7 +30,7 @@ public class PokerObserver
 
     public UserInfo mUserInfo;
     public bool isWaitingFinishGame = false;
-
+    
     static PokerObserver _instance;
     public static PokerObserver Instance
     {

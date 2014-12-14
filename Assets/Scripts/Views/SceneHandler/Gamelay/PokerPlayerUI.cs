@@ -63,10 +63,10 @@ public class PokerPlayerUI : MonoBehaviour
             else if (PokerObserver.Game.IsPlayerInGame(player.userName))
             {
                 if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
-                    customTitle = "Xem bài";
+                    customTitle = PokerObserver.Game.GetTimesInteractiveInRound(player.userName) > 0 ? "Xem bài" : "Chờ đặt cược";
                 else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.fold)
                     customTitle = "Bỏ bài";
-                else if (PokerObserver.Game.IsPlayerInGame(player.userName) && player.currentBet == 0)
+                else if (player.currentBet == 0)
                     customTitle = "Chờ đặt cược";
                 else if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.bigBlind)
                     customTitle = "Big Blind";

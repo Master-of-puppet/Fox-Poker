@@ -273,7 +273,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
             ResponseUpdatePot.DataPot pot = new ResponseUpdatePot.DataPot();
             pot.id = summary.potId;
             ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
-            pot.value = playerWin.moneyExchange;
+            if(playerWin != null)
+                pot.value = playerWin.moneyExchange;
         }
         potContainer.UpdatePot(potFinishGame);
         #endregion
