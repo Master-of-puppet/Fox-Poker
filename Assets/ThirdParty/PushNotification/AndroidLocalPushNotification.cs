@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class AndroidLocalPushNotification  {
+	#if UNITY_ANDROID
 	private static AndroidJavaObject _localPush;
 	
 	
@@ -27,4 +28,5 @@ public class AndroidLocalPushNotification  {
             return;
         _localPush.Call("clearPushNotification");
     }
+	#endif
 }

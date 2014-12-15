@@ -22,8 +22,10 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 
     private void OnBtnLeagueClick(GameObject go)
     {
+		#if UNITY_ANDROID
 		AndroidLocalPushNotification.sendPushNotification (10, "Fox Poker", "Ban vua bam tham gia giai dau");
-    }
+		#endif
+	}
 	void OnDestroy(){
         UIEventListener.Get(btnPlayNow).onClick -= this.OnBtnPlayNowClick;
         UIEventListener.Get(btnLobby).onClick -= this.OnBtnLobbyClick;
