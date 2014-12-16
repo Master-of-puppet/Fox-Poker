@@ -447,7 +447,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
             float waitingTimeSetResult = 6f;
             if (NumberCardsInTable == 3) waitingTimeSetResult = waitingTimeSetResult / 2;
             if (NumberCardsInTable == 4) waitingTimeSetResult = waitingTimeSetResult / 3;
-            
             yield return new WaitForSeconds(waitingTimeSetResult);
         }
         NumberCardsInTable = 0;
