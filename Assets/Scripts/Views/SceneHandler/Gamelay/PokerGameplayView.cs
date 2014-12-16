@@ -26,7 +26,8 @@ public class PokerGameplayView : MonoBehaviour
 
     void Awake()
     {
-        HeaderMenuView.Instance.ShowInGameplay();	
+        HeaderMenuView.Instance.ShowInGameplay();
+        HeaderMenuView.Instance.handleStandUp = OnButtonClickStandUp;
     }
     void FixedUpdate() {
         if (lbTime != null)
@@ -115,6 +116,24 @@ public class PokerGameplayView : MonoBehaviour
 
     private void OnButtonSendMessageClickCallBack(GameObject go)
     {
+    }
+
+    private void OnButtonClickStandUp(GameObject go)
+    {
+        if(PokerObserver.Game.IsMainPlayerInGame)
+        {
+            string text = "Bạn có chắc muốn đứng dậy ?";
+            if(PokerObserver.Game.MainPlayer.GetPlayerState() != Puppet.Poker.PokerPlayerState.fold && (PokerObserver.Game.MainPlayer.currentBet > 0 || PokerObserver.Game.DealComminityCards.Count > 0))
+                text += "\nNếu bạn đứng dậy sẽ mất hết số tiền đã cược";
+
+            DialogService.Instance.ShowDialog(new DialogConfirm("WARNING", text, (action) =>
+            {
+                if(action == true)
+                    Puppet.API.Client.APIPokerGame.StandUp();
+            }));
+        }
+        else
+            Puppet.API.Client.APIPokerGame.StandUp();
     }
 
     private void OnButtonRuleClickCallBack(GameObject go)
