@@ -13,6 +13,12 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
     public UIToggle autoBuy;
     public GameObject btnMinChip, btnMaxChip;
     #endregion
+
+    double minValue = 0;
+    double maxValue = 0;
+    double defaultValue = 0;
+    double currentValue = 0;
+
     // Use this for initialization
     public override void ShowDialog(DialogBuyChip data)
     {
@@ -29,17 +35,20 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
 
     private void onSliderChange()
     {
-        int index = (int)Mathf.Lerp(1, slider.numberOfSteps, slider.value);
-		if (int.Parse (minChip.text) * index > APIUser.GetUserInformation ().assets.content [0].value) {
-			string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut (APIUser.GetUserInformation ().assets.content [0].value);
-			money.text = "$" + moneyAndShortcut [0].Trim() + moneyAndShortcut [1].Trim();
+        if (slider.value == 0)
+            currentValue = minValue;
+        else if (slider.value == 1)
+            currentValue = maxValue;
+        else
+        {
+            int index = Mathf.FloorToInt(Mathf.Lerp(1, slider.numberOfSteps, slider.value));
+            currentValue = minValue * index;
+        }
 
-		} else {
-			string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut (int.Parse (minChip.text) * index);
-			money.text = "$" + moneyAndShortcut [0].Trim() + moneyAndShortcut [1].Trim();
-		}
-       
+        string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut(currentValue);
+        money.text = "$" + moneyAndShortcut [0].Trim() + moneyAndShortcut [1].Trim();
     }
+
     protected override void OnDisable()
     {
         base.OnDisable();
@@ -49,10 +58,24 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
     }
     private void initData()
     {
-        minChip.text = (data.smallBind * 20).ToString();
-        maxChip.text = (data.smallBind * 400).ToString();
-        slider.numberOfSteps = (int)((data.smallBind * 400) / (data.smallBind * 20));
-		slider.value = 0.5f;
+        minValue = data.smallBind * 20;
+        maxValue = data.smallBind * 400;
+        defaultValue = data.smallBind * 200;
+        double playerMoney = PokerObserver.Instance.mUserInfo.assets.GetAsset(EAssets.Chip).value;
+
+        if (playerMoney < maxValue)
+            maxValue = playerMoney;
+
+        if (playerMoney < minValue)
+            minValue = defaultValue = playerMoney;
+        else if (playerMoney < defaultValue)
+            defaultValue = playerMoney;
+
+        minChip.text = minValue.ToString();
+        maxChip.text = maxValue.ToString();
+        slider.numberOfSteps = (int)(maxValue / minValue) + (maxValue % minValue > 0 ? 1 : 0);
+        slider.value = (float)(defaultValue / maxValue) - 0.02f;
+
 		string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut(APIUser.GetUserInformation ().assets.content [0].value);
         labelTitle.text = "Số Gold hiện tại của bạn: $" + moneyAndShortcut[0] + moneyAndShortcut[1];
     }
@@ -61,15 +84,8 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
         base.OnPressButton(pressValue, data);
         if (pressValue == true)
         {
-            int index = (int)Mathf.Lerp(1, slider.numberOfSteps, slider.value);
-			int value = 0;
-			if (int.Parse (minChip.text) * index > APIUser.GetUserInformation ().assets.content [0].value) {
-				value = int.Parse(""+APIUser.GetUserInformation ().assets.content [0].value);
-			}else{
-				value = int.Parse(minChip.text) * index;
-			}
             if(data.onChooise != null)
-                data.onChooise(value, autoBuy.value);
+                data.onChooise(currentValue, autoBuy.value);
         }
         else if (data.onChooise != null)
             data.onChooise(0, false);
@@ -86,12 +102,12 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
 }
 public class DialogBuyChip : AbstractDialogData
 {
-    public DialogBuyChip(double smallBind, System.Action<int, bool> onChooise)
+    public DialogBuyChip(double smallBind, System.Action<double, bool> onChooise)
     {
         this.smallBind = smallBind;
         this.onChooise = onChooise;
     }
-    public System.Action<int, bool> onChooise;
+    public System.Action<double, bool> onChooise;
     public int slot;
     public double smallBind;
     public double currentChip;
