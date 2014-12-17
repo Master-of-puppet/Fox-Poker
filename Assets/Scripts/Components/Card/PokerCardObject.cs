@@ -16,12 +16,8 @@ public class PokerCardObject : MonoBehaviour
         spriteSuit, 
         spriteIcon;
     public GameObject highlightObject;
-	private int index=-1;
 
     public PokerCard card;
-	void Start(){
-		spriteBackground.depth =14;
-	}
 
     public void SetDataCard(PokerCard card)
     {
@@ -33,7 +29,7 @@ public class PokerCardObject : MonoBehaviour
     public void SetDataCard(PokerCard card, int index)
     {
         SetDataCard(card);
-		this.index = index;
+        SetIndexCard(index);
     }
 
     public void SetIndexCard(int i)
@@ -46,8 +42,7 @@ public class PokerCardObject : MonoBehaviour
 
     public void UpdateUI()
     {
-        //spriteBackground.spriteName = card.cardId < 0 ? BACKGROUND[0] : BACKGROUND[1];
-		spriteBackground.spriteName = BACKGROUND[0];
+        spriteBackground.spriteName = card.cardId < 0 ? BACKGROUND[0] : BACKGROUND[1];
         int rank = (int)card.GetRank();
         int suit = (int)card.GetSuit();
 
@@ -67,7 +62,6 @@ public class PokerCardObject : MonoBehaviour
             //spriteIcon.MakePixelPerfect();
             spriteIcon.width = 42;
             spriteIcon.height = 48;
-			OnShowFaceCard(2);
         }
         else if (rank >= 11)
         {
@@ -75,7 +69,6 @@ public class PokerCardObject : MonoBehaviour
             //spriteIcon.MakePixelPerfect();
             spriteIcon.width = 51;
             spriteIcon.height = 59;
-			OnShowFaceCard(2);
         }
 
         if(card.cardId >= 0)
@@ -92,18 +85,7 @@ public class PokerCardObject : MonoBehaviour
         NGUITools.SetActive(highlightObject, state);
     }
 
-	System.Collections.IEnumerator ChanceSprite(float time){
-		iTween.RotateTo(spriteBackground.gameObject,new Vector3(0,0,0),time);
-		yield return new WaitForSeconds(time/6);
-		spriteBackground.spriteName = BACKGROUND[1];
-		spriteBackground.depth = 10;
-		if(this.index>-1)
-			SetIndexCard(this.index);
 
-	}
-	
-	void OnShowFaceCard(float time){
-		StartCoroutine(ChanceSprite(time));
-	}
+
 
 }
