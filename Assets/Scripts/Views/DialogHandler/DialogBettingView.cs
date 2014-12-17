@@ -17,6 +17,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     EventDelegate del;
     void Awake()
     {
+
         del = new EventDelegate(this, "OnSliderChange");
         smallBlind = PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind;
     }
@@ -36,25 +37,33 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     {
         get
         {
-			double money = (smallBlind * GetSliderIndex) + data.MaxBinded;
-			return money;
+            double money = (smallBlind * GetSliderIndex) + data.MaxBinded;
+            return money;
         }
     }
-	int GetSliderIndex{
-		get{
-			int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
-			return index;
-		}
-	}
-	double GetMinBind{
-		get{
-			return data.MaxBinded + smallBlind;
-		}
-	}
+    int GetSliderIndex
+    {
+        get
+        {
+            int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
+            return index;
+        }
+    }
+    double GetMinBind
+    {
+        get
+        {
+            return data.MaxBinded + smallBlind;
+        }
+    }
     void OnSliderChange()
     {
         Logger.Log("==========" + GetCurrentMoney);
         labelMoney.text = GetCurrentMoney >= data.MaxBetting ? "All In" : GetCurrentMoney.ToString("#,###");
+        if (sliderBar.value == 1) labelMoney.text = "All In";
+        if (GetCurrentMoney >= data.MaxBetting && GetCurrentMoney < PokerObserver.Game.MainPlayer.GetMoney())
+            labelMoney.text = GetCurrentMoney.ToString("#,###");
+
     }
 
     public override void ShowDialog(DialogBetting data)
@@ -68,22 +77,29 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     }
 
     protected override void OnPressButton(bool? pressValue, DialogBetting data)
-	{
+    {
         if (pressValue == true && data.onBetting != null)
-			data.onBetting(GetCurrentMoney >= data.MaxBetting ? data.MaxBetting : GetCurrentMoney);
+        {
+            if (labelMoney.text == "All In" && data.MaxBetting - GetCurrentMoney < smallBlind)
+            {
+                data.onBetting(data.MaxBetting);
+            }
+            else
+                data.onBetting(GetCurrentMoney >= data.MaxBetting ? data.MaxBetting : GetCurrentMoney);
+        }
 
-	}
+    }
 }
 
 public class DialogBetting : AbstractDialogData
 {
-	public double MaxBinded, MaxBetting;
+    public double MaxBinded, MaxBetting;
     public Action<double> onBetting;
     public Transform parent;
     public double currentMoney;
     public DialogBetting(double maxBinded, double max, Action<double> onBetting, Transform parent)
     {
-		this.MaxBinded = maxBinded;
+        this.MaxBinded = maxBinded;
         this.MaxBetting = max;
         this.onBetting = onBetting;
         this.parent = parent;
