@@ -220,7 +220,8 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     }
     string OverrideName(EButtonType type, EButtonSlot slot)
     {
-        if (slot == EButtonSlot.First && type == EButtonType.InTurn)
+        //if (slot == EButtonSlot.First && type == EButtonType.InTurn)
+        if (slot == EButtonSlot.First)
         {
             if(PokerObserver.Game.MaxCurrentBetting == 0 || PokerObserver.Instance.CurrentBettingDiff == 0)
                 return "XEM BÀI";
