@@ -26,8 +26,7 @@ public class PokerGameplayView : MonoBehaviour
 
     void Awake()
     {
-        HeaderMenuView.Instance.ShowInGameplay();
-        HeaderMenuView.Instance.handleStandUp = OnButtonClickStandUp;
+        HeaderMenuView.Instance.ShowInGameplay(OnButtonClickStandUp);
     }
     void FixedUpdate() {
         if (lbTime != null)

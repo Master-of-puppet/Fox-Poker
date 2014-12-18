@@ -29,7 +29,6 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	Action lobbyChangeTypeCallBack;
 
-    public UIEventListener.VoidDelegate handleStandUp;
 	public  HeaderMenuPresenter presenter;
 	public void ShowInWorldGame(){
 		btnCommon.SetActive (true);
@@ -74,7 +73,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		tableLeft.Reposition ();
 		tableButton.Reposition ();
 	}
-	public void ShowInGameplay(){
+	public void ShowInGameplay(UIEventListener.VoidDelegate handleStandUp){
 		btnSearch.SetActive (true);
 		btnRecharge.SetActive (true);
 		btnBack.SetActive (true);
@@ -88,6 +87,8 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnLeague.SetActive (false);
 		tableLeft.Reposition ();
 		tableButton.Reposition ();
+
+        UIEventListener.Get(btnUp).onClick = handleStandUp;
 	}
 	void Start(){
 		presenter = new HeaderMenuPresenter (this);
@@ -120,7 +121,6 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnSearch).onClick += OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick += OnLeagueClickCallBack;
 		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
-        UIEventListener.Get(btnUp).onClick += handleStandUp;
 	}
 	void OnDisable(){
 		UIEventListener.Get (btnBack).onClick -= OnBackClickCallBack;
@@ -132,7 +132,6 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnSearch).onClick -= OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick -= OnLeagueClickCallBack;
 		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
-        UIEventListener.Get(btnUp).onClick -= handleStandUp;
         presenter.ViewEnd();
 
 	}
