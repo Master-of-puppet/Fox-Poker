@@ -12,10 +12,13 @@ using Puppet;
 using Puppet.API.Client;
 using Puppet.Core.Network.Http;
 using Puppet.Service;
+using System.Text.RegularExpressions;
+using Puppet.Utils.Threading;
 
 public class LoginPresenter : ILoginPresenter
 {
 	ILoginView view;
+    public static string REGEX_EMAIL = @"^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +@"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$";
 	public LoginPresenter(ILoginView view){
 		this.view = view;
 
@@ -33,13 +36,29 @@ public class LoginPresenter : ILoginPresenter
 	void OnClickForgotPass (bool? arg1, string arg2)
 	{
 		if (arg1 == true) {
-			if(string.IsNullOrEmpty(arg2)){
-				view.ShowError("Không được để trống email");
-				return;
-			}
+            if (string.IsNullOrEmpty(arg2))
+            {
+                view.ShowError("Không được để trống email");
+                return;
+            }
+            else {
+                bool isEmail = Regex.IsMatch(arg2,REGEX_EMAIL);
+                if(isEmail ){
+                    APILogin.RequestChangePassword(arg2, ForgotPassWordCallBack);
+                }
+                else{
+                    view.ShowError("Email không đúng định dạng");
+                }
+            }
 		}
 	}
-
+    public void ForgotPassWordCallBack(bool status, string message) {
+        PuMain.Setting.Threading.QueueOnMainThread(() =>
+        {
+            view.ShowError(message);
+        });
+       
+    }
     void RegisterComplete(bool? status,string userName,string password){
         if (status == true)
             LoginWithUserName(userName, password);
@@ -135,6 +154,9 @@ public class LoginPresenter : ILoginPresenter
         });
 
     }
+
+
+
 }
 
 
