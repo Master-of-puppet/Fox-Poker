@@ -9,6 +9,7 @@ public class WorldGameScene : MonoBehaviour,IWorldGameView
 
     #region Unity Editor
     public UITable tableGame;
+	public GameObject btnHelp;
     #endregion
 
     private WorldGamePresenter presenter { get; set; }
@@ -16,8 +17,18 @@ public class WorldGameScene : MonoBehaviour,IWorldGameView
         presenter = new WorldGamePresenter(this);
 		HeaderMenuView.Instance.ShowInWorldGame();
 	}
+	void OnEnable(){
+		UIEventListener.Get (btnHelp).onClick += OnClickButtonHelp;
+	}
+	void OnDestroy(){
+		UIEventListener.Get (btnHelp).onClick -= OnClickButtonHelp;
+	}
 
-	// Update is called once per frame
+	void OnClickButtonHelp (GameObject go)
+	{
+		DialogService.Instance.ShowDialog (new DialogHelp ());
+	}
+	
 	void Update () {
 	
 	}
