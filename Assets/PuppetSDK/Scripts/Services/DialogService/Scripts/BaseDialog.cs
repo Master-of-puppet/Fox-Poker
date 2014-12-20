@@ -71,16 +71,16 @@ namespace Puppet.Service
 
             OnPressButton(pressValue, data);
 
-            if (data != null)
-            {
-                if (data.ButtonCallback != null)
-                    data.ButtonCallback(pressValue);
-
-                if (data.onDestroy != null)
-                    data.onDestroy();
-            }
+            if (data != null && data.ButtonCallback != null)
+                data.ButtonCallback(pressValue);
 
             GameObject.Destroy(gameObject);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            if (data != null && data.onDestroy != null)
+                data.onDestroy();
         }
     }
 }
