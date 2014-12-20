@@ -56,7 +56,8 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     void OnEnable()
     {
         UIEventListener.Get(btnCreateGame).onClick += OnClickCreateGame; 
-		UIEventListener.Get(btnHelp).onClick += OnClickHelp; 
+        if(btnHelp != null)
+		    UIEventListener.Get(btnHelp).onClick += OnClickHelp; 
     }
 
 	void OnClickHelp (GameObject go)
@@ -79,7 +80,8 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     void OnDisable()
     {
         UIEventListener.Get(btnCreateGame).onClick -= OnClickCreateGame;
-		UIEventListener.Get(btnHelp).onClick -= OnClickHelp; 
+        if (btnHelp != null)
+		    UIEventListener.Get(btnHelp).onClick -= OnClickHelp; 
         presenter.ViewEnd();
     }
   

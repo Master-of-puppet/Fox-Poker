@@ -28,7 +28,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 	#endregion
 
 	Action lobbyChangeTypeCallBack;
-
+    Action onGameplayQuitCallback;
 	public  HeaderMenuPresenter presenter;
 	public void ShowInWorldGame(){
 		btnCommon.SetActive (true);
@@ -73,7 +73,8 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		tableLeft.Reposition ();
 		tableButton.Reposition ();
 	}
-	public void ShowInGameplay(UIEventListener.VoidDelegate handleStandUp){
+    public void ShowInGameplay(Action onClickQuit, UIEventListener.VoidDelegate handleStandUp)
+    {
 		btnSearch.SetActive (true);
 		btnRecharge.SetActive (true);
 		btnBack.SetActive (true);
@@ -89,6 +90,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		tableButton.Reposition ();
 
         UIEventListener.Get(btnUp).onClick = handleStandUp;
+        onGameplayQuitCallback = onClickQuit;
 	}
 	void Start(){
 		presenter = new HeaderMenuPresenter (this);
@@ -96,6 +98,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIPanel panel = gameObject.GetComponent<UIPanel> ();
 		panel.SetAnchor( NGUITools.GetRoot (gameObject));
 		presenter.OnShowLobbyRowTypeCallBack = OnLobbyShowTypeHandler;
+        presenter.onHandleQuit = onGameplayQuitCallback;
 	}
     
 	public void SetChangeTypeLobbyCallBack(Action callback){

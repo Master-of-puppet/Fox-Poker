@@ -16,7 +16,7 @@ using HoldemHand;
 public class PokerGameplayView : MonoBehaviour
 {
     #region UnityEditor
-    public GameObject btnView, btnLeaveTurn, btnAddBet, btnFollowBet, btnConvertMoney, btnGameMini, btnRule, btnSendMessage;
+    public GameObject btnGameMini, btnRule, btnSendMessage;
 	public GameObject btnViewCheckBox, btnFollowBetCheckBox, btnFollowAllBetCheckbox;
     public UIInput txtMessage;
 	public UILabel lbTime,lbTitle;
@@ -26,7 +26,7 @@ public class PokerGameplayView : MonoBehaviour
 
     void Awake()
     {
-        HeaderMenuView.Instance.ShowInGameplay(OnButtonClickStandUp);
+        HeaderMenuView.Instance.ShowInGameplay(OnClickQuitGame, OnButtonClickStandUp);
     }
     void FixedUpdate() {
         if (lbTime != null)
@@ -52,37 +52,17 @@ public class PokerGameplayView : MonoBehaviour
     void OnEnable() 
     {
         PokerObserver.Instance.onEncounterError += Instance_onEncounterError;
-        //UIEventListener.Get(btnView).onClick += OnButtonViewClickCallBack;
-        //UIEventListener.Get(btnLeaveTurn).onClick += OnButtonLeaveTurnClickCallBack;
-        //UIEventListener.Get(btnAddBet).onClick += OnButtonAddBetClickCallBack;
-        //UIEventListener.Get(btnFollowBet).onClick += OnButtonFollowBetClickCallBack;
-        //UIEventListener.Get(btnConvertMoney).onClick += OnButtonConvertMoneyClickCallBack;
         //UIEventListener.Get(btnGameMini).onClick += OnButtonGameMiniClickCallBack;
         UIEventListener.Get(btnRule).onClick += OnButtonRuleClickCallBack;
         //UIEventListener.Get(btnSendMessage).onClick += OnButtonSendMessageClickCallBack;
-        //UIEventListener.Get(headerMenuBtnBack).onClick += OnButtonHeaderBackClickCallBack;
-        //UIEventListener.Get(headerMenuBtnUp).onClick += OnButtonHeaderUpClickCallBack;
-        //UIEventListener.Get(headerMenuBtnRecharge).onClick += OnButtonHeaderRechargeClickCallBack;
-        //UIEventListener.Get(headerMenuBtnSettings).onClick += OnButtonHeaderSettingClickCallBack;
-
     }
 
     void OnDisable()
     {
         PokerObserver.Instance.onEncounterError -= Instance_onEncounterError;
-        
-        //UIEventListener.Get(btnView).onClick -= OnButtonViewClickCallBack;
-        //UIEventListener.Get(btnLeaveTurn).onClick -= OnButtonLeaveTurnClickCallBack;
-        //UIEventListener.Get(btnAddBet).onClick -= OnButtonAddBetClickCallBack;
-        //UIEventListener.Get(btnFollowBet).onClick -= OnButtonFollowBetClickCallBack;
-        //UIEventListener.Get(btnConvertMoney).onClick -= OnButtonConvertMoneyClickCallBack;
         //UIEventListener.Get(btnGameMini).onClick -= OnButtonGameMiniClickCallBack;
         UIEventListener.Get(btnRule).onClick -= OnButtonRuleClickCallBack;
         //UIEventListener.Get(btnSendMessage).onClick -= OnButtonSendMessageClickCallBack;
-        //UIEventListener.Get(headerMenuBtnBack).onClick -= OnButtonHeaderBackClickCallBack;
-        //UIEventListener.Get(headerMenuBtnUp).onClick -= OnButtonHeaderUpClickCallBack;
-        //UIEventListener.Get(headerMenuBtnRecharge).onClick -= OnButtonHeaderRechargeClickCallBack;
-        //UIEventListener.Get(headerMenuBtnSettings).onClick -= OnButtonHeaderSettingClickCallBack;
     }
 
     void Instance_onEncounterError(ResponseError data)
@@ -91,26 +71,6 @@ public class PokerGameplayView : MonoBehaviour
         {
             DialogService.Instance.ShowDialog(new DialogMessage("Error: " + data.errorCode, data.errorMessage, null));
         }
-    }
-
-    void OnButtonQuitClick(GameObject go)
-    {
-    }
-
-    private void OnButtonHeaderSettingClickCallBack(GameObject go)
-    {
-    }
-
-    private void OnButtonHeaderRechargeClickCallBack(GameObject go)
-    {
-    }
-
-    private void OnButtonHeaderUpClickCallBack(GameObject go)
-    {
-    }
-
-    private void OnButtonHeaderBackClickCallBack(GameObject go)
-    {
     }
 
     private void OnButtonSendMessageClickCallBack(GameObject go)
@@ -135,6 +95,20 @@ public class PokerGameplayView : MonoBehaviour
             Puppet.API.Client.APIPokerGame.StandUp();
     }
 
+    private void OnClickQuitGame()
+    {
+        string text = "Bạn có chắc chắn muốn thoát khỏi bàn chơi?";
+        if (PokerObserver.Game.MainPlayer != null && PokerObserver.Game.MainPlayer.GetPlayerState() != Puppet.Poker.PokerPlayerState.fold
+            && (PokerObserver.Game.MainPlayer.currentBet > 0 || PokerObserver.Game.DealComminityCards.Count > 0))
+            text += "\nNếu bạn thoát, sẽ mất hết số tiền đã cược";
+
+        DialogService.Instance.ShowDialog(new DialogConfirm("XÁC NHẬN THOÁT", text, delegate(bool? confirm)
+        {
+            if (confirm == true)
+                PuApp.Instance.BackScene();
+        }));
+    }
+
     private void OnButtonRuleClickCallBack(GameObject go)
     {
         double[] player = new double[9];
@@ -145,32 +119,8 @@ public class PokerGameplayView : MonoBehaviour
             string pocket = HandEvaluatorConvert.ConvertPokerCardsToString(playmat.pocket);
             DialogService.Instance.ShowDialog(new DialogGameplayRankModel(pocket,boards));
         }
-
     }
 
-    private void OnButtonGameMiniClickCallBack(GameObject go)
-    {
-    }
-
-    private void OnButtonConvertMoneyClickCallBack(GameObject go)
-    {
-    }
-
-    private void OnButtonFollowBetClickCallBack(GameObject go)
-    {
-    }
-
-    private void OnButtonAddBetClickCallBack(GameObject go)
-    {
-    }
-
-    private void OnButtonLeaveTurnClickCallBack(GameObject go)
-    {
-    }
-
-    private void OnButtonViewClickCallBack(GameObject go)
-    {
-    }
     void OnGUI()
     {
         if (GUI.Button(new Rect(0, 150, Screen.width - Screen.width * 0.9f, 35f), "TEST MODE"))
