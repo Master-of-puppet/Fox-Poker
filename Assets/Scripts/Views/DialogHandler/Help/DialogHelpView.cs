@@ -22,6 +22,7 @@ namespace Puppet.Service
             EventDelegate.Add(btnExp.onChange, OnBtnEXPChanged);
             EventDelegate.Add(btnFeedBack.onChange, OnBtnFeedBackChanged);
             initEventWebView();
+//			SetWebView ();
         }
         private void initEventWebView()
         {
@@ -53,7 +54,7 @@ namespace Puppet.Service
         }
         
 
-        private void SetWebView()
+		private void SetWebView()
         {
 
             //int uiFactor = UniWebViewHelper.RunningOnRetinaIOS() ? 2 : 1;
@@ -70,7 +71,7 @@ namespace Puppet.Service
             int leftRight = Mathf.FloorToInt(webMarginWidth / (2 * ratioWidth));
 
             int topbottom = Mathf.RoundToInt((webMarginHeight / (2 * ratioHeight)));
-            contentwebView.GetComponent<UniWebView>().insets = new UniWebViewEdgeInsets(Mathf.RoundToInt(topbottom + 130 * ratioHeight), leftRight, Mathf.RoundToInt(topbottom - 130 * ratioHeight), leftRight);
+            contentwebView.GetComponent<UniWebView>().insets = new UniWebViewEdgeInsets(Mathf.RoundToInt((topbottom +130) * ratioHeight), leftRight, Mathf.RoundToInt((topbottom - 20 ) * ratioHeight), leftRight);
 
         }
         private void OnBtnFeedBackChanged()

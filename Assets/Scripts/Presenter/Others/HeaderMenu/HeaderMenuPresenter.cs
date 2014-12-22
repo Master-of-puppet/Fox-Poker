@@ -18,6 +18,7 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 {
 	IHeaderMenuView view;
 	public Action OnShowLobbyRowTypeCallBack;
+    public Action onHandleQuit;
 	public HeaderMenuPresenter(IHeaderMenuView view){
 		this.view = view;
 	}
@@ -41,11 +42,8 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 		}
         else if(PuApp.Instance.setting.sceneName == Scene.GameplayScene.ToString ())
         {
-			DialogService.Instance.ShowDialog(new DialogConfirm("XÁC NHẬN THOÁT","Bạn có chắc chắn muốn thoát khỏi bàn chơi",delegate(bool? confirm){
-				if(confirm == true){
-					PuApp.Instance.BackScene();
-				}
-			}));
+            if(onHandleQuit != null)
+                onHandleQuit();
 		}
         else
 			PuApp.Instance.BackScene();
