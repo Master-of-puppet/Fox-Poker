@@ -60,7 +60,7 @@ public class PokerPlayerUI : MonoBehaviour
                 labelUsername.text = data.userName;
             else if (PokerObserver.Game.ListPlayerWaitNextGame.Contains(player.userName))
                 customTitle = "Chờ ván mới";
-            else if (PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.IsPlayerInGame(player.userName))
+            else if (PokerObserver.Game.IsPlayerInGame(player.userName))
             {
                 if (player.GetPlayerState() == Puppet.Poker.PokerPlayerState.check)
                     customTitle = PokerObserver.Game.GetTimesInteractiveInRound(player.userName) > 0 ? "Xem bài" : "Chờ đặt cược";
