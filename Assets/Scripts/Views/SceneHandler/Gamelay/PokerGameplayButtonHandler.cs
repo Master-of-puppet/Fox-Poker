@@ -186,7 +186,11 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         foreach(ButtonItem item in itemButtons)
         {
             ButtonStepData data = Array.Find<ButtonStepData>(buttonData, b => b.slot == item.slot);
-            NGUITools.SetActive(item.button, data != null);
+            bool activeToggle = true;
+            if (type == EButtonType.OutTurn && PokerObserver.Game.MainPlayer != null && PokerObserver.Game.MainPlayer.GetPlayerState() == PokerPlayerState.fold)
+                activeToggle = false;
+
+            NGUITools.SetActive(item.button, data != null && activeToggle);
             if (data != null)
             {
                 bool enableButton = EnableButton(type, item.slot);
@@ -294,7 +298,6 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
-    
         if (PokerObserver.Instance.IsMainPlayerSatDown())
         {
             if(PokerObserver.Instance.isWaitingFinishGame || !PokerObserver.Game.IsMainPlayerInGame)
@@ -306,14 +309,20 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
                 if (selectedButton != null)
                 {
-                    if (selectedButton.slot == EButtonSlot.First && data.action.ToLower() == "call")
-                        OnClickButton1(selectedButton.button);
-                    else if (selectedButton.slot == EButtonSlot.Second)
-                        OnButton2Clicked(true);
-                    else if (selectedButton.slot == EButtonSlot.Third)
-                        OnClickButton1(selectedButton.button);
+                    if (selectedButton.slot == EButtonSlot.First && data.GetActionState() != PokerPlayerState.call)
+                        selectedButton.toggle.value = false;
 
-                    selectedButton.toggle.value = false;
+                    if (PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.userName == data.toPlayer.userName)
+                    {
+                        if (selectedButton.slot == EButtonSlot.First && data.GetActionState() == PokerPlayerState.call)
+                            OnClickButton1(selectedButton.button);
+                        else if (selectedButton.slot == EButtonSlot.Second)
+                            OnButton2Clicked(true);
+                        else if (selectedButton.slot == EButtonSlot.Third)
+                            OnClickButton1(selectedButton.button);
+
+                        selectedButton.toggle.value = false;
+                    }
                 }
             }
             else
