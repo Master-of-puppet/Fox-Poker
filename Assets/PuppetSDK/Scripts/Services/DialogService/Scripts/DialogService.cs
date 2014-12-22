@@ -26,21 +26,19 @@ namespace Puppet.Service
 
         IEnumerator _ShowDialog(IDialogData dialog)
         {
-
             if (dialog is DialogPromotion)
                 yield return new WaitForSeconds(0.5f);
             if (dialog.IsMessageDialog == false)
             {
                 dialog.ShowDialog();
             }
-            else
+            else if (!listDialog.Contains(dialog))
             {
                 listDialog.Add(dialog);
                 while (PuApp.Instance.changingScene)
                     yield return new WaitForEndOfFrame();
                 CheckAndShow();
             }
-
         }
 
         void CheckAndShow()
