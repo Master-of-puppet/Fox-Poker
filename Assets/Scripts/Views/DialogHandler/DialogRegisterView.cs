@@ -46,7 +46,7 @@ public class DialogRegisterView : BaseDialog<DialogRegister,DialogRegisterView>
 				}
 				else
 				{
-					Logger.Log("Mật khẩu không giống nhau");
+				DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", "Mật khẩu không giống nhau", null));
 				}
 		}
 		base.OnPressButton (pressValue, data);

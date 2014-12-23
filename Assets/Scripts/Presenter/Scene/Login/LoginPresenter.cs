@@ -60,8 +60,10 @@ public class LoginPresenter : ILoginPresenter
        
     }
     void RegisterComplete(bool? status,string userName,string password){
-        if (status == true)
-            LoginWithUserName(userName, password);
+		if (status == true){
+			ShowDialogErrorInMainThread("Đăng ký thành công, xin đợi trong giây lát để hệ thống tự động đăng nhập");
+			LoginWithUserName(userName, password);
+		}
         else
             view.ShowError("Không đăng ký được tài khoản");
     }
@@ -106,9 +108,7 @@ public class LoginPresenter : ILoginPresenter
 
 	void OnGetAccessTokenWithFacebookCallBack (bool status, string message, System.Collections.Generic.Dictionary<string, object> data)
 	{
-		foreach (string key in data.Keys) {
-		
-		}
+	
 		if (data.ContainsKey ("suggestUser")) {
 			DialogService.Instance.ShowDialog (new DialogRegister (data ["suggestUser"].ToString(), RegisterComplete));
 		} else if (data.ContainsKey ("accessToken")) {
@@ -125,7 +125,6 @@ public class LoginPresenter : ILoginPresenter
 		if (status) {
 			LoginWithAccessToken (message);
 		} else {
-            Logger.Log("============> " + message);
             ShowDialogErrorInMainThread(message);
 		}
 	}
