@@ -146,7 +146,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         }
         else if(currentType == EButtonType.OutGame)
         {
-            Puppet.API.Client.APIPokerGame.AutoSitDown(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20);
+            Puppet.API.Client.APIPokerGame.AutoSitDown();
         }
     }
 	double GetMaxBinded(){
@@ -211,10 +211,10 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     #region CUSTOM BUTTON
     string AddMoreTextButton(EButtonType type, EButtonSlot slot)
     {
-        if (PokerObserver.Instance.gameDetails != null)
+        if (PokerObserver.Game.gameDetails != null)
         {
             if (slot == EButtonSlot.Third && type == EButtonType.OutGame)
-                return (PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20).ToString("#,##");
+                return PokerObserver.Game.LastBetForSitdown.ToString("#,##");
 
             if ((type == EButtonType.InTurn || type == EButtonType.OutTurn) && slot == EButtonSlot.First)
             {

@@ -19,7 +19,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     {
 
         del = new EventDelegate(this, "OnSliderChange");
-        smallBlind = PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind;
+        smallBlind = PokerObserver.Game.SmallBlind;
     }
     protected override void OnEnable()
     {
