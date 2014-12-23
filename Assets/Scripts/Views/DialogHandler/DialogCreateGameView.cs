@@ -84,7 +84,8 @@ public class DialogCreateGameView : BaseDialog<DialogCreateGame,DialogCreateGame
 		int index = (int) Mathf.Lerp (1, moneySlide.numberOfSteps,moneySlide.value);
 		currentBetting = data.bettingsArrs [index - 1];
 		string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut (data.bettingsArrs [index - 1]);
-		lbMoney.text = "$ " + moneyAndShortcut[0] + moneyAndShortcut[1];
+		lbMoney.text = "$ " + currentBetting/2 + "/"+currentBetting;
+		lbMoney.transform.parent.GetComponent<UISprite> ().width = lbMoney.width + 50;
 	}
 
 	void OnCreateLobbyCallBack (bool status, string message)
