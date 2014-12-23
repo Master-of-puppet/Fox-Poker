@@ -20,13 +20,11 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
 
         del = new EventDelegate(this, "OnSliderChange");
         smallBlind = PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind;
-
     }
     protected override void OnEnable()
     {
         base.OnEnable();
         sliderBar.onChange.Add(del);
-
     }
 
     protected override void OnDisable()
@@ -39,7 +37,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     {
         get
         {
-            double money = smallBlind * GetSliderIndex;
+            double money = (smallBlind * GetSliderIndex) + data.MaxBinded;
             return money;
         }
     }
@@ -47,7 +45,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     {
         get
         {
-            int index = Mathf.FloorToInt(Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value));
+            int index = (int)Mathf.Lerp(1, sliderBar.numberOfSteps, sliderBar.value);
             return index;
         }
     }
@@ -71,9 +69,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     public override void ShowDialog(DialogBetting data)
     {
         base.ShowDialog(data);
-        sliderBar.numberOfSteps = (int)(data.MaxBetting / smallBlind) + (data.MaxBetting % smallBlind > 0 ? 1 : 0);
-        sliderBar.value = -0.02f;
-
+        sliderBar.numberOfSteps = (int)((data.MaxBetting - data.MaxBinded) / smallBlind + ((data.MaxBetting - data.MaxBinded) % smallBlind > 0 ? 1 : 0));
         gameObject.transform.parent = data.parent;
         gameObject.transform.localPosition = new Vector3(0f, 280f, 0f);
         gameObject.transform.localScale = Vector3.one;
