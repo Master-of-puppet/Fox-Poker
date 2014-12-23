@@ -69,7 +69,7 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     public override void ShowDialog(DialogBetting data)
     {
         base.ShowDialog(data);
-        sliderBar.numberOfSteps = (int)((data.MaxBetting - data.MaxBinded) / smallBlind);
+        sliderBar.numberOfSteps = (int)((data.MaxBetting - data.MaxBinded) / smallBlind + ((data.MaxBetting - data.MaxBinded) % smallBlind > 0 ? 1 : 0));
         gameObject.transform.parent = data.parent;
         gameObject.transform.localPosition = new Vector3(0f, 280f, 0f);
         gameObject.transform.localScale = Vector3.one;
