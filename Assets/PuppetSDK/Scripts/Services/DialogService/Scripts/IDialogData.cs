@@ -14,6 +14,7 @@ namespace Puppet.Service
         System.Func<bool?, string> ButtonName { get; set; }
         Action onDestroy { get; set; }
         void ShowDialog();
+        bool EqualTo(IDialogData data);
     }
 
     public abstract class AbstractDialogData : IDialogData
@@ -41,6 +42,14 @@ namespace Puppet.Service
         }
 
         public abstract void ShowDialog();
+
+        public bool EqualTo(IDialogData data)
+        {
+            return GetType() == data.GetType()
+                && Title.Equals(data.Title)
+                && Content.Equals(data.Content)
+                && ButtonCallback == data.ButtonCallback;
+        }
     }
 
     public class DialogConfirm : AbstractDialogData
