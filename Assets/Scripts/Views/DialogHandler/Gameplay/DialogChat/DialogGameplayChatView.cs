@@ -11,15 +11,30 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
 {
 
     #region UNITY EDITOR
-    public UITable tblMessage;
     public UIInput txtMessage;
+    public UITextList chatArea;
     public GameObject btnSend;
+    public TouchScreenKeyboard keyboard { get; set; }
     #endregion
+    
     protected override void OnEnable()
     {
         base.OnEnable();
         UIEventListener.Get(btnSend).onClick += OnClickButtonSend;
         PuMain.Dispatcher.onChatMessage += ShowMessage;
+       keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
+    }
+    protected void Update() {
+        if (keyboard != null) {
+            if (keyboard.done) {
+                if (!string.IsNullOrEmpty(keyboard.text))
+                {
+                   Puppet.API.Client.APIGeneric.SendChat(new DataChat(keyboard.text, DataChat.ChatType.Public));
+                }
+                keyboard = null;
+                keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
+            }
+        }
     }
     protected override void OnDisable()
     {
@@ -35,24 +50,16 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
     private void ShowMessage(DataChat message)
     {
         data.datas.Add(message);
-        ChatItem item = ChatItem.Create(message);
-        item.transform.parent = tblMessage.transform;
-        item.transform.localPosition = Vector3.zero;
-        item.transform.localScale = Vector3.one;
-        item.name = (data.datas.Count -1) + ".ChatItem";
-        tblMessage.Reposition();
+        string msg = "[00ff00]" + message.Sender.userName + " : [-]" + message.Content;
+        chatArea.Add(msg);
     }
     private void initData()
     {
         for (int i = 0; i < data.datas.Count; i++)
         {
-            ChatItem item = ChatItem.Create(data.datas[i]);
-            item.transform.parent = tblMessage.transform;
-            item.transform.localPosition = Vector3.zero;
-            item.transform.localScale = Vector3.one;
-            item.name = i + ".ChatItem"; 
+            string message = "[00ff00]" + data.datas[i].Sender.userName + " : [-]" + data.datas[i].Content;
+            chatArea.Add(message);
         }
-        tblMessage.Reposition();
     }
     public void OnClickButtonSend(GameObject gobj) {
         if (!string.IsNullOrEmpty(txtMessage.value)) {
