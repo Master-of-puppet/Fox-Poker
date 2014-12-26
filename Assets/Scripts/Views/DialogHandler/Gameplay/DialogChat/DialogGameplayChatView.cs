@@ -14,27 +14,12 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
     public UIInput txtMessage;
     public UITextList chatArea;
     public GameObject btnSend;
-    public TouchScreenKeyboard keyboard { get; set; }
     #endregion
-    
     protected override void OnEnable()
     {
         base.OnEnable();
         UIEventListener.Get(btnSend).onClick += OnClickButtonSend;
         PuMain.Dispatcher.onChatMessage += ShowMessage;
-       keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
-    }
-    protected void Update() {
-        if (keyboard != null) {
-            if (keyboard.done) {
-                if (!string.IsNullOrEmpty(keyboard.text))
-                {
-                   Puppet.API.Client.APIGeneric.SendChat(new DataChat(keyboard.text, DataChat.ChatType.Public));
-                }
-                keyboard = null;
-                keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, true);
-            }
-        }
     }
     protected override void OnDisable()
     {
