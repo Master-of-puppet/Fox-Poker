@@ -167,14 +167,14 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         double maxOtherMoney = PokerObserver.Game.ListPlayer
 			.Where<PokerPlayerController>(p => p.userName != PokerObserver.Game.MainPlayer.userName && p.GetPlayerState() != PokerPlayerState.fold )
                 .Max<PokerPlayerController>(p => p.GetMoney() + p.currentBet);
-        double maxBinded = PokerObserver.Game.ListPlayer.Where<PokerPlayerController>(p => p.GetPlayerState() != PokerPlayerState.fold).Max<PokerPlayerController>(p => p.currentBet);
+
 		double myMoney = PokerObserver.Game.MainPlayer.GetMoney() +  PokerObserver.Game.MainPlayer.currentBet;
 		double maxRaise = myMoney;
 		if(myMoney > maxOtherMoney)
 			maxRaise = maxOtherMoney;
 		if (PokerObserver.Game.MainPlayer.currentBet != 0)
 			maxRaise = maxRaise - PokerObserver.Game.MainPlayer.currentBet;
-        if (maxRaise <= PokerObserver.Game.MaxCurrentBetting)
+        if (maxRaise < PokerObserver.Game.MaxCurrentBetting)
             return 0;
 
 		return maxRaise;
