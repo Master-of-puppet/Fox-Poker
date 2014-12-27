@@ -65,9 +65,9 @@ public class PokerGPSide : MonoBehaviour
         if (wasBuyChip == false)
         {
             //PokerObserver.Instance.SitDown(slot, gameDetails.customConfiguration.SmallBlind * 20);
-            DialogBuyChip dialog = new DialogBuyChip(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind, (betting, autoBuy) =>
+            DialogBuyChip dialog = new DialogBuyChip(PokerObserver.Game.SmallBlind, (betting, autoBuy) =>
             {
-                if (betting >= PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind)
+                if (betting >= PokerObserver.Game.SmallBlind)
                 {
                     PokerObserver.Instance.SitDown(slot, betting);
                     Puppet.API.Client.APIPokerGame.SetAutoBuy(autoBuy);

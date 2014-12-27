@@ -118,7 +118,7 @@ public class LoginScene : MonoBehaviour, ILoginView
 
     public void ShowError(string message)
     {
-        DialogService.Instance.ShowDialog(new DialogMessage("Lỗi", message, null));
+        DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", message, null));
     }
 
     #endregion
@@ -126,6 +126,7 @@ public class LoginScene : MonoBehaviour, ILoginView
 
     public void ShowConfirm(string message, Action<bool?> action)
     {
+
     }
 
 

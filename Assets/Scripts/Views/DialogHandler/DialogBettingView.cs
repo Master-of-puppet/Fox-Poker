@@ -17,9 +17,8 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     EventDelegate del;
     void Awake()
     {
-
         del = new EventDelegate(this, "OnSliderChange");
-        smallBlind = PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind;
+        smallBlind = PokerObserver.Game.SmallBlind;
     }
     protected override void OnEnable()
     {
@@ -58,18 +57,16 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     }
     void OnSliderChange()
     {
-        Logger.Log("==========" + GetCurrentMoney);
         labelMoney.text = GetCurrentMoney >= data.MaxBetting ? "All In" : GetCurrentMoney.ToString("#,###");
         if (sliderBar.value == 1) labelMoney.text = "All In";
         if (GetCurrentMoney >= data.MaxBetting && GetCurrentMoney < PokerObserver.Game.MainPlayer.GetMoney())
             labelMoney.text = GetCurrentMoney.ToString("#,###");
-
     }
 
     public override void ShowDialog(DialogBetting data)
     {
         base.ShowDialog(data);
-        sliderBar.numberOfSteps = (int)((data.MaxBetting - data.MaxBinded) / smallBlind);
+        sliderBar.numberOfSteps = (int)((data.MaxBetting - data.MaxBinded) / smallBlind + ((data.MaxBetting - data.MaxBinded) % smallBlind > 0 ? 1 : 0));
         gameObject.transform.parent = data.parent;
         gameObject.transform.localPosition = new Vector3(0f, 280f, 0f);
         gameObject.transform.localScale = Vector3.one;

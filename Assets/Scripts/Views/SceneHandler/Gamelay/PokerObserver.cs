@@ -11,11 +11,6 @@ using Puppet.Poker.Models;
 
 public class PokerObserver
 {
-    /// <summary>
-    /// Info Setting Poker Game
-    /// </summary>
-    public PokerGameDetails gameDetails;
-
     public event Action<ResponseUpdateGame> onFirstJoinGame;
     public event Action<ResponseUpdateGame> dataUpdateGameChange;
     public event Action<ResponsePlayerListChanged> onPlayerListChanged;
@@ -60,8 +55,6 @@ public class PokerObserver
         if (data is ResponseUpdateGame)
         {
             ResponseUpdateGame dataGame = (ResponseUpdateGame)data;
-            if (gameDetails == null && dataGame.gameDetails != null)
-                gameDetails = dataGame.gameDetails;
             if (dataUpdateGameChange != null)
                 dataUpdateGameChange(dataGame);
         }

@@ -134,11 +134,14 @@ public class PokerGameplayView : MonoBehaviour
 
     void OnGUI()
     {
-        if (GUI.Button(new Rect(0, 150, Screen.width - Screen.width * 0.9f, 35f), "TEST MODE"))
+        if (!PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer != null && PokerObserver.Game.MainPlayer.isMaster)
         {
-            Logger.Log("========> " + APIPokerGame.GetPokerGameplay().ListPlayer.Count);
-            TestModeGUI.Create(ActionRequestOrderHand);
-        }   
+            if (GUI.Button(new Rect(0, 150, Screen.width - Screen.width * 0.9f, 35f), "TEST MODE"))
+            {
+                Logger.Log("========> " + APIPokerGame.GetPokerGameplay().ListPlayer.Count);
+                TestModeGUI.Create(ActionRequestOrderHand);
+            }
+        }
     }
     public void ActionRequestOrderHand(Dictionary<string, int[]> obj)
     {

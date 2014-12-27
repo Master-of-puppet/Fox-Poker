@@ -146,7 +146,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         }
         else if(currentType == EButtonType.OutGame)
         {
-            Puppet.API.Client.APIPokerGame.AutoSitDown(PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20);
+            Puppet.API.Client.APIPokerGame.AutoSitDown();
         }
     }
 	double GetMaxBinded(){
@@ -167,17 +167,16 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         double maxOtherMoney = PokerObserver.Game.ListPlayer
 			.Where<PokerPlayerController>(p => p.userName != PokerObserver.Game.MainPlayer.userName && p.GetPlayerState() != PokerPlayerState.fold )
                 .Max<PokerPlayerController>(p => p.GetMoney() + p.currentBet);
-        double maxBinded = PokerObserver.Game.ListPlayer.Where<PokerPlayerController>(p => p.GetPlayerState() != PokerPlayerState.fold).Max<PokerPlayerController>(p => p.currentBet);
+
 		double myMoney = PokerObserver.Game.MainPlayer.GetMoney() +  PokerObserver.Game.MainPlayer.currentBet;
 		double maxRaise = myMoney;
-		if(myMoney > maxOtherMoney)
-			maxRaise = maxOtherMoney;
-		if (PokerObserver.Game.MainPlayer.currentBet != 0)
-			maxRaise = maxRaise - PokerObserver.Game.MainPlayer.currentBet;
+        if (myMoney > maxOtherMoney)
+            maxRaise = maxOtherMoney;
+        
         if (maxRaise <= PokerObserver.Game.MaxCurrentBetting)
             return 0;
 
-		return maxRaise;
+        return PokerObserver.Game.MainPlayer.currentBet == 0 ? maxRaise : maxRaise - PokerObserver.Game.MainPlayer.currentBet;
 	}
     void SetEnableButtonType(EButtonType type)
     {
@@ -186,7 +185,11 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         foreach(ButtonItem item in itemButtons)
         {
             ButtonStepData data = Array.Find<ButtonStepData>(buttonData, b => b.slot == item.slot);
-            NGUITools.SetActive(item.button, data != null);
+            bool activeToggle = true;
+            if (type == EButtonType.OutTurn && PokerObserver.Game.MainPlayer != null && PokerObserver.Game.MainPlayer.GetPlayerState() == PokerPlayerState.fold)
+                activeToggle = false;
+
+            NGUITools.SetActive(item.button, data != null && activeToggle);
             if (data != null)
             {
                 bool enableButton = EnableButton(type, item.slot);
@@ -207,10 +210,10 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     #region CUSTOM BUTTON
     string AddMoreTextButton(EButtonType type, EButtonSlot slot)
     {
-        if (PokerObserver.Instance.gameDetails != null)
+        if (PokerObserver.Game.gameDetails != null)
         {
             if (slot == EButtonSlot.Third && type == EButtonType.OutGame)
-                return (PokerObserver.Instance.gameDetails.customConfiguration.SmallBlind * 20).ToString("#,##");
+                return PokerObserver.Game.LastBetForSitdown.ToString("#,##");
 
             if ((type == EButtonType.InTurn || type == EButtonType.OutTurn) && slot == EButtonSlot.First)
             {
@@ -243,8 +246,8 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 			try 
             {
                 if (GetMaxRaise() <= 0)
-					return false;				
-				else
+                    return false;
+                else
                     return PokerObserver.Game.MainPlayer.GetMoney() + PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting;
 			} catch (Exception ex) {
                 return PokerObserver.Game.MainPlayer.GetMoney() + PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting;
@@ -294,7 +297,6 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
-    
         if (PokerObserver.Instance.IsMainPlayerSatDown())
         {
             if(PokerObserver.Instance.isWaitingFinishGame || !PokerObserver.Game.IsMainPlayerInGame)
@@ -306,14 +308,20 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
                 if (selectedButton != null)
                 {
-                    if (selectedButton.slot == EButtonSlot.First && data.action.ToLower() == "call")
-                        OnClickButton1(selectedButton.button);
-                    else if (selectedButton.slot == EButtonSlot.Second)
-                        OnButton2Clicked(true);
-                    else if (selectedButton.slot == EButtonSlot.Third)
-                        OnClickButton1(selectedButton.button);
+                    if (selectedButton.slot == EButtonSlot.First && data.GetActionState() != PokerPlayerState.call)
+                        selectedButton.toggle.value = false;
 
-                    selectedButton.toggle.value = false;
+                    if (PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.userName == data.toPlayer.userName)
+                    {
+                        if (selectedButton.slot == EButtonSlot.First && data.GetActionState() == PokerPlayerState.call)
+                            OnClickButton1(selectedButton.button);
+                        else if (selectedButton.slot == EButtonSlot.Second)
+                            OnButton2Clicked(true);
+                        else if (selectedButton.slot == EButtonSlot.Third)
+                            OnClickButton1(selectedButton.button);
+
+                        selectedButton.toggle.value = false;
+                    }
                 }
             }
             else
