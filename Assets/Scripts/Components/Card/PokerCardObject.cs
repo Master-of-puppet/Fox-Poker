@@ -93,7 +93,7 @@ public class PokerCardObject : MonoBehaviour
     }
 
 	System.Collections.IEnumerator ChanceSprite(float time){
-		iTween.RotateTo(spriteBackground.gameObject,new Vector3(0,0,0),time);
+		iTween.RotateTo(spriteBackground.gameObject, iTween.Hash("islocal", true, "y", 0, "time", time));
 		yield return new WaitForSeconds(time/6);
 		spriteBackground.spriteName = BACKGROUND[1];
 		spriteBackground.depth = 10;
