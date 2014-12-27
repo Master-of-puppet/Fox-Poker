@@ -178,7 +178,7 @@ public class PokerPlayerUI : MonoBehaviour
     PokerPotItem betAnim;
     void addBetAnim()
     {
-        Logger.Log("Betting Player: " + data.userName + " - " + data.currentBet);
+        //Logger.Log("Betting Player: " + data.userName + " - " + data.currentBet);
         tweenComplete();
         if (currentBet.CurrentBet < data.currentBet)
         {
