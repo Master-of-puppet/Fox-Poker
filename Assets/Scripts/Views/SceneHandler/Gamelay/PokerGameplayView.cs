@@ -18,15 +18,18 @@ public class PokerGameplayView : MonoBehaviour
     #region UnityEditor
     public GameObject btnGameMini, btnRule, btnSendMessage;
 	public GameObject btnViewCheckBox, btnFollowBetCheckBox, btnFollowAllBetCheckbox;
-    public UIInput txtMessage;
+    public UILabel lbMessage;
 	public UILabel lbTime,lbTitle;
     public PokerGameplayPlaymat playmat;
 
+
+    public List<DataChat> dataChat;
     #endregion
 
     void Awake()
     {
         HeaderMenuView.Instance.ShowInGameplay(OnClickQuitGame, OnButtonClickStandUp);
+        dataChat = new List<DataChat>();
     }
     void FixedUpdate() {
         if (lbTime != null)
@@ -54,7 +57,8 @@ public class PokerGameplayView : MonoBehaviour
         PokerObserver.Instance.onEncounterError += Instance_onEncounterError;
         //UIEventListener.Get(btnGameMini).onClick += OnButtonGameMiniClickCallBack;
         UIEventListener.Get(btnRule).onClick += OnButtonRuleClickCallBack;
-        //UIEventListener.Get(btnSendMessage).onClick += OnButtonSendMessageClickCallBack;
+        UIEventListener.Get(btnSendMessage).onClick += OnButtonSendMessageClickCallBack;
+        PuMain.Dispatcher.onChatMessage += ShowMessage;
     }
 
     void OnDisable()
@@ -62,9 +66,15 @@ public class PokerGameplayView : MonoBehaviour
         PokerObserver.Instance.onEncounterError -= Instance_onEncounterError;
         //UIEventListener.Get(btnGameMini).onClick -= OnButtonGameMiniClickCallBack;
         UIEventListener.Get(btnRule).onClick -= OnButtonRuleClickCallBack;
-        //UIEventListener.Get(btnSendMessage).onClick -= OnButtonSendMessageClickCallBack;
+        UIEventListener.Get(btnSendMessage).onClick -= OnButtonSendMessageClickCallBack;
+        PuMain.Dispatcher.onChatMessage -= ShowMessage;
     }
-
+    private void ShowMessage(DataChat message) {
+        dataChat.Add(message);
+        if (message.GetChatType() == DataChat.ChatType.Public) {
+            lbMessage.text = message.Sender.userName + " : " + message.Content;
+        }
+    }
     void Instance_onEncounterError(ResponseError data)
     {
         if(data.showPopup)
@@ -75,6 +85,7 @@ public class PokerGameplayView : MonoBehaviour
 
     private void OnButtonSendMessageClickCallBack(GameObject go)
     {
+        DialogService.Instance.ShowDialog(new DialogGameplayChat(dataChat));
     }
 
     private void OnButtonClickStandUp(GameObject go)

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Puppet.Poker;
 using System.Collections;
+using Puppet.Core.Model;
 
 public class PokerPlayerUI : MonoBehaviour
 {
@@ -40,14 +41,22 @@ public class PokerPlayerUI : MonoBehaviour
     {
         PokerObserver.Instance.onTurnChange += Instance_dataTurnGame;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
+        PuMain.Dispatcher.onChatMessage += ShowMessage;
     }
 
     void OnDisable()
     {
         PokerObserver.Instance.onTurnChange -= Instance_dataTurnGame;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
+        PuMain.Dispatcher.onChatMessage -= ShowMessage;
     }
-
+    private void ShowMessage(DataChat message)
+    {
+        if (message.Sender.userName == UserName)
+        {
+            PokerGameplayPlayerChat.Create(message.Content, this);
+        }
+    }
     void UpdateUI(PokerPlayerController player)
     {
         if (player != null && player.userName == data.userName)
