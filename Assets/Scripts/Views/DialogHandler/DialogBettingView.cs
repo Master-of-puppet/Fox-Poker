@@ -17,7 +17,6 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     EventDelegate del;
     void Awake()
     {
-
         del = new EventDelegate(this, "OnSliderChange");
         smallBlind = PokerObserver.Game.SmallBlind;
     }
@@ -58,12 +57,10 @@ public class DialogBettingView : BaseDialog<DialogBetting, DialogBettingView>
     }
     void OnSliderChange()
     {
-        Logger.Log("==========" + GetCurrentMoney);
         labelMoney.text = GetCurrentMoney >= data.MaxBetting ? "All In" : GetCurrentMoney.ToString("#,###");
         if (sliderBar.value == 1) labelMoney.text = "All In";
         if (GetCurrentMoney >= data.MaxBetting && GetCurrentMoney < PokerObserver.Game.MainPlayer.GetMoney())
             labelMoney.text = GetCurrentMoney.ToString("#,###");
-
     }
 
     public override void ShowDialog(DialogBetting data)

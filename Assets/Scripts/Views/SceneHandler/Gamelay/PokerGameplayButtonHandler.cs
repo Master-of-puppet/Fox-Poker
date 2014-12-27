@@ -170,14 +170,13 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
 		double myMoney = PokerObserver.Game.MainPlayer.GetMoney() +  PokerObserver.Game.MainPlayer.currentBet;
 		double maxRaise = myMoney;
-		if(myMoney > maxOtherMoney)
-			maxRaise = maxOtherMoney;
-		if (PokerObserver.Game.MainPlayer.currentBet != 0)
-			maxRaise = maxRaise - PokerObserver.Game.MainPlayer.currentBet;
-        if (maxRaise < PokerObserver.Game.MaxCurrentBetting)
+        if (myMoney > maxOtherMoney)
+            maxRaise = maxOtherMoney;
+        
+        if (maxRaise <= PokerObserver.Game.MaxCurrentBetting)
             return 0;
 
-		return maxRaise;
+        return PokerObserver.Game.MainPlayer.currentBet == 0 ? maxRaise : maxRaise - PokerObserver.Game.MainPlayer.currentBet;
 	}
     void SetEnableButtonType(EButtonType type)
     {
@@ -247,8 +246,8 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 			try 
             {
                 if (GetMaxRaise() <= 0)
-					return false;				
-				else
+                    return false;
+                else
                     return PokerObserver.Game.MainPlayer.GetMoney() + PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting;
 			} catch (Exception ex) {
                 return PokerObserver.Game.MainPlayer.GetMoney() + PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting;
