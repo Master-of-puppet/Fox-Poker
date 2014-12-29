@@ -288,10 +288,17 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
         yield return new WaitForSeconds(waitTimeViewCard /2f);
 
-        #region UPDATE CARD 
+        #region UPDATE CARD
         foreach (ResponseResultSummary summary in responseData.pots)
         {
             ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
+
+            List<string> lstWinner = new List<string>();
+            foreach (ResponseMoneyExchange item in summary.players)
+            {
+                if (item.winner)
+                    lstWinner.Add(item.userName);
+            }
 
             if (potContainer != null && playerWin != null)
             {
@@ -299,14 +306,28 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
                 RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
 
-                if(dictPlayerObject.ContainsKey(playerWin.userName))
-                    dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(true);
+                if (lstWinner.Count > 0)
+                {
+                    for (int i = 0; i < lstWinner.Count(); i++)
+                        dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(true);
+                }
+
 
                 if (isFaceUp)
                 {
+                    List<GameObject> listCardObject = new List<GameObject>();
+                    List<int> list = new List<int>();
                     DialogService.Instance.ShowDialog(playerWinRank);
-                    List<int> list = new List<int>(playerWin.cards);
-                    List<GameObject> listCardObject = cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId));
+                    foreach (ResponseMoneyExchange item in summary.players)
+                    {
+                        if (item.winner)
+                        {
+                            
+                            list.AddRange(item.cards);
+                            listCardObject.AddRange(cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId)));
+                        }
+                    }
+
                     for (int i = 0; i < 20; i++)
                     {
                         listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
@@ -318,12 +339,15 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 else
                     yield return new WaitForSeconds(timeEffectPot);
 
-                if (dictPlayerObject.ContainsKey(playerWin.userName))
-                    dictPlayerObject[playerWin.userName].GetComponent<PokerPlayerUI>().SetResult(false);
+                if (lstWinner.Count > 0)
+                {
+                    for (int i = 0; i < lstWinner.Count(); i++)
+                        dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(false);
+                }
             }
         }
         yield return new WaitForSeconds(waitTimeViewCard / 2);
-        
+
         #endregion
 
         // Reset Result title
