@@ -246,7 +246,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
         float time = responseData.time/1000f;
         float waitTimeViewCard = time > 1 ? 1f : 0f;
-        float timeEffectPot = responseData.pots.Length > 0 ? time - (waitTimeViewCard / responseData.pots.Length) : time - waitTimeViewCard;
+        float timeEffectPot = (responseData.pots.Length > 0 ? (waitTimeViewCard / responseData.pots.Length) : time - waitTimeViewCard);
 
         int numberPlayerNotFold = PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() != PokerPlayerState.fold && p.GetPlayerState() != PokerPlayerState.none).Count;
         bool isFaceUp = numberPlayerNotFold > 1 && PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
