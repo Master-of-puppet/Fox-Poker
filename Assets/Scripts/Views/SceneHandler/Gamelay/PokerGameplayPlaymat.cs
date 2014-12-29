@@ -295,34 +295,32 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
             List<string> lstWinner = new List<string>();
             foreach (ResponseMoneyExchange item in summary.players)
-            {
                 if (item.winner)
                     lstWinner.Add(item.userName);
-            }
 
             if (potContainer != null && playerWin != null)
             {
                 string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players, rdp => rdp.userName == playerWin.userName).ranking;
-
                 RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
 
                 if (lstWinner.Count > 0)
-                {
                     for (int i = 0; i < lstWinner.Count(); i++)
                         dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(true);
-                }
-
 
                 if (isFaceUp)
                 {
                     List<GameObject> listCardObject = new List<GameObject>();
                     List<int> list = new List<int>();
-                    DialogService.Instance.ShowDialog(playerWinRank);
+
+                    if (playerWinRank != null)
+                        DialogService.Instance.ShowDialog(playerWinRank);
+                    else
+                        Logger.LogError("Can't found player Win");
+
                     foreach (ResponseMoneyExchange item in summary.players)
                     {
                         if (item.winner)
                         {
-                            
                             list.AddRange(item.cards);
                             listCardObject.AddRange(cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId)));
                         }
@@ -335,15 +333,14 @@ public class PokerGameplayPlaymat : MonoBehaviour
                     }
                     listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
                     playerWinRank.DestroyUI();
+                    yield return new WaitForFixedUpdate();
                 }
                 else
                     yield return new WaitForSeconds(timeEffectPot);
 
                 if (lstWinner.Count > 0)
-                {
                     for (int i = 0; i < lstWinner.Count(); i++)
                         dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(false);
-                }
             }
         }
         yield return new WaitForSeconds(waitTimeViewCard / 2);

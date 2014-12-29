@@ -9,7 +9,7 @@ public class RankEndGame : BaseDialog<RankEndGameModel, RankEndGame>
     public override void ShowDialog(RankEndGameModel data)
     {
         base.ShowDialog(data);
-		lbTitle.text = data.title;
+		lbTitle.text = data.Title;
     }
 
     public void DestroyMe()
@@ -21,16 +21,14 @@ public class RankEndGameModel : AbstractDialogData
 {
     public override bool IsMessageDialog
     {
-        get
-        {
-            return true;
-        }
+        get { return false; }
     }
+
     public RankEndGameModel(string title)
     {
-        this.title = title;
+        this.Title = title;
+        this.Content = string.Empty;
     }
-    public string title;
 
     public override void ShowDialog()
     {
