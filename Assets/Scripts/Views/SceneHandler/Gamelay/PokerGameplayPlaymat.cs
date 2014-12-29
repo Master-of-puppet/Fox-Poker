@@ -64,6 +64,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             //        item.addMoneyToMainPot();
             //    }   
             //}
+            Logger.Log("==============>" + obj.pot.Length);
             potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
         }
     }
@@ -268,14 +269,20 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
         #region UPDATE POTS WHEN FINISH GAME
         List<ResponseUpdatePot.DataPot> potFinishGame = new List<ResponseUpdatePot.DataPot>();
-        foreach(ResponseResultSummary summary in responseData.pots)
+        List<ResponseResultSummary> potSummaries = responseData.pots.ToList().OrderByDescending(p => p.players.Length).ToList();
+        foreach (ResponseResultSummary summary in potSummaries)
         {
             ResponseUpdatePot.DataPot pot = new ResponseUpdatePot.DataPot();
             pot.id = summary.potId;
             ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
-            if(playerWin != null)
+            if (playerWin != null)
+            {
                 pot.value = playerWin.moneyExchange;
+                potFinishGame.Add(pot);
+            }
         }
+        potContainer.DestroyAllPot();
+        yield return new WaitForEndOfFrame();
         potContainer.UpdatePot(potFinishGame);
         #endregion
 
