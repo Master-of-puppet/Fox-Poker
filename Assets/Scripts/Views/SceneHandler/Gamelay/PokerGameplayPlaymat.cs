@@ -66,9 +66,17 @@ public class PokerGameplayPlaymat : MonoBehaviour
             //        item.addMoneyToMainPot();
             //    }   
             //}
-            potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
+            //otContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
+            
         }
     }
+    IEnumerator UpdateUIPot(List<ResponseUpdatePot.DataPot> pot)
+    {
+        potContainer.DestroyAllPot();
+        List<ResponseUpdatePot.DataPot> potSorted = pot.OrderBy(s => s.contributors).ToList();
+        yield return new WaitForSeconds(0.2f);
+        potContainer.UpdatePot(potSorted);
+    } 
     bool PotIsUpdate(ResponseUpdatePot obj) {
         if (currentUpdatePot == null)
         {

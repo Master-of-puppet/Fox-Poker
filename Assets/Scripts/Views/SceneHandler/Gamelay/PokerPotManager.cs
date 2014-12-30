@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Puppet.Poker.Datagram;
+using System;
 
 public class PokerPotManager : MonoBehaviour
 {
@@ -47,8 +49,27 @@ public class PokerPotManager : MonoBehaviour
         }
         yield return new WaitForEndOfFrame();
         tablePot.Reposition();
-    }
+        NGUITools.AddWidgetCollider(tablePot.gameObject);
+        tablePot.transform.localPosition = new Vector3(-tablePot.gameObject.collider.bounds.size.x/2, 0, 0);
 
+    }
+    void MovePotToPlayer(ResponseMoneyExchange[] exchangeMoney, int potId, float timeEffect)
+    {
+        foreach (ResponseMoneyExchange ex in exchangeMoney) {
+            if (ex.moneyExchange > 0) {
+               PokerPlayerUI[] ui = GameObject.FindObjectsOfType<PokerPlayerUI>();
+               PokerPlayerUI pokerUI = Array.Find(ui, pui => pui.UserName == ex.userName);
+               if (pokerUI != null)
+               {
+                   PokerPotItem item = pots.Find(p => p.Pot.id == potId);
+                   pots.Remove(item);
+                   if (item != null) { 
+                   
+                   }
+               }
+            }
+        }
+    }
     public void DestroyAllPot() 
     {
         foreach (PokerPotItem item in pots)
