@@ -251,7 +251,7 @@ public class PokerPlayerUI : MonoBehaviour
     float totalCountDown = 0f;
     float timeCountDown = 0f;
     float realtime = 0f;
-    void StartTimer(float time, float remainingTime = 0f)
+    public void StartTimer(float time, float remainingTime = 0f)
     {
         if (time > 0)
         {
