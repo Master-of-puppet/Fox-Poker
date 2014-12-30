@@ -43,6 +43,7 @@ public class PokerObserver
 
     public void StartGame()
     {
+        isWaitingFinishGame = false;
         mUserInfo = Puppet.API.Client.APIUser.GetUserInformation();
         Puppet.Poker.EventDispatcher.onGameEvent += EventDispatcher_onGameEvent;
         Game.StartListenerEvent();

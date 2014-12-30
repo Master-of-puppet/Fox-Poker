@@ -289,8 +289,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
 
                 if (lstWinner.Count > 0)
+                {
                     for (int i = 0; i < lstWinner.Count(); i++)
-                        dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(true);
+                        if (dictPlayerObject.ContainsKey(lstWinner[i]))
+                            dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(true);
+                }
 
                 if (isFaceUp)
                 {
@@ -324,8 +327,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
                     yield return new WaitForSeconds(timeEffectPot);
 
                 if (lstWinner.Count > 0)
+                {
                     for (int i = 0; i < lstWinner.Count(); i++)
-                        dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(false);
+                        if (dictPlayerObject.ContainsKey(lstWinner[i]))
+                            dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(false);
+                }
             }
         }
         #endregion
