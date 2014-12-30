@@ -9,12 +9,13 @@ using Puppet;
 [PrefabAttribute(Name = "Prefabs/Gameplay/ChatDialog", Depth = 4, IsUIPanel = true , IsAttachedToCamera = true)]
 public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGameplayChatView>
 {
-
     #region UNITY EDITOR
     public UIInput txtMessage;
     public UITextList chatArea;
     public GameObject btnSend;
     #endregion
+    string placeHolder = "Nhập nội dung";
+
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -40,18 +41,21 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
     }
     private void initData()
     {
+        txtMessage.value = placeHolder;
         for (int i = 0; i < data.datas.Count; i++)
         {
             string message = "[00ff00]" + data.datas[i].Sender.userName + " : [-]" + data.datas[i].Content;
             chatArea.Add(message);
         }
     }
-    public void OnClickButtonSend(GameObject gobj) {
-        if (!string.IsNullOrEmpty(txtMessage.value)) {
+    public void OnClickButtonSend(GameObject gobj) 
+    {
+        if (!string.IsNullOrEmpty(txtMessage.value) && txtMessage.value != placeHolder)
             Puppet.API.Client.APIGeneric.SendChat(new DataChat(txtMessage.value, DataChat.ChatType.Public));
-        }
-    }
 
+        //Call to hide me
+        OnClickButton(null);
+    }
 }
 public class DialogGameplayChat : AbstractDialogData {
 
