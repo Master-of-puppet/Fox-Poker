@@ -22,7 +22,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
-    bool isWaitingFinishGame = false;
+    List<PokerPotItem> _listPotMarkers = new List<PokerPotItem>();
 
     void Awake()
     {
@@ -56,6 +56,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
+        UnMarkPot();
         if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0 && obj.pot[0].value > 0)
         {
             potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
@@ -75,6 +76,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         cardsDeal.Clear();
 
         potContainer.DestroyAllPot();
+        UnMarkPot();
     }
     void DestroyCardObject(GameObject [] cards)
     {
@@ -225,6 +227,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     IEnumerator _onFinishGame(ResponseFinishGame responseData)
     {
+        UnMarkPot();
         PokerObserver.Game.StartFinishGame();
         PokerObserver.Instance.isWaitingFinishGame = true;
 
@@ -442,4 +445,19 @@ public class PokerGameplayPlaymat : MonoBehaviour
         return Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == side);
     }
 
+    #region NHỮNG NGƯỜI CHƠI ĐÃ THOÁT SẼ LƯU LẠI CHỜ ĐẾN KHI UPDATEPOT HOẶC FINISGGAME MỚI XÓA POT
+    public void MarkerPot(PokerPotItem pot)
+    {
+        _listPotMarkers.Add(pot);
+    }
+
+    void UnMarkPot()
+    {
+        for (int i = _listPotMarkers.Count - 1; i >= 0; i--)
+        {
+            GameObject.Destroy(_listPotMarkers[i].gameObject);
+        }
+        _listPotMarkers.Clear();
+    }
+    #endregion
 }

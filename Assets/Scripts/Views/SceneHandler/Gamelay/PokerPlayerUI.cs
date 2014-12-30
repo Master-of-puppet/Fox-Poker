@@ -208,8 +208,8 @@ public class PokerPlayerUI : MonoBehaviour
 
     void OnDestroy()
     {
-        GameObject.Destroy(currentBet.gameObject);
-        currentBet = null;
+        currentBet.transform.parent = playmat.transform;
+        playmat.MarkerPot(currentBet);
 
         data.onDataChanged -= playerModel_onDataChanged;
     }
