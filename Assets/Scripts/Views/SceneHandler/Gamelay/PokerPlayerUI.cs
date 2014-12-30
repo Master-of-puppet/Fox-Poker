@@ -118,6 +118,9 @@ public class PokerPlayerUI : MonoBehaviour
         ResponseFinishCardPlayer cardPlayer = Array.Find<ResponseFinishCardPlayer>(data.players, p => p.userName == this.data.userName);
         if (cardPlayer != null && cardPlayer.cards != null)
         {
+            if (PokerObserver.Instance.IsMainPlayer(cardPlayer.userName))
+                return;
+
             bool isFaceUp = PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
             if (isFaceUp)
             {
