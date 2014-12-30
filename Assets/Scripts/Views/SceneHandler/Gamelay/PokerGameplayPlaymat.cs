@@ -30,6 +30,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
         arrayPokerSide = GameObject.FindObjectsOfType<PokerGPSide>();
 
+        PokerObserver.Game.onFirstTimeJoinGame += Game_onFirstTimeJoinGame;
         PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
         PokerObserver.Instance.dataUpdateGameChange += Instance_dataUpdateGame;
         PokerObserver.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
@@ -42,6 +43,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void OnDestroy()
     {
+        PokerObserver.Game.onFirstTimeJoinGame -= Game_onFirstTimeJoinGame;
         PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
         PokerObserver.Instance.dataUpdateGameChange -= Instance_dataUpdateGame;
         PokerObserver.Instance.onEventUpdateHand -= Instance_onEventUpdateHand;
@@ -64,7 +66,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
             //        item.addMoneyToMainPot();
             //    }   
             //}
-            Logger.Log("==============>" + obj.pot.Length);
             potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
         }
     }
@@ -129,11 +130,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
             cardsDeal.Add(card);
         }
     }
-    public List<PokerCard> pocket;
+    public List<PokerCard> pocket = new List<PokerCard>();
     void Instance_onEventUpdateHand(ResponseUpdateHand data)
     {
-        if (pocket == null)
-            pocket = new List<PokerCard>();
         pocket.Clear();
         for (int i = 0; i < data.hand.Length; i++)
         {
@@ -144,6 +143,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
     }
 
     void ShowRank() {
+        if (pocket.Count == 0) return;
+        
         string pocketHand = HandEvaluatorConvert.ConvertPokerCardsToString(pocket);
         string boards = HandEvaluatorConvert.ConvertPokerCardsToString(PokerObserver.Game.DealComminityCards);
         int count = 0;
@@ -244,9 +245,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Game.StartFinishGame();
         PokerObserver.Instance.isWaitingFinishGame = true;
 
-        float time = responseData.time/1000f;
-        float waitTimeViewCard = time > 1 ? 1f : 0f;
-        float timeEffectPot = (responseData.pots.Length > 0 ? (waitTimeViewCard / responseData.pots.Length) : time - waitTimeViewCard);
+        float totalTimeFinishGame = responseData.time / 1000f;
+        float waitTimeViewResultCard = totalTimeFinishGame > 2f ? 1f : 0f;
+        float timeEffectPot = totalTimeFinishGame - waitTimeViewResultCard;
+        if (responseData.pots.Length > 0)
+            timeEffectPot /= responseData.pots.Length;
 
         int numberPlayerNotFold = PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() != PokerPlayerState.fold && p.GetPlayerState() != PokerPlayerState.none).Count;
         bool isFaceUp = numberPlayerNotFold > 1 && PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
@@ -286,8 +289,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         potContainer.UpdatePot(potFinishGame);
         #endregion
 
-        yield return new WaitForSeconds(waitTimeViewCard /2f);
-
+        yield return new WaitForSeconds(waitTimeViewResultCard * 3 / 4f);
         #region UPDATE CARD
         foreach (ResponseResultSummary summary in responseData.pots)
         {
@@ -333,7 +335,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                     }
                     listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
                     playerWinRank.DestroyUI();
-                    yield return new WaitForFixedUpdate();
+                    yield return new WaitForEndOfFrame();
                 }
                 else
                     yield return new WaitForSeconds(timeEffectPot);
@@ -343,9 +345,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
                         dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(false);
             }
         }
-        yield return new WaitForSeconds(waitTimeViewCard / 2);
-
         #endregion
+        yield return new WaitForSeconds(waitTimeViewResultCard / 4f);
 
         // Reset Result title
         if (isFaceUp)
@@ -356,7 +357,12 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Game.EndFinishGame();
     }
 
-    void Instance_onJoinGamePlaying(ResponseUpdateGame data)
+    void Instance_dataUpdateGame(ResponseUpdateGame data)
+    {
+        ResetNewRound();
+    }
+
+    void Game_onFirstTimeJoinGame(ResponseUpdateGame data)
     {
         if (data.players != null && data.players.Length > 0 && Array.FindAll<PokerPlayerController>(data.players, p => p.GetPlayerState() != PokerPlayerState.none).Length > 0)
         {
@@ -371,11 +377,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
             CreateHand(data.players, hands);
             CreateCardDeal(data.dealComminityCards);
         }
-    }
-
-    void Instance_dataUpdateGame(ResponseUpdateGame data)
-    {
-        ResetNewRound();
     }
 
     void Instance_onUpdateRoomMaster(ResponseUpdateRoomMaster data)

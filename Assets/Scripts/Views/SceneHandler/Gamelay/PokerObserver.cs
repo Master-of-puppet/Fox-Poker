@@ -11,7 +11,6 @@ using Puppet.Poker.Models;
 
 public class PokerObserver
 {
-    public event Action<ResponseUpdateGame> onFirstJoinGame;
     public event Action<ResponseUpdateGame> dataUpdateGameChange;
     public event Action<ResponsePlayerListChanged> onPlayerListChanged;
     public event Action<ResponseUpdateHand> onEventUpdateHand;
