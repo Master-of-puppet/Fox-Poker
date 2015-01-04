@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Puppet.Poker.Datagram;
 using System;
+using Puppet;
 
 public class PokerPotManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class PokerPotManager : MonoBehaviour
     {
         foreach (Puppet.Poker.Datagram.ResponseUpdatePot.DataPot item in datas)
         {
+            currPot = null;
             PokerPotItem currentPot = pots.Find(p => item.id == p.Pot.id);
             if (currentPot != null)
             {
@@ -53,7 +55,7 @@ public class PokerPotManager : MonoBehaviour
         tablePot.transform.localPosition = new Vector3(-tablePot.gameObject.collider.bounds.size.x/2, 0, 0);
 
     }
-    void MovePotToPlayer(ResponseMoneyExchange[] exchangeMoney, int potId, float timeEffect)
+    public void MovePotToPlayer(ResponseMoneyExchange[] exchangeMoney, int potId, float timeEffect)
     {
         foreach (ResponseMoneyExchange ex in exchangeMoney) {
             if (ex.moneyExchange > 0) {
@@ -62,13 +64,21 @@ public class PokerPotManager : MonoBehaviour
                if (pokerUI != null)
                {
                    PokerPotItem item = pots.Find(p => p.Pot.id == potId);
+                   currPot = item;
                    pots.Remove(item);
                    if (item != null) { 
-                   
+                        iTween.MoveTo(item.gameObject,iTween.Hash("position",pokerUI.transform.localPosition,"islocal",true,"time",0.5f,"oncomplete","onMovePotComplete","oncompletetarget",gameObject));
                    }
                }
             }
         }
+    }
+    private void onMovePotComplete() {
+        if (currPot != null && currPot.gameObject != null)
+        {
+            GameObject.Destroy(currPot.gameObject);
+        }
+        currPot = null;
     }
     public void DestroyAllPot() 
     {
@@ -76,4 +86,6 @@ public class PokerPotManager : MonoBehaviour
             GameObject.Destroy(item.gameObject);
         pots.Clear();
     }
+
+    public PokerPotItem currPot { get; set; }
 }

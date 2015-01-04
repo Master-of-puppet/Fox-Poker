@@ -67,7 +67,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             //    }   
             //}
             //otContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
-            
+            StartCoroutine(UpdateUIPot(new List<ResponseUpdatePot.DataPot>(obj.pot)));
         }
     }
     IEnumerator UpdateUIPot(List<ResponseUpdatePot.DataPot> pot)
@@ -316,7 +316,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 if (lstWinner.Count > 0)
                     for (int i = 0; i < lstWinner.Count(); i++)
                         dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(true);
-
+                potContainer.MovePotToPlayer(summary.players, summary.potId, timeEffectPot);
                 if (isFaceUp)
                 {
                     List<GameObject> listCardObject = new List<GameObject>();
@@ -335,7 +335,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                             listCardObject.AddRange(cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId)));
                         }
                     }
-
+                 
                     for (int i = 0; i < 20; i++)
                     {
                         listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
