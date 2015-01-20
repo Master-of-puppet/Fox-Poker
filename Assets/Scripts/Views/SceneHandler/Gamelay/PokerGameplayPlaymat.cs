@@ -224,7 +224,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         StartCoroutine(_onFinishGame(responseData));
     }
-
     IEnumerator _onFinishGame(ResponseFinishGame responseData)
     {
         UnMarkPot();
@@ -241,8 +240,26 @@ public class PokerGameplayPlaymat : MonoBehaviour
         bool isFaceUp = numberPlayerNotFold > 1 && PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
 
         if (isFaceUp)
-            CreateCardDeal(responseData.dealComminityCards);
-
+        {
+            if (responseData.dealComminityCards.Length == 5)
+            {
+                int[] threeCard = new int[3];
+                Array.Copy(responseData.dealComminityCards, 0, threeCard, 0, 3);
+                CreateCardDeal(threeCard);
+                yield return new WaitForSeconds(1.0f);
+                int[] cardFouth = new int[1];
+                Array.Copy(responseData.dealComminityCards, 3, cardFouth, 0, 1);
+                CreateCardDeal(cardFouth);
+                yield return new WaitForSeconds(1.0f);
+                int[] cardFive = new int[1];
+                Array.Copy(responseData.dealComminityCards, 4, cardFive, 0, 1);
+                CreateCardDeal(cardFive);
+            }
+            else
+            {
+                CreateCardDeal(responseData.dealComminityCards);
+            }
+        }
         #region SET RESULT TITLE
         PokerPlayerUI[] playerUI = GameObject.FindObjectsOfType<PokerPlayerUI>();
         for (int i = 0; i < playerUI.Length; i++)
