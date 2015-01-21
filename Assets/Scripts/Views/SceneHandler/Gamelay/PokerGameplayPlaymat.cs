@@ -15,6 +15,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 {
     #region UNITY EDITOR
     public GameObject prefabBetObject;
+    public GameObject positionEffectDealCard;
     public Transform []positionDealCards;
     public PokerPotManager potContainer;
     public GameObject objectDealer;
@@ -124,7 +125,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
             pocket.Add(new PokerCard(data.hand[i]));
         }
         ShowRank();
-        CreateHand(data.players, data.hand);
+        //CreateHand(data.players, data.hand);
+        StartCoroutine(CreateEffectDealCard(data.players, data.hand,data.timeForAnimation));
     }
 
     void ShowRank() {
@@ -189,6 +191,45 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 return "<1%";
         }
         return "n/a";
+    }
+    IEnumerator CreateEffectDealCard(PokerPlayerController[] players, int[] hands,int time)
+    {
+        PokerPlayerController dealer =  Array.Find<PokerPlayerController>(players, p => p.userName == PokerObserver.Game.Dealer);
+        int indexDealer = Array.IndexOf(players, dealer);
+        List<PokerPlayerController> playerDeal = new List<PokerPlayerController>();
+        for (int i = indexDealer; i < players.Length; i++)
+        {
+            playerDeal.Add(players[i]);    
+        }
+        for (int i = 0; i < indexDealer; i++ )
+        {
+            playerDeal.Add(players[i]);
+        }
+        
+        float halfTime = (time/1000) / 2;
+        float timeMove = halfTime/playerDeal.Count;
+        for (int i = 0; i < 2; i++)
+        {
+            foreach (PokerPlayerController p in playerDeal)
+            {
+                GameObject cardObjects = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
+                cardObjects.transform.parent = positionEffectDealCard.transform;
+                cardObjects.transform.localRotation = Quaternion.identity;
+                cardObjects.transform.localPosition = Vector3.zero;
+                cardObjects.transform.localScale = Vector3.one /3;
+                Vector3 cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().transform.localPosition;
+                iTween.MoveTo(cardObjects, iTween.Hash("islocal", true, "time", timeMove, "position", cardMoveTo));
+                yield return new WaitForSeconds(timeMove);
+                if (PokerObserver.Instance.mUserInfo.info.userName == p.userName)
+                {
+                    cardObjects.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(hands[i]), i);
+                }
+                else
+                    cardObjects.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(), i);
+                dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().UpdateSetCardObject(cardObjects,i);
+                cardsDeal.Add(cardObjects);
+            }
+        }
     }
     void CreateHand(PokerPlayerController[] players, int [] hands)
     {

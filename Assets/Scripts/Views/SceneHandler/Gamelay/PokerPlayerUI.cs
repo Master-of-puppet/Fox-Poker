@@ -163,7 +163,7 @@ public class PokerPlayerUI : MonoBehaviour
     }
     public void addMoneyToMainPot() {
         currentBet.labelCurrentbet.transform.parent.gameObject.SetActive(false);
-        iTween.MoveTo(currentBet.gameObject, iTween.Hash("position", playmat.potContainer.tablePot.transform.position, "time", 1.0f, "oncomplete", "onMoneyToMainPotComplete", "oncompletetarget", gameObject));
+        iTween.MoveTo(currentBet.gameObject, iTween.Hash("islocal",true,"position", playmat.potContainer.tablePot.transform.localPosition, "time", 1.0f, "oncomplete", "onMoneyToMainPotComplete", "oncompletetarget", gameObject));
     }
     void onMoneyToMainPotComplete()
     {
@@ -236,7 +236,15 @@ public class PokerPlayerUI : MonoBehaviour
     {
         UpdateUI(data);
     }
-
+    public void UpdateSetCardObject(GameObject cardOnHands,int index)
+    {
+        this.cardOnHands = new GameObject[2];
+        this.cardOnHands[index] = cardOnHands;
+        cardOnHands.transform.parent = PokerObserver.Instance.IsMainPlayer(data.userName) ? side.positionCardMainPlayer[index].transform : side.positionCardFaceCards[index].transform;
+        cardOnHands.transform.localRotation = Quaternion.identity;
+        cardOnHands.transform.localPosition = Vector3.zero;
+        cardOnHands.transform.localScale = PokerObserver.Instance.IsMainPlayer(data.userName) ? Vector3.one : Vector3.one / 3;
+    }
     public void UpdateSetCardObject(GameObject[] cardOnHands)
     {
         this.cardOnHands = cardOnHands;
