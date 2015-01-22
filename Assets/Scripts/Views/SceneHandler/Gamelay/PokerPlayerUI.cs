@@ -164,7 +164,7 @@ public class PokerPlayerUI : MonoBehaviour
     public void addMoneyToMainPot() {
         currentBet.labelCurrentbet.transform.parent.gameObject.SetActive(false);
         currentBet.gameObject.transform.parent = playmat.potContainer.tablePot.transform.parent.transform;
-        iTween.MoveTo(currentBet.gameObject, iTween.Hash("islocal",true,"position", playmat.potContainer.tablePot.transform.localPosition, "time", 1.0f, "oncomplete", "onMoneyToMainPotComplete", "oncompletetarget", gameObject));
+        iTween.MoveTo(currentBet.gameObject, iTween.Hash("islocal",true,"position", playmat.potContainer.tablePot.transform.localPosition, "time", 3.0f, "oncomplete", "onMoneyToMainPotComplete", "oncompletetarget", gameObject));
     }
     void onMoneyToMainPotComplete()
     {

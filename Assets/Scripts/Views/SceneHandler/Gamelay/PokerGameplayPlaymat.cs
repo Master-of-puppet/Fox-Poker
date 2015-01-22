@@ -61,11 +61,12 @@ public class PokerGameplayPlaymat : MonoBehaviour
         if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0 && obj.pot[0].value > 0)
         {
 
-            foreach (PokerPlayerController controller in PokerObserver.Game.ListPlayer)
-            {
-                dictPlayerObject[controller.userName].GetComponent<PokerPlayerUI>().addMoneyToMainPot();
-            }
-            StartCoroutine(updatePotView(obj));
+           // foreach (PokerPlayerController controller in PokerObserver.Game.ListPlayer)
+          //  {
+         //       dictPlayerObject[controller.userName].GetComponent<PokerPlayerUI>().addMoneyToMainPot();
+         //   }
+            //StartCoroutine(updatePotView(obj));
+            potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
         }
     }
     IEnumerator updatePotView(ResponseUpdatePot obj) {
