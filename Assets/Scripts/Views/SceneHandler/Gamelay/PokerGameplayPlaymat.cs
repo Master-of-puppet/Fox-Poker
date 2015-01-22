@@ -60,10 +60,18 @@ public class PokerGameplayPlaymat : MonoBehaviour
         UnMarkPot();
         if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0 && obj.pot[0].value > 0)
         {
-            potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
+
+            foreach (PokerPlayerController controller in PokerObserver.Game.ListPlayer)
+            {
+                dictPlayerObject[controller.userName].GetComponent<PokerPlayerUI>().addMoneyToMainPot();
+            }
+            StartCoroutine(updatePotView(obj));
         }
     }
-    
+    IEnumerator updatePotView(ResponseUpdatePot obj) {
+        yield return new WaitForSeconds(1.0f);
+        potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
+    }
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
         ResetNewRound();
@@ -206,8 +214,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
             playerDeal.Add(players[i]);
         }
         
-        float halfTime = (time/1000) / 2;
-        float timeMove = halfTime/playerDeal.Count;
+        float timeEffect = (time/1000) ;
+        float timeMove = 1.0f;
+        float timeWaitForStart = (timeEffect - timeMove) / (playerDeal.Count * 2 - 1);
         for (int i = 0; i < 2; i++)
         {
             foreach (PokerPlayerController p in playerDeal)
@@ -217,20 +226,47 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 cardObjects.transform.localRotation = Quaternion.identity;
                 cardObjects.transform.localPosition = Vector3.zero;
                 cardObjects.transform.localScale = Vector3.one /3;
-                Vector3 cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().transform.localPosition;
-                iTween.MoveTo(cardObjects, iTween.Hash("islocal", true, "time", timeMove, "position", cardMoveTo));
-                yield return new WaitForSeconds(timeMove);
+                //cardObjects.transform.parent = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().transform.parent.transform;
+
+                Vector3 cardMoveTo = Vector3.zero;
+                //cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().transform.localPosition;
                 if (PokerObserver.Instance.mUserInfo.info.userName == p.userName)
                 {
-                    cardObjects.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(hands[i]), i);
+                    cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardMainPlayer[i].transform.localPosition;
+                    cardObjects.transform.parent = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardMainPlayer[i].transform.parent;
                 }
                 else
-                    cardObjects.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(), i);
-                dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().UpdateSetCardObject(cardObjects,i);
-                cardsDeal.Add(cardObjects);
+                {
+                    cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardFaceCards[i].transform.localPosition;
+                    cardObjects.transform.parent = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardFaceCards[i].transform.parent;
+                }
+                Hashtable tweenValue = new Hashtable();
+                tweenValue.Add("cardObject", cardObjects);
+                tweenValue.Add("index", i);
+                tweenValue.Add("cardId", hands[i]);
+                tweenValue.Add("userName", p.userName);
+                iTween.MoveTo(cardObjects, iTween.Hash("islocal", true, "time", timeMove, "position", cardMoveTo, "oncomplete", "onMoveCardComplete", "oncompletetarget", gameObject, "oncompleteparams", tweenValue));
+                yield return new WaitForSeconds(timeWaitForStart);
+              
             }
         }
     }
+    void onMoveCardComplete(object vals) {
+        Hashtable table = (Hashtable)vals;
+        string userName = (string)table["userName"];
+        GameObject cardObjects = (GameObject)table["cardObject"];
+        int index = (int)table["index"];
+        int cardId = (int)table["cardId"];
+        if (PokerObserver.Instance.mUserInfo.info.userName == userName)
+        {
+            cardObjects.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cardId), index);
+        }
+        else
+            cardObjects.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(), index);
+        dictPlayerObject[userName].GetComponent<PokerPlayerUI>().UpdateSetCardObject(cardObjects, index);
+        cardsDeal.Add(cardObjects);
+    }
+
     void CreateHand(PokerPlayerController[] players, int [] hands)
     {
         foreach(PokerPlayerController p in players)
