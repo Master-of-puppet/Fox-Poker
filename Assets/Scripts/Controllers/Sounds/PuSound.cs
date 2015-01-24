@@ -9,11 +9,17 @@ public enum SoundType
 {
     Background,
     ClickButton,
-    Reward,
-    Daily_Gift,
-    Win,
-    Lost,
-    Draw,
+    Sit_Down,
+    StandUp,
+    YourTurn,
+    DealCard,
+    DealComminity,
+    FoldCard,
+    RaiseCost,
+    CheckCard,
+    UpdatePot,
+    PlayerWin,
+    GetMoney,
 }
 
 [PrefabAttribute(Name = "Prefabs/Sounds/SoundMapping")]

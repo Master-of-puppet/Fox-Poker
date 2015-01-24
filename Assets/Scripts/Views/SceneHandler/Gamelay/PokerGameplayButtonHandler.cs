@@ -105,10 +105,16 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         {
             if (PokerObserver.Game.MaxCurrentBetting == 0)
             {
+                if (PokerObserver.Instance.IsMainTurn)
+                    PuSound.Instance.Play(SoundType.CheckCard);
+
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CHECK, 0);
             }
             else
             {
+                if (PokerObserver.Instance.IsMainTurn)
+                    PuSound.Instance.Play(SoundType.RaiseCost);
+
                 double diff = PokerObserver.Instance.CurrentBettingDiff;
                 if (diff > 0)
                 {
@@ -125,6 +131,9 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     }
     void OnClickButton2(GameObject go)
     {
+        if (currentType == EButtonType.InTurn && PokerObserver.Instance.IsMainTurn)
+            PuSound.Instance.Play(SoundType.FoldCard);
+
         OnButton2Clicked(false);
     }
 
@@ -134,6 +143,9 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         {
 			bettingDialog = new DialogBetting(GetMaxBinded(), GetMaxRaise(),(money) =>
             {
+                if (currentType == EButtonType.InTurn && PokerObserver.Instance.IsMainTurn)
+                    PuSound.Instance.Play(SoundType.RaiseCost);
+
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
             DialogBettingView bettingView = GameObject.FindObjectOfType<DialogBettingView>();

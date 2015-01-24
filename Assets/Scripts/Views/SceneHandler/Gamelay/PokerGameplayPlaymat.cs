@@ -60,11 +60,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
         UnMarkPot();
         if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0 && obj.pot[0].value > 0)
         {
-
-           // foreach (PokerPlayerController controller in PokerObserver.Game.ListPlayer)
-          //  {
-         //       dictPlayerObject[controller.userName].GetComponent<PokerPlayerUI>().addMoneyToMainPot();
-         //   }
+            // foreach (PokerPlayerController controller in PokerObserver.Game.ListPlayer)
+            // {
+            //      dictPlayerObject[controller.userName].GetComponent<PokerPlayerUI>().addMoneyToMainPot();
+            // }
             //StartCoroutine(updatePotView(obj));
             potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
         }
@@ -100,6 +99,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     private void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
+        if (data.toPlayer != null && data.toPlayer.userName == PokerObserver.Game.MainPlayer.userName)
+            PuSound.Instance.Play(SoundType.YourTurn);
+
         if (data.dealComminityCards != null && data.dealComminityCards.Length > 0)
         {
             CreateCardDeal(data.dealComminityCards);
@@ -123,6 +125,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
             card.transform.localPosition = Vector3.zero;
             card.transform.localScale = Vector3.one * 0.9f;
             cardsDeal.Add(card);
+            
+            PuSound.Instance.Play(SoundType.DealComminity);
         }
     }
     public List<PokerCard> pocket = new List<PokerCard>();
@@ -247,6 +251,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 tweenValue.Add("cardId", hands[i]);
                 tweenValue.Add("userName", p.userName);
                 iTween.MoveTo(cardObjects, iTween.Hash("islocal", true, "time", timeMove, "position", cardMoveTo, "oncomplete", "onMoveCardComplete", "oncompletetarget", gameObject, "oncompleteparams", tweenValue));
+
+                PuSound.Instance.Play(SoundType.DealCard);
                 yield return new WaitForSeconds(timeWaitForStart);
               
             }
@@ -354,6 +360,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         #region UPDATE POTS WHEN FINISH GAME
         List<ResponseUpdatePot.DataPot> potFinishGame = new List<ResponseUpdatePot.DataPot>();
         List<ResponseResultSummary> potSummaries = responseData.pots.ToList().OrderByDescending(p => p.players.Length).ToList();
+
         foreach (ResponseResultSummary summary in potSummaries)
         {
             ResponseUpdatePot.DataPot pot = new ResponseUpdatePot.DataPot();
@@ -361,6 +368,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
             ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
             if (playerWin != null)
             {
+                if (playerWin.userName == PokerObserver.Game.MainPlayer.userName)
+                    PuSound.Instance.Play(SoundType.PlayerWin);
+
                 pot.value = playerWin.moneyExchange;
                 potFinishGame.Add(pot);
             }
@@ -480,11 +490,17 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerPlayerChangeAction state = dataPlayer.GetActionState();
         if(state == PokerPlayerChangeAction.playerAdded)
         {
+            if (dataPlayer.player.userName == PokerObserver.Game.MainPlayer.userName)
+                PuSound.Instance.Play(SoundType.Sit_Down);
+
             SetPositionAvatarPlayer(dataPlayer.player.userName);
         }
         else if ((state == PokerPlayerChangeAction.playerRemoved || state == PokerPlayerChangeAction.playerQuitGame)
             && dictPlayerObject.ContainsKey(dataPlayer.player.userName))
         {
+            if (dataPlayer.player.userName == PokerObserver.Game.MainPlayer.userName)
+                PuSound.Instance.Play(SoundType.StandUp);
+
             if(PokerObserver.Game.Dealer == dataPlayer.player.userName)
                 objectDealer.SetActive(false);
 
