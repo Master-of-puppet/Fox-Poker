@@ -323,7 +323,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
                     if (selectedButton.slot == EButtonSlot.First && data.GetActionState() != PokerPlayerState.call && data.GetActionState() != PokerPlayerState.check)
                         selectedButton.toggle.value = false;
 
-                    if (PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.userName == data.toPlayer.userName)
+                    if (PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Instance.IsMainPlayer(data.toPlayer.userName))
                     {
                         if (selectedButton.slot == EButtonSlot.First && (data.GetActionState() == PokerPlayerState.call || data.GetActionState() == PokerPlayerState.check))
                             OnClickButton1(selectedButton.button);

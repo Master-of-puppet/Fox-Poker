@@ -41,6 +41,11 @@ public class PokerObserver
         get { return Puppet.API.Client.APIPokerGame.GetPokerGameplay(); }
     }
 
+    public static string UserName
+    {
+        get { return Instance.mUserInfo.info.userName; }
+    }
+
     public void StartGame()
     {
         isWaitingFinishGame = false;
