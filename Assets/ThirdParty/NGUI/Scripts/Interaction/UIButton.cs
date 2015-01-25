@@ -183,6 +183,9 @@ public class UIButton : UIButtonColor
 		mSprite2D = (mWidget as UI2DSprite);
 		if (mSprite != null) mNormalSprite = mSprite.spriteName;
 		if (mSprite2D != null) mNormalSprite2D = mSprite2D.sprite2D;
+        
+        if(gameObject.GetComponent<SoundButtonClick>() == null)
+            gameObject.AddComponent<SoundButtonClick>();
 	}
 
 	/// <summary>

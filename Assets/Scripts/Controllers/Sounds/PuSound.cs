@@ -22,6 +22,10 @@ public enum SoundType
     GetMoney,
 }
 
+/// <summary>
+/// Author: vietdungvn88@gmail.com
+/// Class mapping AudioClip and type of sound in Foxpoker
+/// </summary>
 [PrefabAttribute(Name = "Prefabs/Sounds/SoundMapping")]
 public class PuSound : SingletonPrefab<PuSound>
 {
@@ -36,16 +40,21 @@ public class PuSound : SingletonPrefab<PuSound>
     public List<SoundClip> DataMapping;
     #endregion
 
-    public void Play(SoundType type, bool isLoop = false)
+    /// <summary>
+    /// Method play AudioClip with Type of sound.
+    /// </summary>
+    /// <param name="type">Type of sound will play</param>
+    /// <param name="loopTime">more than zero/-1 is forever/0 is no playing</param>
+    public void Play(SoundType type, int loopTime = 1)
     {
-        Play(null, type, isLoop);
+        Play(null, type, loopTime);
     }
 
-    public void Play(AudioSource source, SoundType type, bool isLoop)
+    public void Play(AudioSource source, SoundType type, int loopTime)
     {
         SoundClip sound = DataMapping.Find(s => s.type == type && s.clip != null);
         if (sound != null)
-            SoundManager.StartSound(source, sound.clip, isLoop);
+            SoundManager.StartSound(source, sound.clip, loopTime);
     }
 
     public void Stop(AudioSource source)

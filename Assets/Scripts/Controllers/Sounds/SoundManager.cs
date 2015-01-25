@@ -27,26 +27,26 @@ public class SoundManager : Singleton<SoundManager>
         MusicSources = new List<AudioSource>();
     }
 
-    public static void StartSound(AudioSource source, AudioClip clip, bool isLoop)
+    public static void StartSound(AudioSource source, AudioClip clip, int loopTime)
     {
         if (clip == null || !Application.isPlaying)
             return;
 
         if (source != null)
-            Instance._StartSound(source, clip, isLoop, false);
+            Instance._StartSound(source, clip, loopTime < 0 ? true : false, false);
         else
-            Instance.StartCoroutine(Instance._StartOnOtherSource(null, clip, isLoop, false));
+            Instance.StartCoroutine(Instance._StartOnOtherSource(null, clip, loopTime, false));
     }
 
-    public static void StartMusic(AudioSource source, AudioClip clip, bool isLoop)
+    public static void StartMusic(AudioSource source, AudioClip clip, int loopTime)
     {
         if (clip == null || !Application.isPlaying)
             return;
 
         if (source != null)
-            Instance._StartSound(source, clip, isLoop, true);
+            Instance._StartSound(source, clip, loopTime < 0 ? true : false, true);
         else
-            Instance.StartCoroutine(Instance._StartOnOtherSource(null, clip, isLoop, true));
+            Instance.StartCoroutine(Instance._StartOnOtherSource(null, clip, loopTime, true));
     }
 
     public static void StartOneShotSound(GameObject obj, AudioClip clip)
@@ -54,7 +54,7 @@ public class SoundManager : Singleton<SoundManager>
         if (clip == null || !Application.isPlaying)
             return;
 
-        Instance.StartCoroutine(Instance._StartOnOtherSource(obj, clip, false, false));
+        Instance.StartCoroutine(Instance._StartOnOtherSource(obj, clip, 1, false));
     }
 
     public static void StopSound(AudioSource source)
@@ -143,15 +143,19 @@ public class SoundManager : Singleton<SoundManager>
         PlaySound(source, clip, isLoop, isMusic);
     }
 
-    IEnumerator _StartOnOtherSource(GameObject obj, AudioClip clip, bool isLoop, bool isMusic)
+    IEnumerator _StartOnOtherSource(GameObject obj, AudioClip clip, int loopTime, bool isMusic)
     {
+        bool isLoop = loopTime < 0;
         AudioSource newSource = CreateNewSource(obj, isLoop, isMusic);
 
         RegisterSource(newSource, isMusic);
-        PlaySound(newSource, clip, isLoop, isMusic);
 
-        while (newSource != null && newSource.isPlaying && !isLoop)
-            yield return null;
+        for(int i=0;i<loopTime;i++)
+        {
+            PlaySound(newSource, clip, isLoop, isMusic);
+            while (newSource != null && newSource.isPlaying && !isLoop)
+                yield return null;
+        }
 
         if (newSource != null && !isLoop)
         {

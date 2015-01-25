@@ -28,6 +28,9 @@ public class UIButtonScale : MonoBehaviour
 			if (tweenTarget == null) tweenTarget = transform;
 			mScale = tweenTarget.localScale;
 		}
+
+        if (gameObject.GetComponent<SoundButtonClick>() == null)
+            gameObject.AddComponent<SoundButtonClick>();
 	}
 
 	void OnEnable () { if (mStarted) OnHover(UICamera.IsHighlighted(gameObject)); }
