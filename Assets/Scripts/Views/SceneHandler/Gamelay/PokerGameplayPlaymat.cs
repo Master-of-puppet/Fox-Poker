@@ -320,7 +320,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         if (responseData.pots.Length > 0)
             timeEffectPot /= responseData.pots.Length;
 
-        int numberPlayerNotFold = PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() != PokerPlayerState.fold && p.GetPlayerState() != PokerPlayerState.none).Count;
+        int numberPlayerNotFold = PokerObserver.Instance.GetTotalPlayerNotFold();
         bool isFaceUp = numberPlayerNotFold > 1 && PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
 
         if (isFaceUp)

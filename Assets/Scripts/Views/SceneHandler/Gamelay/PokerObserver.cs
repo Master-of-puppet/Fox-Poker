@@ -120,6 +120,11 @@ public class PokerObserver
     }
 
     public bool IsMainTurn { get { try { return Game.CurrentPlayer.userName == Game.MainPlayer.userName; } catch { return false; } } }
+
+    public int GetTotalPlayerNotFold()
+    {
+        return PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() != PokerPlayerState.fold && p.GetPlayerState() != PokerPlayerState.none).Count;
+    }
     #endregion
 
     #region BETTING VALUE

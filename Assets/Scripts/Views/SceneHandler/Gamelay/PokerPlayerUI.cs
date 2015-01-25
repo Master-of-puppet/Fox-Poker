@@ -122,7 +122,7 @@ public class PokerPlayerUI : MonoBehaviour
                 return;
 
             //FP-128 Người chơi bỏ bài, chờ ván mới, đứng xem không nhìn thấy bài tay của những người chơi so bài
-            bool isFaceUp = true;// PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
+            bool isFaceUp = PokerObserver.Instance.GetTotalPlayerNotFold() > 1;// PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
             if (isFaceUp)
             {
                 for (int i = 0; i < cardPlayer.cards.Length; i++)
