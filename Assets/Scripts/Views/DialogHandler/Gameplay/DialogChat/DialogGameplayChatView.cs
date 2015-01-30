@@ -13,6 +13,7 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
     public UIInput txtMessage;
     public UITextList chatArea;
     public GameObject btnSend;
+    public GameObject[] btnChatTemplates;
     #endregion
     string placeHolder = "Nhập nội dung";
 
@@ -20,13 +21,26 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
     {
         base.OnEnable();
         UIEventListener.Get(btnSend).onClick += OnClickButtonSend;
+        foreach (GameObject btn in btnChatTemplates) {
+            UIEventListener.Get(btn).onClick += OnClickChatTemplate ;
+        }
         PuMain.Dispatcher.onChatMessage += ShowMessage;
     }
     protected override void OnDisable()
     {
         base.OnDisable();
         UIEventListener.Get(btnSend).onClick -= OnClickButtonSend;
+        foreach (GameObject btn in btnChatTemplates)
+        {
+            UIEventListener.Get(btn).onClick -= OnClickChatTemplate;
+        }
         PuMain.Dispatcher.onChatMessage -= ShowMessage;
+    }
+
+    private void OnClickChatTemplate(GameObject go)
+    {
+        string textTemplate = go.GetComponentInChildren<UILabel>().text;
+        Puppet.API.Client.APIGeneric.SendChat(new DataChat(textTemplate, DataChat.ChatType.Public));
     }
     public override void ShowDialog(DialogGameplayChat data)
     {
