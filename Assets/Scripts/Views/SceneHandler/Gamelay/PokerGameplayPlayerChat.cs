@@ -10,7 +10,7 @@ public class PokerGameplayPlayerChat : MonoBehaviour {
         GameObject obj = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/PlayerChat"));
         obj.name = "Chat Content";
         obj.transform.parent = player.transform;
-        obj.transform.localPosition = new Vector3(-21f,85f);
+		obj.transform.localPosition = new Vector3(-70f,50f);
         obj.transform.localScale = Vector3.one;
         obj.GetComponent<PokerGameplayPlayerChat>().txtContent.text = chatContent;
         obj.GetComponent<PokerGameplayPlayerChat>().ReDraw();

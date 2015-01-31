@@ -9,6 +9,7 @@ using Puppet.Service;
 using System;
 using HoldemHand;
 using Puppet.Poker.Models;
+using System.Linq;
 
 public class LoginScene : MonoBehaviour, ILoginView
 {
@@ -32,8 +33,7 @@ public class LoginScene : MonoBehaviour, ILoginView
         presenter = new LoginPresenter(this);
         presenter.ViewStart();
 //		animation.Play ();
-	
-    }
+	}
     void OnEnable()
     {
 
