@@ -54,7 +54,15 @@ public class PokerPlayerUI : MonoBehaviour
     {
         if (message.Sender.userName == UserName)
         {
-            PokerGameplayPlayerChat.Create(message.Content, this);
+			if(message.Content.IndexOf(DialogGameplayChatView.EMOTICON_STICKER_CODE) != 0)
+			{
+            	PokerGameplayPlayerChat.Create(message.Content, this);
+			}
+			else
+			{
+				string name = "S_"+message.Content.Split ('_')[1]; 
+				EmoticonSticker.Create(name,gameObject.transform);
+			}
         }
     }
     void UpdateUI(PokerPlayerController player)

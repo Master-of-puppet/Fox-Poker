@@ -30,6 +30,7 @@ public class LoginScene : MonoBehaviour, ILoginView
     {
         presenter = new LoginPresenter(this);
         presenter.ViewStart();
+	
     }
     void OnEnable()
     {
