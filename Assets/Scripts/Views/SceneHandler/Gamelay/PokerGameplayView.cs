@@ -70,7 +70,7 @@ public class PokerGameplayView : MonoBehaviour
         PuMain.Dispatcher.onChatMessage -= ShowMessage;
     }
     private void ShowMessage(DataChat message) {
-		if (message.Content.IndexOf (DialogGameplayChatView.EMOTICON_STICKER_CODE) != 0) {
+		if (message.Content.IndexOf(DialogGameplayChatView.EMOTICON_CODE) != 0) {
 			dataChat.Add (message);
 			if (message.GetChatType () == DataChat.ChatType.Public) {
 					lbMessage.text = message.Sender.userName + " : " + message.Content;
