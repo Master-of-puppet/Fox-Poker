@@ -7,6 +7,7 @@ using UnityEngine;
 using Puppet.Poker;
 using System.Collections;
 using Puppet.Core.Model;
+using Puppet.Service;
 
 public class PokerPlayerUI : MonoBehaviour
 {
@@ -41,6 +42,7 @@ public class PokerPlayerUI : MonoBehaviour
     {
         PokerObserver.Instance.onTurnChange += Instance_dataTurnGame;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
+        UIEventListener.Get(gameObject).onClick += OnOpenProfile;
         PuMain.Dispatcher.onChatMessage += ShowMessage;
     }
 
@@ -49,6 +51,12 @@ public class PokerPlayerUI : MonoBehaviour
         PokerObserver.Instance.onTurnChange -= Instance_dataTurnGame;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
         PuMain.Dispatcher.onChatMessage -= ShowMessage;
+        UIEventListener.Get(gameObject).onClick -= OnOpenProfile;
+    }
+    private void OnOpenProfile(GameObject gobj) {
+        if (!PokerObserver.Instance.IsMainPlayer(UserName)) {
+            DialogService.Instance.ShowDialog(new DialogPlayerInfo(data));
+        }
     }
     private void ShowMessage(DataChat message)
     {
@@ -304,4 +312,5 @@ public class PokerPlayerUI : MonoBehaviour
             timerSlider.value = timeCountDown / totalCountDown;
         }
     }
+
 }
