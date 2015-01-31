@@ -12,6 +12,7 @@ TextureImporter:
     21300014: fox_sleep_7
     21300016: fox_sleep_8
     21300018: fox_sleep_9
+    21300020: fox_sleep
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -34,7 +35,7 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 1024
   textureSettings:
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: -1
     wrapMode: 1
@@ -58,10 +59,10 @@ TextureImporter:
         serializedVersion: 2
         x: 2
         y: 2
-        width: 103
+        width: 104
         height: 95
-      alignment: 0
-      pivot: {x: .5, y: .5}
+      alignment: 2
+      pivot: {x: .5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: fox_sleep_1
       rect:
@@ -70,8 +71,8 @@ TextureImporter:
         y: 2
         width: 104
         height: 95
-      alignment: 0
-      pivot: {x: .5, y: .5}
+      alignment: 2
+      pivot: {x: .5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: fox_sleep_2
       rect:
@@ -80,8 +81,8 @@ TextureImporter:
         y: 2
         width: 104
         height: 95
-      alignment: 0
-      pivot: {x: .5, y: .5}
+      alignment: 2
+      pivot: {x: .5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: fox_sleep_3
       rect:
@@ -90,8 +91,8 @@ TextureImporter:
         y: 2
         width: 104
         height: 95
-      alignment: 0
-      pivot: {x: .5, y: .5}
+      alignment: 2
+      pivot: {x: .5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: fox_sleep_4
       rect:
@@ -100,8 +101,8 @@ TextureImporter:
         y: 2
         width: 104
         height: 95
-      alignment: 0
-      pivot: {x: .5, y: .5}
+      alignment: 2
+      pivot: {x: .5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: fox_sleep_5
       rect:
@@ -110,18 +111,18 @@ TextureImporter:
         y: 2
         width: 104
         height: 95
-      alignment: 0
-      pivot: {x: .5, y: .5}
+      alignment: 2
+      pivot: {x: .5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: fox_sleep_6
       rect:
         serializedVersion: 2
         x: 647
-        y: 0
+        y: 2
         width: 104
-        height: 97
-      alignment: 0
-      pivot: {x: .5, y: .5}
+        height: 95
+      alignment: 2
+      pivot: {x: .5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: fox_sleep_7
       rect:
@@ -130,8 +131,8 @@ TextureImporter:
         y: 2
         width: 104
         height: 95
-      alignment: 0
-      pivot: {x: .5, y: .5}
+      alignment: 2
+      pivot: {x: .5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: fox_sleep_8
       rect:
@@ -140,8 +141,8 @@ TextureImporter:
         y: 2
         width: 104
         height: 95
-      alignment: 0
-      pivot: {x: .5, y: .5}
+      alignment: 2
+      pivot: {x: .5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: fox_sleep_9
       rect:
@@ -150,8 +151,8 @@ TextureImporter:
         y: 2
         width: 104
         height: 95
-      alignment: 0
-      pivot: {x: .5, y: .5}
+      alignment: 2
+      pivot: {x: .5, y: 1}
       border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
