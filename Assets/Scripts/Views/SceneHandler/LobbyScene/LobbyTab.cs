@@ -31,6 +31,13 @@ public class LobbyTab : MonoBehaviour {
 		return item;
 
 	}
+
+    void Awake()
+    {
+        if (GetComponent<SoundButtonClick>() == null)
+            gameObject.AddComponent<SoundButtonClick>();
+    }
+
 	void Start(){
 		UIEventListener.Get (gameObject).onClick += onChoiceTab;
 	}

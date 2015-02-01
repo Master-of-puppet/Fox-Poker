@@ -27,6 +27,13 @@ public class SoundManager : Singleton<SoundManager>
         MusicSources = new List<AudioSource>();
     }
 
+    void Awake()
+    { 
+        if(gameObject.GetComponent<AudioListener>() == null)
+            gameObject.AddComponent<AudioListener>();
+        DontDestroyOnLoad(gameObject);
+    }
+
     public static void StartSound(AudioSource source, AudioClip clip, int loopTime)
     {
         if (clip == null || !Application.isPlaying)
