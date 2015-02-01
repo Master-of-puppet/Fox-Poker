@@ -4,6 +4,7 @@ using Puppet.Poker.Datagram;
 using Puppet.Service;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class PokerGPSide : MonoBehaviour
@@ -20,6 +21,69 @@ public class PokerGPSide : MonoBehaviour
     void Awake()
     {
         wasBuyChip = false;
+    }
+
+    IEnumerator Start()
+    {
+        btnSit.SetActive(false);
+
+        while (PokerObserver.Game.gameDetails == null)
+            yield return new WaitForEndOfFrame();
+
+        bool active = false;
+        if(PokerObserver.Game.MAX_PLAYER_IN_GAME == 5)
+        {
+            if (CurrentSide == PokerSide.Slot_1)
+                active = true;
+            else if (CurrentSide == PokerSide.Slot_3)
+            {
+                CurrentSide = PokerSide.Slot_2;
+                active = true;
+            }
+            else if (CurrentSide == PokerSide.Slot_5)
+            {
+                CurrentSide = PokerSide.Slot_3;
+                active = true;
+            }
+            else if (CurrentSide == PokerSide.Slot_6)
+            {
+                CurrentSide = PokerSide.Slot_4;
+                active = true;
+            }
+            else if (CurrentSide == PokerSide.Slot_8)
+            {
+                CurrentSide = PokerSide.Slot_5;
+                active = true;
+            }
+            else if (CurrentSide == PokerSide.Slot_2)
+                CurrentSide = PokerSide.Slot_6;
+            else if (CurrentSide == PokerSide.Slot_4)
+                CurrentSide = PokerSide.Slot_7;
+            else if (CurrentSide == PokerSide.Slot_7)
+                CurrentSide = PokerSide.Slot_8;
+        }
+        else
+        {
+            active = true;
+        }
+
+        SetActiveButton(active);
+    }
+
+    void SetActiveButton(bool active)
+    {
+        if (PokerObserver.Game.MAX_PLAYER_IN_GAME == 5)
+        {
+            if (CurrentSide == PokerSide.Slot_6)
+                active = false;       
+            else if (CurrentSide == PokerSide.Slot_7)
+                active = false;
+            else if (CurrentSide == PokerSide.Slot_8)
+                active = false;
+            else if (CurrentSide == PokerSide.Slot_9)
+                active = false;
+        }
+        btnSit.SetActive(active);
     }
 
     void OnEnable()
@@ -53,7 +117,7 @@ public class PokerGPSide : MonoBehaviour
                     wasBuyChip = false;
                     break;
             }
-            NGUITools.SetActive(btnSit, showSit);
+            SetActiveButton(showSit);
         }
     }
 
@@ -83,7 +147,7 @@ public class PokerGPSide : MonoBehaviour
 
     void PlayerSitdown(bool success)
     {
-        NGUITools.SetActive(btnSit, success);
+        SetActiveButton(success);
     }
 
     void OnClickSit(GameObject go)
