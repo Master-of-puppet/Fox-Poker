@@ -16,7 +16,9 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
     public GameObject[] btnChatTemplates;
     #endregion
     string placeHolder = "Nhập nội dung";
-
+	public static string EMOTICON_CODE = "FPE";
+	public static string EMOTICON_STICKER_CODE = "FPES";
+	public static string EMOTICON_ANIMATION_CODE = "FPEA";
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -41,6 +43,8 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
     {
         string textTemplate = go.GetComponentInChildren<UILabel>().text;
         Puppet.API.Client.APIGeneric.SendChat(new DataChat(textTemplate, DataChat.ChatType.Public));
+		//Call to hide me
+		OnClickButton(null);
     }
     public override void ShowDialog(DialogGameplayChat data)
     {
@@ -49,9 +53,11 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
     }
     private void ShowMessage(DataChat message)
     {
-        data.datas.Add(message);
-        string msg = "[00ff00]" + message.Sender.userName + " : [-]" + message.Content;
-        chatArea.Add(msg);
+		if (message.Content.IndexOf (EMOTICON_CODE) != 0) {
+			data.datas.Add (message);
+			string msg = "[00ff00]" + message.Sender.userName + " : [-]" + message.Content;
+			chatArea.Add (msg);
+		}
     }
     private void initData()
     {
@@ -70,6 +76,13 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
         //Call to hide me
         OnClickButton(null);
     }
+	public void OnEmoticonClick(GameObject gobj){
+
+		string emoticonCode = gobj.name;
+		Puppet.API.Client.APIGeneric.SendChat(new DataChat(emoticonCode, DataChat.ChatType.Public));
+		//Call to hide me
+		OnClickButton(null);		
+	}
 }
 public class DialogGameplayChat : AbstractDialogData {
 
