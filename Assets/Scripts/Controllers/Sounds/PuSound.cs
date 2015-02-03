@@ -20,6 +20,7 @@ public enum SoundType
     UpdatePot,
     PlayerWin,
     GetMoney,
+    Countdown,
 }
 
 /// <summary>

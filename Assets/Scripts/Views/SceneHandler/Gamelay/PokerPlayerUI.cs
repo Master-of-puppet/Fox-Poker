@@ -314,6 +314,9 @@ public class PokerPlayerUI : MonoBehaviour
         realtime = 0f;
         timerSlider.value = 0;
     }
+
+    const float START_COUNTDOWN_SOUND_FROM = 6f;
+    float COUNTDOWN_ONE_SECOND = 0f;
     #endregion
 
     void Update()
@@ -323,6 +326,17 @@ public class PokerPlayerUI : MonoBehaviour
             timeCountDown -= (Time.realtimeSinceStartup - realtime);
             realtime = Time.realtimeSinceStartup;
             timerSlider.value = timeCountDown / totalCountDown;
+
+            if(timeCountDown <= START_COUNTDOWN_SOUND_FROM && PokerObserver.Instance.IsMainTurn)
+            {
+                if (COUNTDOWN_ONE_SECOND <= 0f)
+                {
+                    COUNTDOWN_ONE_SECOND = 1f;
+                    PuSound.Instance.Play(SoundType.Countdown);
+                }
+                else
+                    COUNTDOWN_ONE_SECOND -= Time.deltaTime;
+            }
         }
     }
 
