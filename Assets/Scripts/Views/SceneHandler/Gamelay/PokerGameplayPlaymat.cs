@@ -20,10 +20,12 @@ public class PokerGameplayPlaymat : MonoBehaviour
     public PokerPotManager potContainer;
     public GameObject objectDealer;
     public UILabel lbMyRanking;
+    public UILabel lbCountdown;
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
     List<PokerPotItem> _listPotMarkers = new List<PokerPotItem>();
+    float countdownStartGame;
 
     void Awake()
     {
@@ -74,6 +76,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     }
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
+        countdownStartGame = data.time / 1000f;
         ResetNewRound();
     }
 
@@ -132,6 +135,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     public List<PokerCard> pocket = new List<PokerCard>();
     void Instance_onEventUpdateHand(ResponseUpdateHand data)
     {
+        ResetCountdown();
         pocket.Clear();
         for (int i = 0; i < data.hand.Length; i++)
         {
@@ -570,4 +574,31 @@ public class PokerGameplayPlaymat : MonoBehaviour
         _listPotMarkers.Clear();
     }
     #endregion
+
+    void Update()
+    {
+        if(countdownStartGame > 0)
+        {
+            countdownStartGame -= Time.deltaTime;
+            int second = Mathf.FloorToInt(countdownStartGame);
+            lbCountdown.text = second.ToString();
+
+            if (second == 0)
+            {
+                lbCountdown.fontSize = 60;
+                lbCountdown.text = "Bắt đầu";
+            }
+            else if(second < 0)
+            {
+                ResetCountdown();
+            }
+        }
+    }
+
+    void ResetCountdown()
+    {
+        countdownStartGame = -1;
+        lbCountdown.fontSize = 100;
+        lbCountdown.text = "";
+    }
 }
