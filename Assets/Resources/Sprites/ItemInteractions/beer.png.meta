@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: 76b4a461948e9e24db043c6d20bc3fef
+guid: 9e371e9a239aa8a4eb6bb9d646b2fa2a
 TextureImporter:
   fileIDToRecycleName:
-    21300000: rose_0
-    21300002: rose_1
-    21300004: rose_2
-    21300006: rose_3
-    21300008: rose_4
-    21300010: rose_5
-    21300012: rose_6
-    21300014: rose_7
-    21300016: rose_8
-    21300018: rose_9
+    21300000: beer_0
+    21300002: beer_1
+    21300004: beer_2
+    21300006: finish_0
+    21300008: finish_1
+    21300010: finish_2
+    21300012: finish_3
+    21300014: finish_4
+    21300016: finish_5
+    21300018: finish_6
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -53,103 +53,103 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: rose_0
+    - name: beer_0
       rect:
         serializedVersion: 2
-        x: 9
+        x: 0
         y: 0
-        width: 76
-        height: 97
+        width: 120
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: beer_1
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 0
+        width: 120
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: beer_2
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 0
+        width: 120
+        height: 100
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: rose_1
+    - name: finish_0
       rect:
         serializedVersion: 2
-        x: 96
+        x: 360
         y: 0
-        width: 76
-        height: 97
+        width: 120
+        height: 100
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: rose_2
+    - name: finish_1
       rect:
         serializedVersion: 2
-        x: 181
+        x: 480
         y: 0
-        width: 76
-        height: 97
+        width: 120
+        height: 100
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: rose_3
+    - name: finish_2
       rect:
         serializedVersion: 2
-        x: 261
+        x: 600
         y: 0
-        width: 37
-        height: 97
+        width: 120
+        height: 100
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: rose_4
+    - name: finish_3
       rect:
         serializedVersion: 2
-        x: 307
+        x: 720
         y: 0
-        width: 76
-        height: 97
+        width: 120
+        height: 100
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: rose_5
+    - name: finish_4
       rect:
         serializedVersion: 2
-        x: 388
+        x: 840
         y: 0
-        width: 76
-        height: 97
+        width: 120
+        height: 100
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: rose_6
+    - name: finish_5
       rect:
         serializedVersion: 2
-        x: 470
+        x: 960
         y: 0
-        width: 92
-        height: 97
+        width: 120
+        height: 100
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: rose_7
+    - name: finish_6
       rect:
         serializedVersion: 2
-        x: 568
+        x: 1080
         y: 0
-        width: 95
-        height: 97
-      alignment: 0
-      pivot: {x: .5, y: .5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-    - name: rose_8
-      rect:
-        serializedVersion: 2
-        x: 675
-        y: 0
-        width: 97
-        height: 97
-      alignment: 0
-      pivot: {x: .5, y: .5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-    - name: rose_9
-      rect:
-        serializedVersion: 2
-        x: 779
-        y: 0
-        width: 111
-        height: 97
+        width: 120
+        height: 100
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
