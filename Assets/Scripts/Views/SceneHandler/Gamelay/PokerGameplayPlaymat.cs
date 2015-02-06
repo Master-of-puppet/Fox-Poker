@@ -565,7 +565,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
     #region NHỮNG NGƯỜI CHƠI ĐÃ THOÁT SẼ LƯU LẠI CHỜ ĐẾN KHI UPDATEPOT HOẶC FINISGGAME MỚI XÓA POT
     public void MarkerPot(PokerPotItem pot)
     {
-        _listPotMarkers.Add(pot);
+        if (_listPotMarkers.Contains(pot))
+            _listPotMarkers.Add(pot);
     }
 
     void UnMarkPot()

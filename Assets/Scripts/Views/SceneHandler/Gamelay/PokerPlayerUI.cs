@@ -88,7 +88,7 @@ public class PokerPlayerUI : MonoBehaviour
             string customTitle = string.Empty;
             if (PokerObserver.Instance.isWaitingFinishGame || (PokerObserver.Game.CurrentPlayer != null && PokerObserver.Game.CurrentPlayer.userName == player.userName))
                 labelUsername.text = data.userName;
-            else if (PokerObserver.Game.ListPlayerWaitNextGame.Contains(player.userName))
+            else if (PokerObserver.Game.ListPlayerWaitNextGame.Contains(player.userName) || (PokerObserver.Game.ListPlayerInGame.Count > 0 && player.GetPlayerState() == PokerPlayerState.none))
                 customTitle = "Chờ ván mới";
             else if (PokerObserver.Game.IsPlayerInGame(player.userName))
             {
