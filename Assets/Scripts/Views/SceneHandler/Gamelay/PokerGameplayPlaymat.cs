@@ -25,7 +25,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
     List<PokerPotItem> _listPotMarkers = new List<PokerPotItem>();
-    float countdownStartGame;
+    float timeStartGame;
 
     void Awake()
     {
@@ -76,7 +76,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     }
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
-        countdownStartGame = data.time / 1000f;
+        timeStartGame = Time.realtimeSinceStartup + (data.time / 1000f);
         ResetNewRound();
     }
 
@@ -513,6 +513,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
         }
 
         UpdatePositionPlayers(dataPlayer.player.userName);
+
+        if (PokerObserver.Game.ListPlayer.Count <= 1)
+            ResetCountdown();
     }
 
     void UpdatePositionPlayers(string ignorePlayer)
@@ -577,10 +580,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Update()
     {
-        if(countdownStartGame > 0)
+        float countdown = timeStartGame - Time.realtimeSinceStartup;
+        if (countdown > 0)
         {
-            countdownStartGame -= Time.deltaTime;
-            int second = Mathf.FloorToInt(countdownStartGame);
+            int second = Mathf.FloorToInt(countdown);
             lbCountdown.text = second.ToString();
 
             if (second == 0)
@@ -597,7 +600,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void ResetCountdown()
     {
-        countdownStartGame = -1;
+        timeStartGame = -1;
         lbCountdown.fontSize = 100;
         lbCountdown.text = "";
     }
