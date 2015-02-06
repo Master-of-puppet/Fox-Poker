@@ -10,6 +10,7 @@ using Puppet;
 using Puppet.Service;
 using Puppet.Utils;
 using HoldemHand;
+using Puppet.Core.Model;
 
 public class PokerGameplayPlaymat : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
     List<PokerPotItem> _listPotMarkers = new List<PokerPotItem>();
     float timeStartGame;
-
+    private static string ITEM_INTERACTION_PREFIX = "PII";
     void Awake()
     {
         objectDealer.SetActive(false);
@@ -42,6 +43,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
         PokerObserver.Instance.onUpdateRoomMaster += Instance_onUpdateRoomMaster;
+        PuMain.Dispatcher.onChatMessage += onShowMessage;
     }
 
     void OnDestroy()
@@ -55,8 +57,65 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onUpdatePot -= Instance_onUpdatePot;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
         PokerObserver.Instance.onUpdateRoomMaster -= Instance_onUpdateRoomMaster;
+        PuMain.Dispatcher.onChatMessage -= onShowMessage;
     }
+    private void onShowMessage(DataChat message)
+    {
+        if (message.GetChatType() == DataChat.ChatType.Private) {
+            string itemInteraction = message.Content;
+            if (itemInteraction.IndexOf(ITEM_INTERACTION_PREFIX) == 0)
+            {
+                PokerPlayerUI sender = dictPlayerObject[message.Sender.userName].GetComponent<PokerPlayerUI>();
+                PokerPlayerUI receiver = dictPlayerObject[message.ReceiverName].GetComponent<PokerPlayerUI>();
+                GameObject pointTo = new GameObject();
+                pointTo.name = "Point To";
+                pointTo.transform.parent = receiver.transform;
+                pointTo.transform.localScale  = Vector3.one;
+                pointTo.transform.localPosition = Vector3.zero;
+                pointTo.transform.parent = gameObject.transform;
+                Vector3 pointMoveTo = pointTo.transform.localPosition;
+                GameObject.Destroy(pointTo);
 
+                string nameSprite2D = message.Content.Split('_')[1];
+                Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/ItemInteractions/" + nameSprite2D);
+                GameObject pointFrom = new GameObject();
+                pointTo.name = "Point From";
+                pointFrom.transform.parent = sender.transform;
+                pointFrom.transform.localScale = Vector3.one;
+                pointFrom.transform.localPosition = Vector3.zero;
+                pointFrom.transform.parent = gameObject.transform;
+
+                pointFrom.AddComponent<UI2DSprite>().sprite2D = sprites[0];
+                pointFrom.GetComponent<UI2DSprite>().depth = 10;
+                pointFrom.GetComponent<UI2DSprite>().MakePixelPerfect();
+
+                pointFrom.AddComponent<UI2DSpriteAnimation>().frames = Array.FindAll<Sprite>(sprites,sp=>sp.name.Contains(nameSprite2D));
+                pointFrom.GetComponent<UI2DSpriteAnimation>().ignoreTimeScale = false;
+                pointFrom.GetComponent<UI2DSpriteAnimation>().framesPerSecond = 5;
+                pointFrom.GetComponent<UI2DSpriteAnimation>().loop = true;
+                pointFrom.GetComponent<UI2DSpriteAnimation>().Play();
+                Hashtable tweenValue = new Hashtable();
+                tweenValue.Add("item", pointFrom);
+                tweenValue.Add("spriteArray", Array.FindAll<Sprite>(sprites, sp => sp.name.Contains("finish")));
+                iTween.MoveTo(pointFrom, iTween.Hash("islocal", true, "position", pointMoveTo, "time", 1.5f, "oncomplete", "onMoveItemInteractionComplete", "oncompletetarget", gameObject, "oncompleteparams", tweenValue));
+            }
+        }
+    }
+    public void onMoveItemInteractionComplete(object vals)
+    {
+        Hashtable table = (Hashtable)vals;
+        GameObject animationObject =(GameObject) table["item"];
+        Sprite[] sprites = (Sprite[] )table["spriteArray"];
+        animationObject.GetComponent<UI2DSpriteAnimation>().Pause();
+        animationObject.GetComponent<UI2DSpriteAnimation>().frames = sprites;
+        animationObject.GetComponent<UI2DSpriteAnimation>().loop = false;
+        animationObject.GetComponent<UI2DSpriteAnimation>().Play();
+        StartCoroutine(destroyItemInteractive(animationObject, 2f));
+    }
+    IEnumerator destroyItemInteractive(GameObject gobj, float time) {
+        yield return new WaitForSeconds(time);
+        GameObject.Destroy(gobj);
+    }
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
         UnMarkPot();
@@ -605,4 +664,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
         lbCountdown.fontSize = 100;
         lbCountdown.text = "";
     }
+
+    public object spriteArray { get; set; }
 }
