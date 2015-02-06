@@ -126,7 +126,6 @@ public class PokerPlayerUI : MonoBehaviour
 
     public void SetTitle(string title)
     {
-        labelUsername.depth = string.IsNullOrEmpty(title) ? 5 : 105;
         labelUsername.text = string.IsNullOrEmpty(title) ? data.userName : title;
     }
 
