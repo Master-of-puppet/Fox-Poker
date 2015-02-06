@@ -21,6 +21,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     public GameObject objectDealer;
     public UILabel lbMyRanking;
     public UILabel lbCountdown;
+    public UISprite maskEffectFinishGame;
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
@@ -385,8 +386,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
         yield return new WaitForSeconds(waitTimeViewResultCard * 3 / 4f);
         #region UPDATE CARD
+        NGUITools.SetActive(maskEffectFinishGame.gameObject, true);
         foreach (ResponseResultSummary summary in responseData.pots)
         {
+            TweenColor tweenColor = TweenColor.Begin(maskEffectFinishGame.gameObject, timeEffectPot / 2, new Color(0f, 0f, 0f, .75f));
+
             ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
 
             List<string> lstWinner = new List<string>();
@@ -425,12 +429,18 @@ public class PokerGameplayPlaymat : MonoBehaviour
                         }
                     }
 
+                    listCardObject.ForEach(p => p.GetComponent<PokerCardObject>().SetIndexCard(100));
                     for (int i = 0; i < 20; i++)
                     {
+                        if (i == 9)
+                            TweenColor.Begin(maskEffectFinishGame.gameObject, timeEffectPot / 2, new Color(0f, 0f, 0f, 0f));
+
                         listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
                         yield return new WaitForSeconds(timeEffectPot / 20f);
                     }
                     listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
+                    listCardObject.ForEach(p => p.GetComponent<PokerCardObject>().SetIndexCard(-100));
+                    tweenColor.SetEndToCurrentValue();
                     playerWinRank.DestroyUI();
                     yield return new WaitForEndOfFrame();
                 }
@@ -445,6 +455,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 }
             }
         }
+        NGUITools.SetActive(maskEffectFinishGame.gameObject, false);
         #endregion
         yield return new WaitForSeconds(waitTimeViewResultCard / 4f);
 
