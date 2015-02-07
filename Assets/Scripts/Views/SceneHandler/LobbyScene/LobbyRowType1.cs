@@ -13,7 +13,7 @@ public class LobbyRowType1 : MonoBehaviour
     public DataLobby data;
     
 	private Action<DataLobby> action ;
-
+    int[] arrayIndex5Player = {0,2,4,5,7 };
     public static LobbyRowType1 Create(DataLobby data, UITable parent,Action<DataLobby> callBack)
     {
         GameObject go = GameObject.Instantiate(Resources.Load("Prefabs/Lobby/LobbyRowType1")) as GameObject;
@@ -21,7 +21,7 @@ public class LobbyRowType1 : MonoBehaviour
         go.transform.localPosition = Vector3.zero;
         go.transform.localScale = Vector3.one;
         go.GetComponent<UIDragScrollView>().scrollView = parent.GetComponentInParent<UIScrollView>();
-        go.name = data.roomId + ". " + "LobbyItem";
+        go.name = "#"+data.roomId;
         LobbyRowType1 item = go.GetComponent<LobbyRowType1>();
         item.setData(data);
 		item.action = callBack;
@@ -32,10 +32,35 @@ public class LobbyRowType1 : MonoBehaviour
         this.data = lobby;
 		double smallBind = lobby.gameDetails.betting / 2;
 		title.text = "Phòng : " + lobby.roomId + " - $" + smallBind+"/"+lobby.gameDetails.betting;
+        if (data.gameDetails.numPlayers == 5)
+        {
+            for (int i = 0; i < slots.Length; i++)
+            {
+                for (int j = 0; j < arrayIndex5Player.Length; j++)
+                {
+                    int index = arrayIndex5Player[j];
+                    if (i == index)
+                        slots[index].SetActive(true);
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < slots.Length; i++)
+            {
+                slots[i].SetActive(true);
+            }
+        }
 		if (data.users != null && data.users.Length > 0) {
-				foreach (DataPlayerController item in data.users) {
-						slots [item.slotIndex].GetComponent<LobbySlot> ().setData (item);
-				}
+            foreach (DataPlayerController item in data.users)
+            {
+                int index = item.slotIndex;
+                if (data.gameDetails.numPlayers == 5)
+                {
+                    index = arrayIndex5Player[item.slotIndex];
+                }
+                slots[index].GetComponent<LobbySlot>().setData(item);
+            }
 		}
     }
     void Start()
