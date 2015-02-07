@@ -54,9 +54,13 @@ public class PokerPlayerUI : MonoBehaviour
         UIEventListener.Get(gameObject).onClick -= OnOpenProfile;
     }
     private void OnOpenProfile(GameObject gobj) {
-        if (!PokerObserver.Instance.IsMainPlayer(UserName)) {
-            DialogService.Instance.ShowDialog(new DialogPlayerInfo(data));
-        }
+        if (!PokerObserver.Instance.IsMainPlayer (UserName)) {
+			DialogService.Instance.ShowDialog (new DialogPlayerInfo (data));
+		} else {
+			UserInfo userInfo = Puppet.API.Client.APIUser.GetUserInformation ();
+
+			DialogService.Instance.ShowDialog(new DialogShortProfile(userInfo));
+		}
     }
     private void ShowMessage(DataChat message)
     {

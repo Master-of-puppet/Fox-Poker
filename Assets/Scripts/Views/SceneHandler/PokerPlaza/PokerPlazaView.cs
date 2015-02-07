@@ -24,7 +24,7 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 
     private void OnBtnEventClick(GameObject go)
     {
-        throw new System.NotImplementedException();
+		DialogService.Instance.ShowDialog (new DialogEvent ());
     }
 
     private void OnBtnLeagueClick(GameObject go)
