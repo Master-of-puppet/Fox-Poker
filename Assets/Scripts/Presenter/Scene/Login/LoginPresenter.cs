@@ -75,6 +75,7 @@ public class LoginPresenter : ILoginPresenter
     public void ViewStart()
     {
         PuApp.Instance.StartApplication();
+        SoundManager.Instance.LoadOnStartApp();
         SocialService.Instance.onLoginComplete += onLoginComplete;
     }
 	#region ILoginPresenter implementation

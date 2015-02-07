@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using System;
 using Puppet;
 
+/// <summary>
+/// Author: vietdungvn88@gmail.com
+/// Class mapping AudioClip and type of sound in Foxpoker
+/// </summary>
+[PrefabAttribute(Name = "Prefabs/Sounds/SoundManager")]
 public class SoundManager : Singleton<SoundManager>
 {
     public List<AudioSource> SFXSources;
@@ -25,6 +30,10 @@ public class SoundManager : Singleton<SoundManager>
     {
         SFXSources = new List<AudioSource>();
         MusicSources = new List<AudioSource>();
+    }
+
+    public void LoadOnStartApp()
+    {
     }
 
     void Awake()
