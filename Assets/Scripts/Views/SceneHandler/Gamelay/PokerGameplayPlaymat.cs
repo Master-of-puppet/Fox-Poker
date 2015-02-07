@@ -86,7 +86,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 pointFrom.transform.parent = gameObject.transform;
 
                 pointFrom.AddComponent<UI2DSprite>().sprite2D = sprites[0];
-                pointFrom.GetComponent<UI2DSprite>().depth = 10;
+                pointFrom.GetComponent<UI2DSprite>().depth = 20;
                 pointFrom.GetComponent<UI2DSprite>().MakePixelPerfect();
 
                 pointFrom.AddComponent<UI2DSpriteAnimation>().frames = Array.FindAll<Sprite>(sprites,sp=>sp.name.Contains(nameSprite2D));
