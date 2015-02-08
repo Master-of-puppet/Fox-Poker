@@ -80,7 +80,7 @@ public class PokerPotManager : MonoBehaviour
 
                 StartCoroutine(PlaySound());
 
-                yield return new WaitForSeconds(.5f);
+                yield return new WaitForSeconds(.6f);
                 for (int i = listPotItems.Count - 1; i >= 0; i--)
                 {
                     if (listPotItems[i] != null && listPotItems[i].gameObject != null)
@@ -88,6 +88,7 @@ public class PokerPotManager : MonoBehaviour
                 }
                 listPotItems.Clear();
                 thisPot.SetAlpha(1);
+                yield return new WaitForEndOfFrame();
             }
             #endregion
         }
