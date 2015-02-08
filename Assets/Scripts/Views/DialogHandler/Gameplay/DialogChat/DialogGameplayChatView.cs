@@ -27,6 +27,7 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
             UIEventListener.Get(btn).onClick += OnClickChatTemplate ;
         }
         PuMain.Dispatcher.onChatMessage += ShowMessage;
+
     }
     protected override void OnDisable()
     {
@@ -38,7 +39,7 @@ public class DialogGameplayChatView : BaseDialog<DialogGameplayChat,DialogGamepl
         }
         PuMain.Dispatcher.onChatMessage -= ShowMessage;
     }
-
+	
     private void OnClickChatTemplate(GameObject go)
     {
         string textTemplate = go.GetComponentInChildren<UILabel>().text;

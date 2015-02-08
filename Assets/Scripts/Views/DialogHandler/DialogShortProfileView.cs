@@ -4,6 +4,7 @@ using Puppet.Service;
 using Puppet.Core.Model;
 using Puppet;
 using Puppet.Core.Network.Http;
+using Puppet.Poker.Models;
 
 [PrefabAttribute(Name = "Prefabs/Dialog/UserInfo/DialogShortProfile", Depth = 10, IsAttachedToCamera = true, IsUIPanel = true)]
 public class DialogShortProfileView : BaseDialog<DialogShortProfile, DialogShortProfileView> {
@@ -22,9 +23,9 @@ public class DialogShortProfileView : BaseDialog<DialogShortProfile, DialogShort
 	public override void ShowDialog (DialogShortProfile data)
 	{
 		base.ShowDialog (data);
-		lbUserName.text = data.info.info.userName;
-		lbChip.text = data.info.assets.content [0].value.ToString() ;
-		WWWRequest request = new WWWRequest (this, data.info.info.avatar, 5, 3);
+		lbUserName.text = data.info.userName;
+		lbChip.text = data.info.GetAvailableChip ().ToString();
+		WWWRequest request = new WWWRequest (this, data.info.avatar, 5, 3);
 		request.isFullUrl = true;
 		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
 			WWWResponse response = (WWWResponse)arg2;
@@ -37,8 +38,8 @@ public class DialogShortProfileView : BaseDialog<DialogShortProfile, DialogShort
 }
 public class DialogShortProfile : AbstractDialogData{
 	#region implemented abstract members of AbstractDialogData
-	public UserInfo info;
-	public DialogShortProfile(UserInfo info){
+	public PokerPlayerController info;
+	public DialogShortProfile(PokerPlayerController info){
 		this.info = info;
 	}
 	public override void ShowDialog ()

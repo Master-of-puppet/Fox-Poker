@@ -29,6 +29,7 @@ public class LobbyRowType2 : MonoBehaviour
     {
         this.data = data;
         lbRoomNumber.text = data.roomId.ToString();
+		lbPeopleNumber.text = data.users.Length + "/" + data.gameDetails.numPlayers;
     }
 
     void OnClick()

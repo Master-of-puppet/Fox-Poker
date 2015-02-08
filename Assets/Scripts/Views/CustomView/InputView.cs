@@ -12,7 +12,6 @@ public class InputView: MonoBehaviour {
 		UISprite btnClose = gameObject.GetComponentInChildren<UIAnchor>().transform.GetChild(0).GetComponent<UISprite>();
 		if (btnClose != null) {
 			btnClose.gameObject.SetActive(!string.IsNullOrEmpty(gameObject.GetComponent<UIInput>().value));
-			gameObject.GetComponent<UIInput>().isSelected = true;
 		}
 	}
 }

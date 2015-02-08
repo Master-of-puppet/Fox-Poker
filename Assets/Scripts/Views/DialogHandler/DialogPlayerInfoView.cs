@@ -45,7 +45,7 @@ public class DialogPlayerInfoView : BaseDialog<DialogPlayerInfo, DialogPlayerInf
     }
     public void initView() {
         lbUserName.text = data.player.userName;
-        lbChip.text = data.player.asset.content[0].value.ToString();
+        lbChip.text = data.player.GetAvailableChip().ToString();
 		WWWRequest request = new WWWRequest (this, data.player.avatar, 5, 3);
 		request.isFullUrl = true;
 		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
