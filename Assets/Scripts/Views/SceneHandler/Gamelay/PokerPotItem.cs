@@ -7,6 +7,8 @@ public class PokerPotItem : MonoBehaviour
 {
     #region UNITY EDITOR
     public UISprite spriteIcon;
+    public UIWidget[] allWidget;
+    public UIWidget[] hiddensOnMove;
     public UILabel labelCurrentbet;
     #endregion
     double _currentBet = 0;
@@ -38,4 +40,16 @@ public class PokerPotItem : MonoBehaviour
     }
     
     public double CurrentBet { get { return _currentBet; } }
+
+    public void SetAlpha(int alpha)
+    {
+        foreach(UIWidget widget in allWidget)
+            widget.color = new Color(widget.color.r, widget.color.g, widget.color.b, alpha);
+    }
+
+    public void OnMove()
+    {
+        foreach (UIWidget widget in hiddensOnMove)
+            NGUITools.SetActive(widget.gameObject, false);
+    }
 }

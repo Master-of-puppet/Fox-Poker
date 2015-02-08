@@ -1,58 +1,113 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Puppet.Poker.Datagram;
 
 public class PokerPotManager : MonoBehaviour
 {
-
     #region UnityEditor
     public UITable tablePot;
     public GameObject topLeftPosition,topRightPosition;
     #endregion
-    List<PokerPotItem> pots = new List<PokerPotItem>();
+    List<PokerPotItem> currentPots = new List<PokerPotItem>();
+    PokerGameplayPlaymat playmat;
 
-    public void UpdatePot(List<Puppet.Poker.Datagram.ResponseUpdatePot.DataPot> datas) 
+
+
+    void Awake()
     {
-        StartCoroutine(_UpdatePot(datas));
+        playmat = GameObject.FindObjectOfType<PokerGameplayPlaymat>();
     }
-    IEnumerator _UpdatePot(List<Puppet.Poker.Datagram.ResponseUpdatePot.DataPot> datas)
+
+
+    public void UpdatePot(List<ResponseUpdatePot.DataPot> dataPots) 
     {
-        foreach (Puppet.Poker.Datagram.ResponseUpdatePot.DataPot item in datas)
+        StartCoroutine(_UpdatePot(dataPots));
+    }
+    IEnumerator _UpdatePot(List<ResponseUpdatePot.DataPot> dataPots)
+    {
+        foreach (ResponseUpdatePot.DataPot data in dataPots)
         {
-            PokerPotItem currentPot = pots.Find(p => item.id == p.Pot.id);
-            if (currentPot != null)
+            bool isCreate = false;
+            PokerPotItem thisPot = currentPots.Find(p => data.id == p.Pot.id);
+            if (thisPot != null)
             {
-                currentPot.SetValue(item);
+                thisPot.SetValue(data);
             }
             else
             {
-                PokerPotItem potNew = PokerPotItem.Create(item);
-                switch (pots.Count)
+                thisPot = PokerPotItem.Create(data);
+                isCreate = true;
+                switch (currentPots.Count)
                 {
                     case 6:
-                        potNew.transform.parent = topLeftPosition.transform;
+                        thisPot.transform.parent = topLeftPosition.transform;
                         break;
                     case 7:
-                        potNew.transform.parent = topRightPosition.transform;
+                        thisPot.transform.parent = topRightPosition.transform;
                         break;
                     default :
-                        potNew.transform.parent = tablePot.transform;
+                        thisPot.transform.parent = tablePot.transform;
                         break;
-
                 }
-                potNew.transform.localScale = Vector3.one;
-                potNew.transform.localPosition = Vector3.zero;              
-                pots.Add(potNew);
+                thisPot.transform.localScale = Vector3.one;
+                thisPot.transform.localPosition = Vector3.zero;              
+                currentPots.Add(thisPot);
             }
+
+            #region EFFECT MOVE CHIP
+            if (data.isNew)
+            {
+                if(isCreate)
+                    thisPot.SetAlpha(0);
+                tablePot.Reposition();
+                yield return new WaitForEndOfFrame();
+
+                List<PokerPotItem> listPotItems = new List<PokerPotItem>();
+                for (int i = 0; i < data.contributors.Length; i++)
+                {
+                    PokerPlayerUI uiPlayer = playmat.GetPlayerController(data.contributors[i]);
+                    if (uiPlayer != null)
+                    {
+                        PokerPotItem pot = NGUITools.AddChild(uiPlayer.side.positionMoney, playmat.prefabBetObject).GetComponent<PokerPotItem>();
+                        pot.gameObject.transform.parent = thisPot.transform;
+                        pot.OnMove();
+                        listPotItems.Add(pot);
+                    }
+                }
+                foreach (PokerPotItem pot in listPotItems)
+                    iTween.MoveTo(pot.gameObject, iTween.Hash("islocal", true, "time", .5f, "position", Vector3.zero));
+
+                StartCoroutine(PlaySound());
+
+                yield return new WaitForSeconds(.5f);
+                for (int i = listPotItems.Count - 1; i >= 0; i--)
+                {
+                    if (listPotItems[i] != null && listPotItems[i].gameObject != null)
+                        GameObject.Destroy(listPotItems[i].gameObject);
+                }
+                listPotItems.Clear();
+                thisPot.SetAlpha(1);
+            }
+            #endregion
         }
         yield return new WaitForEndOfFrame();
         tablePot.Reposition();
     }
 
+    IEnumerator PlaySound()
+    {
+        PuSound.Instance.Play(SoundType.RaiseCost);
+        yield return new WaitForSeconds(0.2f);
+        PuSound.Instance.Play(SoundType.RaiseCost);
+        yield return new WaitForSeconds(0.2f);
+        PuSound.Instance.Play(SoundType.RaiseCost);
+    }
+
     public void DestroyAllPot() 
     {
-        foreach (PokerPotItem item in pots)
+        foreach (PokerPotItem item in currentPots)
             GameObject.Destroy(item.gameObject);
-        pots.Clear();
+        currentPots.Clear();
     }
 }

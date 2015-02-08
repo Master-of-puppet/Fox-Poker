@@ -423,29 +423,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
         
         #endregion
 
-        #region UPDATE POTS WHEN FINISH GAME
-        List<ResponseUpdatePot.DataPot> potFinishGame = new List<ResponseUpdatePot.DataPot>();
-        List<ResponseResultSummary> potSummaries = responseData.pots.ToList().OrderByDescending(p => p.players.Length).ToList();
-
-        foreach (ResponseResultSummary summary in potSummaries)
-        {
-            ResponseUpdatePot.DataPot pot = new ResponseUpdatePot.DataPot();
-            pot.id = summary.potId;
-            ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
-            if (playerWin != null)
-            {
-                if (PokerObserver.Instance.IsMainPlayer(playerWin.userName))
-                    PuSound.Instance.Play(SoundType.PlayerWin);
-
-                pot.value = playerWin.moneyExchange;
-                potFinishGame.Add(pot);
-            }
-        }
-        potContainer.DestroyAllPot();
-        yield return new WaitForEndOfFrame();
-        potContainer.UpdatePot(potFinishGame);
-        #endregion
-
         yield return new WaitForSeconds(waitTimeViewResultCard * 3 / 4f);
         #region UPDATE CARD
         foreach (ResponseResultSummary summary in responseData.pots)
@@ -454,8 +431,15 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
             List<string> lstWinner = new List<string>();
             foreach (ResponseMoneyExchange item in summary.players)
+            {
                 if (item.winner)
+                {
                     lstWinner.Add(item.userName);
+
+                    if (PokerObserver.Instance.IsMainPlayer(item.userName))
+                        PuSound.Instance.Play(SoundType.PlayerWin);
+                }
+            }
 
             if (potContainer != null && playerWin != null)
             {
@@ -537,7 +521,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
                 SetPositionAvatarPlayer(player.userName);
                 if(player.inTurn)
-                    dictPlayerObject[player.userName].GetComponent<PokerPlayerUI>().StartTimer(data.totalTime / 1000f, data.remainingTime / 1000f);
+                    GetPlayerController(player.userName).StartTimer(data.totalTime / 1000f, data.remainingTime / 1000f);
             }
             CreateHand(data.players, hands);
             CreateCardDeal(data.dealComminityCards);
@@ -545,6 +529,13 @@ public class PokerGameplayPlaymat : MonoBehaviour
             if(data.pot != null && data.pot.Length > 0)
                 potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(data.pot));
         }
+    }
+
+    public PokerPlayerUI GetPlayerController(string userName)
+    {
+        if(dictPlayerObject.ContainsKey(userName))
+            return dictPlayerObject[userName].GetComponent<PokerPlayerUI>();
+        return null;
     }
 
     void Instance_onUpdateRoomMaster(ResponseUpdateRoomMaster data)

@@ -43,6 +43,7 @@ public class PokerPlayerUI : MonoBehaviour
     {
         PokerObserver.Instance.onTurnChange += Instance_dataTurnGame;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
+        PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
         UIEventListener.Get(gameObject).onClick += OnOpenProfile;
         PuMain.Dispatcher.onChatMessage += ShowMessage;
     }
@@ -51,6 +52,7 @@ public class PokerPlayerUI : MonoBehaviour
     {
         PokerObserver.Instance.onTurnChange -= Instance_dataTurnGame;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
+        PokerObserver.Instance.onUpdatePot -= Instance_onUpdatePot;
         PuMain.Dispatcher.onChatMessage -= ShowMessage;
         UIEventListener.Get(gameObject).onClick -= OnOpenProfile;
     }
@@ -128,7 +130,8 @@ public class PokerPlayerUI : MonoBehaviour
             if (!string.IsNullOrEmpty(customTitle))
                 labelUsername.text = string.Format("[FFFF50]{0}[-]", customTitle);
 
-            LoadCurrentBet(player.currentBet);
+            if(player.currentBet > 0)
+                LoadCurrentBet(player.currentBet);
 
             if (PokerObserver.Game.Dealer == player.userName && PokerObserver.Game.IsPlayerInGame(player.userName))
                 playmat.SetDealerObjectToPlayer(player);
@@ -145,7 +148,7 @@ public class PokerPlayerUI : MonoBehaviour
         StopTimer();
 
         if (currentBet != null)
-            currentBet.gameObject.SetActive(false);
+            NGUITools.SetActive(currentBet.gameObject, false);
 
         ResponseFinishCardPlayer cardPlayer = Array.Find<ResponseFinishCardPlayer>(data.players, p => p.userName == this.data.userName);
         if (cardPlayer != null && cardPlayer.cards != null)
@@ -178,12 +181,20 @@ public class PokerPlayerUI : MonoBehaviour
             StopTimer();
     }
 
+    void Instance_onUpdatePot(ResponseUpdatePot obj)
+    {
+        NGUITools.SetActive(currentBet.gameObject, false);
+    }
+
     void LoadCurrentBet(double value)
     {
         if (side != null)
         {
             if (currentBet == null)
+            {
                 currentBet = NGUITools.AddChild(side.positionMoney, playmat.prefabBetObject).GetComponent<PokerPotItem>();
+                NGUITools.SetActive(currentBet.gameObject, false);
+            }
             else
             {
                 currentBet.transform.parent = side.positionMoney.transform;
@@ -209,7 +220,8 @@ public class PokerPlayerUI : MonoBehaviour
     IEnumerator SetCurrentBet()
     {
         yield return new WaitForSeconds(data.currentBet > 0 ? 1.0f : 0f);
-        currentBet.gameObject.SetActive(data.currentBet > 0);
+        if (data.currentBet > 0)
+            NGUITools.SetActive(currentBet.gameObject, true);
         currentBet.SetBet(data.currentBet);
     }
     PokerPotItem betAnim;
@@ -242,8 +254,11 @@ public class PokerPlayerUI : MonoBehaviour
 
     void OnDestroy()
     {
-        currentBet.transform.parent = playmat.transform;
-        playmat.MarkerPot(currentBet);
+        if (currentBet != null)
+        {
+            currentBet.transform.parent = playmat.transform;
+            playmat.MarkerPot(currentBet);
+        }
 
         data.onDataChanged -= playerModel_onDataChanged;
     }
