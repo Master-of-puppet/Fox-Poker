@@ -75,22 +75,68 @@ public class PokerPotManager : MonoBehaviour
                         listPotItems.Add(pot);
                     }
                 }
+                yield return new WaitForEndOfFrame();
+
                 foreach (PokerPotItem pot in listPotItems)
                     iTween.MoveTo(pot.gameObject, iTween.Hash("islocal", true, "time", .5f, "position", Vector3.zero));
 
                 StartCoroutine(PlaySound());
-
                 yield return new WaitForSeconds(.6f);
-                for (int i = listPotItems.Count - 1; i >= 0; i--)
+
+                while (listPotItems.Count > 0)
                 {
-                    if (listPotItems[i] != null && listPotItems[i].gameObject != null)
-                        GameObject.Destroy(listPotItems[i].gameObject);
+                    GameObject.Destroy(listPotItems[0].gameObject);
+                    listPotItems.RemoveAt(0);
+                    yield return new WaitForEndOfFrame();
                 }
-                listPotItems.Clear();
                 thisPot.SetAlpha(1);
                 yield return new WaitForEndOfFrame();
             }
             #endregion
+        }
+        yield return new WaitForEndOfFrame();
+        tablePot.Reposition();
+    }
+
+    public void SummaryPot(ResponseResultSummary data, float timeEffect)
+    {
+        StartCoroutine(_SummaryPot(data, timeEffect));
+    }
+    IEnumerator _SummaryPot(ResponseResultSummary data, float timeEffect)
+    {
+        PokerPotItem thisPot = currentPots.Find(p => data.potId == p.Pot.id);
+        if(thisPot != null)
+        {
+            List<PokerPotItem> listPotItems = new List<PokerPotItem>();
+            List<ResponseMoneyExchange> winnerPlayers = new List<ResponseMoneyExchange>(System.Array.FindAll<ResponseMoneyExchange>(data.players, p => p.winner));
+            foreach(ResponseMoneyExchange exchange in winnerPlayers)
+            {
+                PokerPlayerUI uiPlayer = playmat.GetPlayerController(exchange.userName);
+                if(exchange.moneyExchange > 0 && uiPlayer != null)
+                {
+                    PokerPotItem pot = NGUITools.AddChild(thisPot.gameObject, thisPot.gameObject).GetComponent<PokerPotItem>();
+                    pot.gameObject.transform.parent = uiPlayer.transform.parent;
+                    pot.OnMove();
+                    listPotItems.Add(pot);
+                }
+            }
+
+            currentPots.Remove(thisPot);
+            GameObject.Destroy(thisPot.gameObject);
+
+            foreach (PokerPotItem pot in listPotItems)
+                iTween.MoveTo(pot.gameObject, iTween.Hash("islocal", true, "time", timeEffect, "position", Vector3.zero));
+
+            StartCoroutine(PlaySound());
+
+            yield return new WaitForSeconds(timeEffect);
+            for (int i = listPotItems.Count - 1; i >= 0; i--)
+            {
+                GameObject.Destroy(listPotItems[i].gameObject);
+            }
+            listPotItems.Clear();
+            yield return new WaitForEndOfFrame();
+
         }
         yield return new WaitForEndOfFrame();
         tablePot.Reposition();

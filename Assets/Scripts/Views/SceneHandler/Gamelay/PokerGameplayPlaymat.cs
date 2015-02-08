@@ -424,7 +424,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         #endregion
 
         yield return new WaitForSeconds(waitTimeViewResultCard * 3 / 4f);
-        #region UPDATE CARD
+        #region UPDATE CARD PER POTS SUMMARY
         foreach (ResponseResultSummary summary in responseData.pots)
         {
             ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
@@ -452,6 +452,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
                         if (dictPlayerObject.ContainsKey(lstWinner[i]))
                             dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(true);
                 }
+
+                potContainer.SummaryPot(summary, timeEffectPot);
 
                 if (isFaceUp)
                 {
