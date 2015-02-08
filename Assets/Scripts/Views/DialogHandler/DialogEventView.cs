@@ -10,7 +10,10 @@ namespace Puppet.Service
         #region UnityEditor
         public UISprite foreground;
         public GameObject contentwebView;
+        public GameObject TopLeft, BottomRight;
         #endregion
+        float aTop, aLeft, aBottom, aRight;
+
 #if UNITY_ANDROID || UNITY_IOS
        
         protected override void OnEnable()
@@ -47,23 +50,7 @@ namespace Puppet.Service
 
 		private void SetWebView()
         {
-
-            //int uiFactor = UniWebViewHelper.RunningOnRetinaIOS() ? 2 : 1;
-            int uiFactor = 1;
-            UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);
-            float ratioHeight = ((float)mRoot.activeHeight / UniWebViewHelper.screenHeight) * uiFactor;
-            float ratioWidth = ((float)mRoot.manualWidth / UniWebViewHelper.screenWidth) * uiFactor;
-            int width = Mathf.FloorToInt(UniWebViewHelper.screenWidth * ratioWidth / uiFactor);
-            int height = Mathf.FloorToInt(UniWebViewHelper.screenHeight * ratioHeight / uiFactor);
-
-            int webMarginWidth = Mathf.FloorToInt(width - (foreground.width));
-            int webMarginHeight = Mathf.FloorToInt(height - (foreground.height));
-
-            int leftRight = Mathf.FloorToInt(webMarginWidth / (2 * ratioWidth));
-
-            int topbottom = Mathf.RoundToInt((webMarginHeight / (2 * ratioHeight)));
-            contentwebView.GetComponent<UniWebView>().insets = new UniWebViewEdgeInsets(Mathf.RoundToInt((topbottom +130) * ratioHeight), leftRight, Mathf.RoundToInt((topbottom - 20 ) * ratioHeight), leftRight);
-
+            contentwebView.GetComponent<UniWebView>().insets = new UniWebViewEdgeInsets(aTop, aLeft, aBottom, aRight);
         }
 
         private void OnEvalJavaScriptFinished(UniWebView webView, string result)
@@ -99,9 +86,22 @@ namespace Puppet.Service
             throw new System.NotImplementedException();
         }
 #endif
+
         public override void ShowDialog(DialogEvent data)
         {
             base.ShowDialog(data);
+            StartCoroutine(StartShowDialog());
+        }
+
+        IEnumerator StartShowDialog()
+        {
+            yield return new WaitForEndOfFrame();
+            Vector3 topLeft = UICamera.mainCamera.WorldToScreenPoint(TopLeft.transform.position);
+            Vector3 bottomRight = UICamera.mainCamera.WorldToScreenPoint(BottomRight.transform.position);
+            aTop = Screen.height - topLeft.y;
+            aLeft = topLeft.x;
+            aBottom = bottomRight.y;
+            aRight = Screen.width - bottomRight.x;
 #if UNITY_ANDROID || UNITY_IOS
             SetWebView();
 #endif
