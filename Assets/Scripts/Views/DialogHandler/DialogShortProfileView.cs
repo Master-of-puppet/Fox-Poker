@@ -3,6 +3,7 @@ using System.Collections;
 using Puppet.Service;
 using Puppet.Core.Model;
 using Puppet;
+using Puppet.Core.Network.Http;
 
 [PrefabAttribute(Name = "Prefabs/Dialog/UserInfo/DialogShortProfile", Depth = 10, IsAttachedToCamera = true, IsUIPanel = true)]
 public class DialogShortProfileView : BaseDialog<DialogShortProfile, DialogShortProfileView> {
@@ -23,6 +24,15 @@ public class DialogShortProfileView : BaseDialog<DialogShortProfile, DialogShort
 		base.ShowDialog (data);
 		lbUserName.text = data.info.info.userName;
 		lbChip.text = data.info.assets.content [0].value.ToString() ;
+		WWWRequest request = new WWWRequest (this, data.info.info.avatar, 5, 3);
+		request.isFullUrl = true;
+		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
+			WWWResponse response = (WWWResponse)arg2;
+			if(response.www.texture !=null){
+				avatar.mainTexture = response.www.texture;
+			}
+		};
+		request.Start (null);
 	}
 }
 public class DialogShortProfile : AbstractDialogData{

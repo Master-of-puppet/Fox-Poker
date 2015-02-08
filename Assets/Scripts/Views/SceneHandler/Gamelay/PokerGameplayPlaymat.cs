@@ -114,6 +114,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 		SoundType type = (SoundType)Enum.Parse(typeof(SoundType),animationObject.name);
 		PuSound.Instance.Play (type);
         StartCoroutine(destroyItemInteractive(animationObject, 2f));
+
     }
     IEnumerator destroyItemInteractive(GameObject gobj, float time) {
         yield return new WaitForSeconds(time);

@@ -8,6 +8,7 @@ using Puppet.Poker;
 using System.Collections;
 using Puppet.Core.Model;
 using Puppet.Service;
+using Puppet.Core.Network.Http;
 
 public class PokerPlayerUI : MonoBehaviour
 {
@@ -253,9 +254,15 @@ public class PokerPlayerUI : MonoBehaviour
         this.data = player;
         if (addEvent)
             data.onDataChanged += playerModel_onDataChanged;
-
         UpdateUI(player);
-
+		WWWRequest request = new WWWRequest (this, data.avatar, 5, 3);
+		request.isFullUrl = true;
+		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
+			WWWResponse response = (WWWResponse)arg2;
+			if(response.www.texture !=null)
+				texture.mainTexture = response.www.texture;
+		};
+		request.Start (null);
         Vector3 giftPosition = btnGift.transform.localPosition;
         if ((int)player.GetSide() > (int)Puppet.Poker.PokerSide.Slot_5)
         {

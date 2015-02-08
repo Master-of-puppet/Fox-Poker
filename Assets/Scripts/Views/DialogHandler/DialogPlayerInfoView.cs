@@ -4,6 +4,9 @@ using Puppet.Service;
 using Puppet.Poker.Models;
 using Puppet;
 using Puppet.Core.Model;
+using Puppet.Core.Network.Http;
+
+
 [PrefabAttribute(Name = "Prefabs/Dialog/Friend/DialogPlayerProfile", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
 public class DialogPlayerInfoView : BaseDialog<DialogPlayerInfo, DialogPlayerInfoView>
 {
@@ -43,6 +46,15 @@ public class DialogPlayerInfoView : BaseDialog<DialogPlayerInfo, DialogPlayerInf
     public void initView() {
         lbUserName.text = data.player.userName;
         lbChip.text = data.player.asset.content[0].value.ToString();
+		WWWRequest request = new WWWRequest (this, data.player.avatar, 5, 3);
+		request.isFullUrl = true;
+		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
+			WWWResponse response = (WWWResponse)arg2;
+			if(response.www.texture !=null){
+				avatar.mainTexture = response.www.texture;
+			}
+		};
+		request.Start (null);
     }
 }
 public class DialogPlayerInfo : AbstractDialogData
