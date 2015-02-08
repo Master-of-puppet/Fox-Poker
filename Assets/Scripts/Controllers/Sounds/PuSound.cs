@@ -21,6 +21,11 @@ public enum SoundType
     PlayerWin,
     GetMoney,
     Countdown,
+	beer,
+	eggs,
+	grenade,
+	rose,
+	tomato
 }
 
 /// <summary>

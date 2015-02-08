@@ -94,6 +94,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 pointFrom.GetComponent<UI2DSpriteAnimation>().framesPerSecond = 5;
                 pointFrom.GetComponent<UI2DSpriteAnimation>().loop = true;
                 pointFrom.GetComponent<UI2DSpriteAnimation>().Play();
+				pointFrom.name = nameSprite2D;
                 Hashtable tweenValue = new Hashtable();
                 tweenValue.Add("item", pointFrom);
                 tweenValue.Add("spriteArray", Array.FindAll<Sprite>(sprites, sp => sp.name.Contains("finish")));
@@ -110,6 +111,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
         animationObject.GetComponent<UI2DSpriteAnimation>().frames = sprites;
         animationObject.GetComponent<UI2DSpriteAnimation>().loop = false;
         animationObject.GetComponent<UI2DSpriteAnimation>().Play();
+		SoundType type = (SoundType)Enum.Parse(typeof(SoundType),animationObject.name);
+		PuSound.Instance.Play (type);
         StartCoroutine(destroyItemInteractive(animationObject, 2f));
     }
     IEnumerator destroyItemInteractive(GameObject gobj, float time) {
