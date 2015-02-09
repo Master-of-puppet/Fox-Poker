@@ -183,7 +183,8 @@ public class PokerPlayerUI : MonoBehaviour
 
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
-        NGUITools.SetActive(currentBet.gameObject, false);
+        if (currentBet != null)
+            NGUITools.SetActive(currentBet.gameObject, false);
     }
 
     void LoadCurrentBet(double value)
