@@ -12,7 +12,7 @@ namespace Puppet.Service
         public GameObject contentwebView;
         public GameObject TopLeft, BottomRight;
         #endregion
-        float aTop, aLeft, aBottom, aRight;
+        int aTop, aLeft, aBottom, aRight;
 
 #if UNITY_ANDROID || UNITY_IOS
        
@@ -98,10 +98,10 @@ namespace Puppet.Service
             yield return new WaitForEndOfFrame();
             Vector3 topLeft = UICamera.mainCamera.WorldToScreenPoint(TopLeft.transform.position);
             Vector3 bottomRight = UICamera.mainCamera.WorldToScreenPoint(BottomRight.transform.position);
-            aTop = Screen.height - topLeft.y;
-            aLeft = topLeft.x;
-            aBottom = bottomRight.y;
-            aRight = Screen.width - bottomRight.x;
+            aTop = Screen.height - Mathf.FloorToInt(topLeft.y);
+            aLeft = Mathf.FloorToInt(topLeft.x);
+            aBottom = Mathf.FloorToInt(bottomRight.y);
+            aRight = Screen.width - Mathf.FloorToInt(bottomRight.x);
 #if UNITY_ANDROID || UNITY_IOS
             SetWebView();
 #endif
