@@ -84,7 +84,7 @@ public class PuSetting
 
         protected override void AfterInit()
         {
-
+            IsDebug = UnityEngine.Debug.isDebugBuild;
         }
 
         public override void ActionPrintLog(ELogType type, object message)
