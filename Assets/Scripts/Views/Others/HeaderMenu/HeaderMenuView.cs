@@ -124,6 +124,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnSearch).onClick += OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick += OnLeagueClickCallBack;
 		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
+		UIEventListener.Get (formInfo).onClick += OnClickProfileCallBack;
 	}
 	void OnDisable(){
 		UIEventListener.Get (btnBack).onClick -= OnBackClickCallBack;
@@ -135,6 +136,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnSearch).onClick -= OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick -= OnLeagueClickCallBack;
 		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
+		UIEventListener.Get (formInfo).onClick -= OnClickProfileCallBack;
         presenter.ViewEnd();
 
 	}

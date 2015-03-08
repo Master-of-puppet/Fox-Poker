@@ -16,7 +16,7 @@ using UnityEngine;
 using Puppet.Core.Network.Http;
 
 
-[PrefabAttribute(Name = "Prefabs/Dialog/UserInfo/DialogInfo", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
+[PrefabAttribute(Name = "Prefabs/Dialog/UserInfo/DialogInfo", Depth = 6, IsAttachedToCamera = true, IsUIPanel = true)]
 public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 {
 	#region UnityEditor
@@ -28,11 +28,13 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 	{
 		base.OnEnable ();
 		UIEventListener.Get (btnViewStatictis).onClick += onClickViewStatictis;
+		UIEventListener.Get (btnEditAvatar).onClick += onClickBtnEdit;
 	}
 	protected override void OnDisable ()
 	{
 		base.OnDisable ();
 		UIEventListener.Get (btnViewStatictis).onClick -= onClickViewStatictis;
+		UIEventListener.Get (btnEditAvatar).onClick -= onClickBtnEdit;
 	}
 
 	void onClickViewStatictis (GameObject go)
@@ -40,6 +42,11 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 		DialogService.Instance.ShowDialog (new DialogStatistic());
 	}
 
+
+	void onClickBtnEdit (GameObject go)
+	{
+		DialogService.Instance.ShowDialog (new DialogChangeInfo (data.info)); 
+	}
 	#endregion
 	public override void ShowDialog (DialogInfo data)
 	{
