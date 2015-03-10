@@ -137,7 +137,10 @@ public class LoginPresenter : ILoginPresenter
             Logger.Log("============> " + message);
             ShowDialogErrorInMainThread(message);
         }
+        else
+        {
             
+        }
 	}
 
 	void onLoginComplete (SocialType arg1, bool arg2)

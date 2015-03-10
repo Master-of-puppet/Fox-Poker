@@ -10,11 +10,13 @@ using System.Collections;
 public class PuSetting
 {
 	public static string UniqueDeviceId;
+    public static string persistentDataPath;
 
 	public string sceneName;
 
     public PuSetting(string domain, string socketServer)
     {
+        persistentDataPath = Application.persistentDataPath;
         CurrentSetting setting = new CurrentSetting();
         PuMain.Setting = setting;
 		PuMain.Setting.Init();
@@ -22,6 +24,7 @@ public class PuSetting
 
         PuMain.Instance.Load();
         PuMain.Dispatcher.onChangeScene += ChangeScene;
+
     }
 
     void ChangeScene(EScene fromScene, EScene toScene)
@@ -61,8 +64,17 @@ public class PuSetting
 
     public void Update()
     {
-        if (PuMain.Setting.ActionUpdate != null)
-            PuMain.Setting.ActionUpdate();
+        PuMain.Setting.OnUpdate();
+    }
+
+    public void OnApplicationPause(bool pauseStatus)
+    {
+        PuMain.Setting.OnApplicationPause(pauseStatus);
+    }
+
+    public void OnApplicationQuit()
+    {
+        PuMain.Setting.OnApplicationQuit();
     }
 
     class CurrentSetting : DefaultSetting
@@ -120,7 +132,7 @@ public class PuSetting
 
         public override string PathCache
         {
-            get { return Path.Combine(Application.persistentDataPath, "Caching.save"); }
+            get { return Path.Combine(PuSetting.persistentDataPath, "Caching.save"); }
         }
 
         public override string UniqueDeviceIdentification

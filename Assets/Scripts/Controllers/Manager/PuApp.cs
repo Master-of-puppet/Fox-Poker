@@ -69,6 +69,18 @@ public class PuApp : Singleton<PuApp>
             setting.Update();
     }
 
+    void OnApplicationPause(bool pauseStatus)
+    {
+        if (setting != null)
+            setting.OnApplicationPause(pauseStatus);
+    }
+
+    void OnApplicationQuit()
+    {
+        if (setting != null)
+            setting.OnApplicationQuit();
+    }
+
     public void BackScene()
     {
         Puppet.API.Client.APIGeneric.BackScene((bool status, string message) => {
@@ -76,11 +88,6 @@ public class PuApp : Singleton<PuApp>
                 Logger.Log(message);
         });
     }
-
-	public void OnApplicationQuit()
-	{
-		PuMain.Socket.Disconnect();
-	}
 
     public void ExecuteFuntion(float delayTime, System.Action callback)
     {
