@@ -28,7 +28,11 @@ public class PokerPlazaPresenter : IPlazaPresenter
 
     public void PlayNow()
     {
-        APIPlaza.Play();
+        //APIPlaza.Play();
+        APILobby.QuickJoinLobby((status, message) =>
+        {
+            Puppet.Logger.Log("Quick Join Game: {0} - Message: {1}", status, message);
+        });
     }
 
     public void GetListQuest()

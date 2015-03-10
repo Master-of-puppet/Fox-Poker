@@ -8,7 +8,7 @@ using Puppet.Service;
 
 public class LobbyScene : MonoBehaviour,ILobbyView
 {
-    public GameObject btnCreateGame,btnHelp;
+    public GameObject btnCreateGame,btnHelp, btnPlayNow;
 	public UITable tableType1,tableType2,tableTab;
     bool isShowType1 = true;
 
@@ -55,6 +55,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     }
     void OnEnable()
     {
+        UIEventListener.Get(btnPlayNow).onClick += OnClickPlayNow;    
         UIEventListener.Get(btnCreateGame).onClick += OnClickCreateGame; 
         if(btnHelp != null)
 		    UIEventListener.Get(btnHelp).onClick += OnClickHelp; 
@@ -70,6 +71,14 @@ public class LobbyScene : MonoBehaviour,ILobbyView
         presenter.CreateLobby();
     }
 
+    private void OnClickPlayNow(GameObject go)
+    {
+        APILobby.QuickJoinLobby((status, message) =>
+        {
+            Puppet.Logger.Log("Quick Join Game: {0} - Message: {1}", status, message);
+        });
+    }
+
     private void OnCreateLobbyHandler(bool status, string message)
     {
         if (!status)
@@ -79,6 +88,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 
     void OnDisable()
     {
+        UIEventListener.Get(btnPlayNow).onClick -= OnClickPlayNow;
         UIEventListener.Get(btnCreateGame).onClick -= OnClickCreateGame;
         if (btnHelp != null)
 		    UIEventListener.Get(btnHelp).onClick -= OnClickHelp; 
