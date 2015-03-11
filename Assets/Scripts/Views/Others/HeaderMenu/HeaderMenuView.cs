@@ -19,7 +19,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	#region Unity Editor
 	public UITable tableButton,tableLeft;
-	public GameObject btnBack, btnCommon, btnRecharge, btnMessage,btnLeague , btnSettings, btnLobbyChangeTypeShow, btnSearch,btnUp;
+	public GameObject btnBack, btnCommon, btnRecharge, btnMessage,btnLeague , btnSettings, btnLobbyChangeTypeShow, btnSearch,btnUp,btnShowInfo;
 	public GameObject formInfo;
 	public GameObject logoInLobby;
 	public UITexture avatar;
@@ -124,7 +124,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnSearch).onClick += OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick += OnLeagueClickCallBack;
 		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
-		UIEventListener.Get (formInfo).onClick += OnClickProfileCallBack;
+		UIEventListener.Get (btnShowInfo).onClick += OnClickProfileCallBack;
 	}
 	void OnDisable(){
 		UIEventListener.Get (btnBack).onClick -= OnBackClickCallBack;
@@ -136,7 +136,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		UIEventListener.Get (btnSearch).onClick -= OnSearchClickCallBack;
 		UIEventListener.Get (btnLeague).onClick -= OnLeagueClickCallBack;
 		UIEventListener.Get (avatar.gameObject).onClick += OnClickProfileCallBack;
-		UIEventListener.Get (formInfo).onClick -= OnClickProfileCallBack;
+		UIEventListener.Get (btnShowInfo).onClick -= OnClickProfileCallBack;
         presenter.ViewEnd();
 
 	}
