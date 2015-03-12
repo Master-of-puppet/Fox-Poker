@@ -73,7 +73,7 @@ public class LobbyScene : MonoBehaviour,ILobbyView
 
     private void OnClickPlayNow(GameObject go)
     {
-        APILobby.QuickJoinLobby((status, message) =>
+        APILobby.QuickJoinLobby((status, message, data) =>
         {
             Puppet.Logger.Log("Quick Join Game: {0} - Message: {1}", status, message);
         });

@@ -29,7 +29,7 @@ public class PokerPlazaPresenter : IPlazaPresenter
     public void PlayNow()
     {
         //APIPlaza.Play();
-        APILobby.QuickJoinLobby((status, message) =>
+        APILobby.QuickJoinLobby((status, message, data) =>
         {
             Puppet.Logger.Log("Quick Join Game: {0} - Message: {1}", status, message);
         });
