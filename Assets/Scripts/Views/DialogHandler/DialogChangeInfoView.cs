@@ -9,10 +9,13 @@ using Puppet;
 [PrefabAttribute(Name = "Prefabs/Dialog/UserInfo/DialogChangeInfo", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
 public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfoView> {
 	#region UnityEditor
-	public UIInput userName,fullName,email,phoneNumber,address;
-	public GameObject btnSubmit;
-	public UIToggle toggleMale, toggleFemale;
+		public UIInput userName,fullName,email,phoneNumber,address;
+		public GameObject btnSubmit,btnOpenGalery;
+		public UIToggle toggleMale, toggleFemale;
+		public GameObject[] btnDefaultAvatars;
+		public UITexture avatar;
 	#endregion
+	bool isChangedAvatar = false;
 	public override void ShowDialog (DialogChangeInfo data)
 	{
 		base.ShowDialog (data);
@@ -26,6 +29,10 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 		UIEventListener.Get (phoneNumber.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick = onClickEditPhone;
 		UIEventListener.Get (address.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick = onClickEditAddress;
 		UIEventListener.Get (btnSubmit).onClick += onClickSubmit;
+		UIEventListener.Get (btnOpenGalery).onClick += onClickOpenGallery;
+		foreach (GameObject defaultAvatar in btnDefaultAvatars) {
+			UIEventListener.Get (defaultAvatar).onClick += onClickToDefaultAvatar;
+		} 
 	
 	}
 	protected override void OnDisable ()
@@ -36,6 +43,27 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 //		UIEventListener.Get (phoneNumber.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick -= onClickEditPhone;
 //		UIEventListener.Get (address.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick -= onClickEditAddress;
 		UIEventListener.Get (btnSubmit).onClick -= onClickSubmit;
+		UIEventListener.Get (btnOpenGalery).onClick -= onClickOpenGallery;
+		foreach (GameObject defaultAvatar in btnDefaultAvatars) {
+			UIEventListener.Get (defaultAvatar).onClick -= onClickToDefaultAvatar;
+		} 
+	}
+
+	void onClickOpenGallery (GameObject go)
+	{
+		NativeCommon.OpenGallery(delegate(Texture image) {
+			if(image !=null){
+				isChangedAvatar = true;
+				avatar.mainTexture = image;
+			}else{
+				isChangedAvatar = false;
+			}
+		});
+	}
+	void onClickToDefaultAvatar (GameObject go)
+	{
+		isChangedAvatar = true;
+		avatar.mainTexture = go.GetComponentInChildren<UITexture> ().mainTexture;
 	}
 
 	void onClickSubmit (GameObject go)
