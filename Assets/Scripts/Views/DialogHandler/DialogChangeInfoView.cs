@@ -4,6 +4,7 @@ using Puppet.Service;
 using Puppet.Core.Model;
 using Puppet.API.Client;
 using Puppet;
+using System.Text.RegularExpressions;
 
 
 [PrefabAttribute(Name = "Prefabs/Dialog/UserInfo/DialogChangeInfo", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
@@ -15,6 +16,7 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 		public GameObject[] btnDefaultAvatars;
 		public UITexture avatar;
 	#endregion
+	private static string EMAIL_REGEX = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
 	bool isChangedAvatar = false;
 	public override void ShowDialog (DialogChangeInfo data)
 	{
@@ -68,7 +70,26 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 
 	void onClickSubmit (GameObject go)
 	{
-		APIUser.ChangeUseInformationSpecial (userName.value, email.value, phoneNumber.value, OnSubmitChangeInfoCallBack);
+		int gender = toggleMale.value == true ? 0 : 1;
+		APIUser.ChangeUseInformation (userName.value,fullName.value,"","",gender,address.value,"",OnSubmitChangeInfoCallBack);
+		if (ValidateField ()) {
+			APIUser.ChangeUseInformationSpecial(userName.value,email.value,phoneNumber.value,null);
+		}
+	}
+	bool ValidateField(){
+
+		bool isEmail = Regex.IsMatch(email.value,EMAIL_REGEX, RegexOptions.IgnoreCase);
+		bool isPhoneNumber = (phoneNumber.value.Length == 10 || phoneNumber.value.Length == 11);
+		if (!isEmail){
+			DialogService.Instance.ShowDialog (new DialogMessage("Thông báo","Email không đúng định dạng",null));
+           return false;
+   		}
+   		else if(!isPhoneNumber){
+			DialogService.Instance.ShowDialog (new DialogMessage("Thông báo","Email không đúng định dạng",null));
+           return false;
+		}
+   		return true;
+
 	}
 
 	void OnSubmitChangeInfoCallBack (bool status, string message)
