@@ -40,7 +40,7 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 
 	void onClickSubmit (GameObject go)
 	{
-		APIUser.ChangeUseInformationSpecial (userName.value, email.value, phoneNumber.value, OnSubmitChangeInfoCallBack);
+		APIUser.ChangeUseInformationSpecial (email.value, phoneNumber.value, OnSubmitChangeInfoCallBack);
 	}
 
 	void OnSubmitChangeInfoCallBack (bool status, string message)
