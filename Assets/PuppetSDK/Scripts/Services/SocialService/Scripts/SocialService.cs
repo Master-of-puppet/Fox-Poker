@@ -109,5 +109,10 @@ namespace Puppet.Service
 	            action(isHasPermission);
 	        });
 	    }
+
+        public static void AppRequest(SocialType type, string message, string[] to, string title, Action<bool, string[]> onRequestComplete)
+        {
+            GetSocialNetwork(type).AppRequest(message, to, title, onRequestComplete);
+        }
 	}
 }

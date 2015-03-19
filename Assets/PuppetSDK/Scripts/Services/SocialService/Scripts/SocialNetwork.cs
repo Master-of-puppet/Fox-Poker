@@ -13,5 +13,6 @@ namespace Puppet.Service
 	    public abstract void SocialLogout();
 	    public abstract void checkPublishPermission(Action<bool> onGetFinishPermission);
 	    public abstract void Publish(string content, string url, Action<bool> onShareComplete);
+        public abstract void AppRequest(string message, string[] to, string title, Action<bool, string[]> onRequestComplete);
 	}
 }

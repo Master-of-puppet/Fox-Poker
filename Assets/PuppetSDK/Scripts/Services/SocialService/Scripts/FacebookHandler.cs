@@ -80,6 +80,30 @@ namespace Puppet.Service
 	        });
 	    }
 
+        public override void AppRequest(string message, string[] to, string title, Action<bool, string[]> onRequestComplete)
+        {
+            FB.AppRequest(message, to, null, null, null, null, title, (FBResult result) => {
+
+                bool status = false;
+                List<string> requestIds = new List<string>();
+
+                if (result != null && !string.IsNullOrEmpty(result.Text))
+                {
+                    Dictionary<string, object> dict = (Dictionary<string, object>)JsonUtil.Deserialize(result.Text);
+                    if(dict.ContainsKey("to"))
+                    {
+                        status = true;
+                        List<object> list = dict["to"] as List<object>;
+                        foreach(object o in list)
+                            requestIds.Add(o.ToString());
+                    }
+                }
+
+                if (onRequestComplete != null)
+                    onRequestComplete(status, requestIds.ToArray());
+            });
+        }
+
 	    private void OnInit()
 	    {
 	        Logger.Log("FB Init completed");
