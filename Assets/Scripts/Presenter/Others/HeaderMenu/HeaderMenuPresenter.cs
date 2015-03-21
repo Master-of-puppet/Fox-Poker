@@ -69,8 +69,14 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 
 	public void ShowDialogRecharge ()
 	{
-        DialogRecharge recharge = new DialogRecharge();
-        DialogService.Instance.ShowDialog(recharge);
+		APIGeneric.GetInfoRecharge((status, message, dataRecharge) =>
+		                           {
+			if(status){
+				DialogRecharge recharge = new DialogRecharge(dataRecharge);
+				DialogService.Instance.ShowDialog(recharge);
+			}
+		});
+
 	}
 
 	public void ShowDialogSettings ()

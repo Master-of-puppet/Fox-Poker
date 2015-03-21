@@ -189,8 +189,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 
 	void OnRechargeClickCallBack (GameObject go)
 	{
-		DialogRecharge recharge = new DialogRecharge ();
-		DialogService.Instance.ShowDialog (recharge);
+		presenter.ShowDialogRecharge ();
 	}
 
 	void OnMessageClickCallBack (GameObject go)

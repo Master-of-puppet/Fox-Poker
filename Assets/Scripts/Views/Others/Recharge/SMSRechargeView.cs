@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using Puppet.Core.Model;
+using Puppet.Core.Network.Http;
 
 public class SMSRechargeView : MonoBehaviour {
 
@@ -9,9 +11,9 @@ public class SMSRechargeView : MonoBehaviour {
 	public UILabel lbMoney;
 	#endregion
 
-	Action<SMSRecharge> actionClick;
+	Action<DataRecharge> actionClick;
 
-	SMSRecharge model;
+	DataRecharge model;
 	void OnEnable(){
 		UIEventListener.Get (gameObject).onClick += OnClicked;
 	}
@@ -26,16 +28,21 @@ public class SMSRechargeView : MonoBehaviour {
 	}
 	
 
-	public void SetData(SMSRecharge model,Action<SMSRecharge> action){
+	public void SetData(DataRecharge model,Action<DataRecharge> action){
 		this.model = model;
-		texture.mainTexture = this.model.texture;
-		lbMoney.text = model.money;
+		WWWRequest request = new WWWRequest (this, model.image, 5, 3);
+		request.isFullUrl = true;
+		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
+			WWWResponse response = (WWWResponse)arg2;
+			if(response.www.texture !=null){
+				texture.mainTexture = response.www.texture;
+			}
+		};
+		request.Start (null);
+
+		lbMoney.text = model.code_value;;
 		NGUITools.AddWidgetCollider (gameObject);
 		this.actionClick = action;
 	}
 
-}
-public class SMSRecharge{
-	public string money;
-	public Texture2D texture;
 }
