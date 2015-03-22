@@ -13,9 +13,13 @@ public class PuApp : Singleton<PuApp>
 	public bool changingScene;
     public PuSetting setting;
 
+    private int sleepTimeout;
+
     List<KeyValuePair<EMessage, string>> listMessage = new List<KeyValuePair<EMessage, string>>();
     protected override void Init()
     {
+        sleepTimeout = Screen.sleepTimeout;
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
         setting = new PuSetting("foxpokers.com", "foxpokers.com");
 		gameObject.AddComponent<LogViewer> ();
     }
@@ -77,6 +81,7 @@ public class PuApp : Singleton<PuApp>
 
     void OnApplicationQuit()
     {
+        Screen.sleepTimeout = sleepTimeout;
         if (setting != null)
             setting.OnApplicationQuit();
     }
