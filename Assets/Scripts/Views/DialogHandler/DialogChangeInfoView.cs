@@ -53,7 +53,7 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 
 	public void initView(){
 		userName.value = data.info.info.userName;
-		fullName.value = data.info.info.lastName + data.info.info.firstName;
+        fullName.value = data.info.info.lastName + data.info.info.firstName;
 		//email.value = data.info.info.;
 		//fullName.value = data.info.info.lastName + data.info.info.firstName;
 	}

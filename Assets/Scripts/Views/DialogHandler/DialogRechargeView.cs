@@ -46,6 +46,8 @@ public class DialogRechargeView : BaseDialog<DialogRecharge, DialogRechargeView>
 			Logger.Log("Send RechargeCard - Message: " + message);
 			panelInputCard.SetActive(false);
 			panelScrollCardAndSMS.SetActive(true);
+            if (status)
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", message, null));
 		});
 		}
 	}
