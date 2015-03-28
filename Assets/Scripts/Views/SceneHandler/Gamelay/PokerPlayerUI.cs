@@ -269,14 +269,8 @@ public class PokerPlayerUI : MonoBehaviour
         if (addEvent)
             data.onDataChanged += playerModel_onDataChanged;
         UpdateUI(player);
-		WWWRequest request = new WWWRequest (this, data.avatar, 5, 3);
-		request.isFullUrl = true;
-		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
-			WWWResponse response = (WWWResponse)arg2;
-			if(response.www.texture !=null)
-				texture.mainTexture = response.www.texture;
-		};
-		request.Start (null);
+        PuApp.Instance.GetImage(data.avatar, (_texture) => texture.mainTexture = _texture);
+
         Vector3 giftPosition = btnGift.transform.localPosition;
         if ((int)player.GetSide() > (int)Puppet.Poker.PokerSide.Slot_5)
         {

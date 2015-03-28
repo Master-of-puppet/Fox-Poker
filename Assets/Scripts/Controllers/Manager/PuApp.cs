@@ -7,6 +7,8 @@ using Puppet.Utils;
 using Puppet.Utils.Threading;
 using Puppet.Service;
 using Puppet.Core.Model;
+using Puppet.Core.Manager;
+using System;
 
 public class PuApp : Singleton<PuApp>
 {
@@ -122,6 +124,25 @@ public class PuApp : Singleton<PuApp>
            {
                DialogService.Instance.ShowDialog(new DialogMessage("Gửi lời mời.", "Không thể gửi lời mới cho bạn bè", null));
            }
+        });
+    }
+
+    public void GetImage(string path, Action<Texture2D> callback)
+    {
+        PuDLCache.Instance.HttpRequestCache(path, (status, error, bytes) =>
+        {
+            Texture2D texture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGBA32, false);
+            if(status)
+            {
+                texture.LoadImage(bytes);
+            }
+            else
+            {
+                Logger.Log("Get Images from path '{0}' error: {1}", path, error);
+            }
+
+            if (callback != null)
+                callback(texture);
         });
     }
 }

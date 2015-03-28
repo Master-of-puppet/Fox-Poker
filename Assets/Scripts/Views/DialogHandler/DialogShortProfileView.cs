@@ -25,15 +25,7 @@ public class DialogShortProfileView : BaseDialog<DialogShortProfile, DialogShort
 		base.ShowDialog (data);
 		lbUserName.text = data.info.userName;
 		lbChip.text = data.info.GetAvailableChip ().ToString();
-		WWWRequest request = new WWWRequest (this, data.info.avatar, 5, 3);
-		request.isFullUrl = true;
-		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
-			WWWResponse response = (WWWResponse)arg2;
-			if(response.www.texture !=null){
-				avatar.mainTexture = response.www.texture;
-			}
-		};
-		request.Start (null);
+        PuApp.Instance.GetImage(data.info.avatar, (texture) => avatar.mainTexture = texture);
 	}
 }
 public class DialogShortProfile : AbstractDialogData{
