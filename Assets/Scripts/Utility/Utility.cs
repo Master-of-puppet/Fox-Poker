@@ -10,6 +10,7 @@
 using System;
 using UnityEngine;
 using Puppet;
+using System.IO;
 
 public class Utility
 {
@@ -58,6 +59,29 @@ public class Utility
 			}
 		}
 	}
+    
+    public static class ReadData
+    {
+        public static string ReadDataWithKey(string filePath, string separation, string key)
+        {
+            if (File.Exists(filePath))
+            {
+                foreach (string s in File.ReadAllLines(filePath))
+                {
+                    string[] data = s.Split(separation.ToCharArray(), StringSplitOptions.None);
+                    if (data.Length > 1 && data[0] == key)
+                        return data[1];
+                }
+            }
+            return null;
+        }
+
+        public static string GetTrackId()
+        {
+            string path = Path.Combine(Application.streamingAssetsPath, "inject.txt");
+            return ReadDataWithKey(path, "=", "PTE_TRACK_ID");
+        }
+    }
 }
 
 

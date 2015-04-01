@@ -11,6 +11,7 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 	#region UnityEditor
 	public UIInput userName,fullName,email,phoneNumber,address;
 	public GameObject btnSubmit;
+    public UITexture avatar;
 	public UIToggle toggleMale, toggleFemale;
 	#endregion
 	public override void ShowDialog (DialogChangeInfo data)
@@ -53,8 +54,10 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 
 	public void initView(){
 		userName.value = data.info.info.userName;
-        fullName.value = data.info.info.lastName + data.info.info.firstName;
-		//email.value = data.info.info.;
+        Logger.Log("=============> " + data.info.info);
+		fullName.value = data.info.info.lastName + data.info.info.firstName;
+        
+        PuApp.Instance.GetImage(data.info.info.avatar, (texture) => avatar.mainTexture = texture);
 		//fullName.value = data.info.info.lastName + data.info.info.firstName;
 	}
 

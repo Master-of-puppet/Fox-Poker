@@ -144,6 +144,7 @@ namespace Puppet.Core.Network.Http
                 dataResponse.www = www;
                 dataResponse.Error = www.error;
                 dataResponse.Data = www.text;
+                dataResponse.Bytes = www.bytes;
 
                 //When complete download, Whether success or failure
                 if (_onResponse != null)

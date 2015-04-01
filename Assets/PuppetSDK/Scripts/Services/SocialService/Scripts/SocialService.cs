@@ -84,6 +84,11 @@ namespace Puppet.Service
 	        GetSocialNetwork(type).SocialLogout();
 	    }
 
+        public static string GetAppId(SocialType type)
+        {
+            return GetSocialNetwork(type).AppId;
+        }
+
 	    public static void SocialLogin(SocialType type)
 	    {
 	        GetSocialNetwork(type).SocialLogin();
@@ -112,7 +117,34 @@ namespace Puppet.Service
 
         public static void AppRequest(SocialType type, string message, string[] to, string title, Action<bool, string[]> onRequestComplete)
         {
-            GetSocialNetwork(type).AppRequest(message, to, title, onRequestComplete);
+            ProcessLogin(type, () => GetSocialNetwork(type).AppRequest(message, to, title, onRequestComplete));
         }
-	}
+
+        #region HANDLE LOGIN SOCIAL
+        static Action loginCallback;
+        private static void ProcessLogin(SocialType type, Action _loginCallback)
+        {
+            if (SocialService.GetSocialNetwork(type).IsLoggedIn)
+            {
+                if (_loginCallback != null)
+                    _loginCallback();
+            }
+            else
+            {
+                SocialService.Instance.onLoginComplete += LoginCallback;
+                loginCallback = _loginCallback;
+                SocialLogin(type);
+            }
+        }
+        private static void LoginCallback(SocialType type, bool status)
+        {
+            SocialService.Instance.onLoginComplete -= LoginCallback;
+            if(loginCallback != null)
+            {
+                loginCallback();
+                loginCallback = null;
+            }
+        }
+        #endregion
+    }
 }

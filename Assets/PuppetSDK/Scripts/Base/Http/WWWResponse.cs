@@ -11,6 +11,7 @@ namespace Puppet.Core.Network.Http
         string _error;
         string _data;
         public WWW www;
+        byte[] _bytes;
 
         public HttpStatusCode State
         {
@@ -28,6 +29,12 @@ namespace Puppet.Core.Network.Http
         {
             get { return _data; }
             set { _data = value; }
+        }
+
+        public byte[] Bytes 
+        { 
+            get { return _bytes; }
+            set { _bytes = value; }
         }
     }
 }

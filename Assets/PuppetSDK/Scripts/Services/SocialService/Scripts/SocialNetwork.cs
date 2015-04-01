@@ -5,6 +5,7 @@ namespace Puppet.Service
 	public abstract class SocialNetwork : ISocialNetwork
 	{
 	    public abstract string AccessToken { get; }
+        public abstract string AppId { get; }
 	    public virtual string UserId { get; set; }
 	    public abstract bool IsLoggedIn { get; }
 

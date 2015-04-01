@@ -162,9 +162,13 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		if (slideLevel.gameObject.activeSelf)
 			slideLevel.value = currentExp;
 	}
-	
-	
-	public void ShowError (string message)
+
+    public void ShowAvatar(Texture2D texture)
+    {
+        avatar.mainTexture = texture;
+    }
+
+    public void ShowError (string message)
 	{
 		throw new NotImplementedException ();
 	}

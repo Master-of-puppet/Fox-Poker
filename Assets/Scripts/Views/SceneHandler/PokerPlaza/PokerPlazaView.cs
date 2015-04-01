@@ -7,7 +7,7 @@ using Puppet.Service;
 public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 	public GameObject btnPlayNow,btnLeague,btnLobby,btnEvent,btnHelp;
 	void Start () {
-		HeaderMenuView.Instance.ShowInPlaza ();
+		HeaderMenuView.Instance.ShowInWorldGame();
         presenter = new PokerPlazaPresenter(this);
         UIEventListener.Get(btnPlayNow).onClick += this.OnBtnPlayNowClick;
         UIEventListener.Get(btnLobby).onClick += this.OnBtnLobbyClick;

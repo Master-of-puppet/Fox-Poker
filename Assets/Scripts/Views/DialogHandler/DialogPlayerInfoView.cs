@@ -46,15 +46,7 @@ public class DialogPlayerInfoView : BaseDialog<DialogPlayerInfo, DialogPlayerInf
     public void initView() {
         lbUserName.text = data.player.userName;
         lbChip.text = data.player.GetAvailableChip().ToString();
-		WWWRequest request = new WWWRequest (this, data.player.avatar, 5, 3);
-		request.isFullUrl = true;
-		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
-			WWWResponse response = (WWWResponse)arg2;
-			if(response.www.texture !=null){
-				avatar.mainTexture = response.www.texture;
-			}
-		};
-		request.Start (null);
+        PuApp.Instance.GetImage(data.player.avatar, (texture) => avatar.mainTexture = texture);
     }
 }
 public class DialogPlayerInfo : AbstractDialogData

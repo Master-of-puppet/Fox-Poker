@@ -30,6 +30,8 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 		view.ShowUserName(userInfo.info.userName);
 		if(userInfo.assets !=null && userInfo.assets.content.Length > 0)
 			view.ShowChip(userInfo.assets.content[0].value.ToString());
+        PuApp.Instance.GetImage(userInfo.info.avatar, (texture) => view.ShowAvatar(texture));
+        
 	}
 
 	public void OnBackPressed ()

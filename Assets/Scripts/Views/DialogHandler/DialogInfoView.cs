@@ -58,15 +58,7 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 	{
 		lbUserName.text = data.info.info.userName;
 		lbChip.text = data.info.assets.content [0].value.ToString ();
-		WWWRequest request = new WWWRequest (this, data.info.info.avatar, 5, 3);
-		request.isFullUrl = true;
-		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
-			WWWResponse response = (WWWResponse)arg2;
-			if(response.www.texture !=null){
-				avatar.mainTexture = response.www.texture;
-			}
-		};
-		request.Start (null);
+        PuApp.Instance.GetImage(data.info.info.avatar, (texture) => avatar.mainTexture = texture);
 	}
 }
 

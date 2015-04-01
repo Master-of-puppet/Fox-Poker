@@ -15,6 +15,11 @@ namespace Puppet.Service
 	        get { return FB.AccessToken; }
 	    }
 
+        public override string AppId 
+        {
+            get { return FB.AppId; }
+        }
+
 	    public override bool IsLoggedIn
 	    {
 	        get { return FB.IsLoggedIn; }
@@ -83,7 +88,6 @@ namespace Puppet.Service
         public override void AppRequest(string message, string[] to, string title, Action<bool, string[]> onRequestComplete)
         {
             FB.AppRequest(message, to, null, null, null, null, title, (FBResult result) => {
-
                 bool status = false;
                 List<string> requestIds = new List<string>();
 

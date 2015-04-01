@@ -132,7 +132,7 @@ public class PuSetting
 
         public override string PathCache
         {
-            get { return Path.Combine(PuSetting.persistentDataPath, "Caching.save"); }
+            get { return PuSetting.persistentDataPath; }
         }
 
         public override string UniqueDeviceIdentification

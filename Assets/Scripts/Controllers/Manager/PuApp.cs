@@ -7,15 +7,21 @@ using Puppet.Utils;
 using Puppet.Utils.Threading;
 using Puppet.Service;
 using Puppet.Core.Model;
+using Puppet.Core.Manager;
+using System;
 
 public class PuApp : Singleton<PuApp>
 {
 	public bool changingScene;
     public PuSetting setting;
 
+    private int sleepTimeout;
+
     List<KeyValuePair<EMessage, string>> listMessage = new List<KeyValuePair<EMessage, string>>();
     protected override void Init()
     {
+        sleepTimeout = Screen.sleepTimeout;
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
         setting = new PuSetting("foxpokers.com", "foxpokers.com");
 		gameObject.AddComponent<LogViewer> ();
     }
@@ -77,6 +83,7 @@ public class PuApp : Singleton<PuApp>
 
     void OnApplicationQuit()
     {
+        Screen.sleepTimeout = sleepTimeout;
         if (setting != null)
             setting.OnApplicationQuit();
     }
@@ -103,20 +110,40 @@ public class PuApp : Singleton<PuApp>
 
     public void RequestInviteApp(string message)
     {
-        Puppet.Service.SocialService.AppRequest(SocialType.Facebook, "", null, null, (status, requestIds) => 
+        SocialType type = SocialType.Facebook;
+        Puppet.Service.SocialService.AppRequest(type, message, null, null, (status, requestIds) => 
         {
-           if(status)
-           {
-               Puppet.API.Client.APIGeneric.SaveRequestFB(SocialService.GetSocialNetwork(SocialType.Facebook).UserId, requestIds, (saveStatus, saveMessage) =>
-               {
-                   string responseMessage = saveStatus ? "Bạn đã gửi lời mới thành công." : message;
-                   DialogService.Instance.ShowDialog(new DialogMessage("Gửi lời mời.", responseMessage, null));
-               });
-           }
-           else
-           {
-               DialogService.Instance.ShowDialog(new DialogMessage("Gửi lời mời.", "Không thể gửi lời mới cho bạn bè", null));
-           }
+            if(status)
+            {
+                Puppet.API.Client.APIGeneric.SaveRequestFB(SocialService.GetSocialNetwork(type).UserId, requestIds, (saveStatus, saveMessage) =>
+                {
+                    string responseMessage = saveStatus ? "Bạn đã gửi lời mới thành công." : saveMessage;
+                    DialogService.Instance.ShowDialog(new DialogMessage("Gửi lời mời.", responseMessage, null));
+                });
+            }
+            else
+            {
+                DialogService.Instance.ShowDialog(new DialogMessage("Gửi lời mời.", "Không thể gửi lời mới cho bạn bè", null));
+            }
+        });
+    }
+
+    public void GetImage(string path, Action<Texture2D> callback)
+    {
+        PuDLCache.Instance.HttpRequestCache(path, (status, error, bytes) =>
+        {
+            Texture2D texture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGBA32, false);
+            if(status)
+            {
+                texture.LoadImage(bytes);
+            }
+            else
+            {
+                Logger.Log("Get Images from path '{0}' error: {1}", path, error);
+            }
+
+            if (callback != null)
+                callback(texture);
         });
     }
 }

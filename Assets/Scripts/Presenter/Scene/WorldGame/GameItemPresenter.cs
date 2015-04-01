@@ -44,22 +44,7 @@ public class GameItemPresenter : IGameItemPresenter
 
     public void LoadImage()
     {
-        WWWRequest request = new WWWRequest((GameItem)view, data.icon, 30f, 0);
-        request.isFullUrl = true;
-        request.onResponse += (IHttpRequest currentRequest, IHttpResponse currentResponse) =>
-        {
-            WWWResponse response = (WWWResponse)currentResponse;
-            if (response.State == System.Net.HttpStatusCode.OK)
-            {
-                UnityEngine.Texture2D texture = response.www.texture;
-                texture.filterMode = FilterMode.Point;
-                texture.anisoLevel = 0;
-                texture.wrapMode = TextureWrapMode.Clamp;
-                view.ShowImage(texture);
-               
-            }
-        };
-        PuMain.WWWHandler.Request(request);
+        PuApp.Instance.GetImage(data.icon, (texture) => view.ShowImage(texture));
     }
 
     private IGameItemView view { get; set; }
