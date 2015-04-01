@@ -30,16 +30,8 @@ public class SMSRechargeView : MonoBehaviour {
 
 	public void SetData(DataRecharge model,Action<DataRecharge> action){
 		this.model = model;
-		WWWRequest request = new WWWRequest (this, model.image, 5, 3);
-		request.isFullUrl = true;
-		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
-			WWWResponse response = (WWWResponse)arg2;
-			if(response.www.texture !=null){
-				texture.mainTexture = response.www.texture;
-			}
-		};
-		request.Start (null);
-
+        PuApp.Instance.GetImage(model.image, (txture) => texture.mainTexture = txture);
+		
 		lbMoney.text = model.code_value;;
 		NGUITools.AddWidgetCollider (gameObject);
 		this.actionClick = action;

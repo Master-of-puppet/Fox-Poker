@@ -19,15 +19,7 @@ public class CardRechargeView : MonoBehaviour {
 	public void SetData(DataRecharge model,Action<DataRecharge> action){
 		this.model = model;
 		this.action = action;
-		WWWRequest request = new WWWRequest (this, model.image, 5, 3);
-		request.isFullUrl = true;
-		request.onResponse = delegate(IHttpRequest arg1, IHttpResponse arg2) {
-			WWWResponse response = (WWWResponse)arg2;
-			if(response.www.texture !=null){
-				texture.mainTexture = response.www.texture;
-			}
-		};
-		request.Start (null);
+        PuApp.Instance.GetImage(model.image, (txture) => texture.mainTexture = txture);
 		NGUITools.AddWidgetCollider (gameObject);
 	}
 
