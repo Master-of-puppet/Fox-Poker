@@ -115,7 +115,7 @@ public class PuApp : Singleton<PuApp>
         {
             if(status)
             {
-                Puppet.API.Client.APIGeneric.SaveRequestFB(SocialService.GetAppId(type), SocialService.GetSocialNetwork(type).UserId, requestIds, (saveStatus, saveMessage) =>
+                Puppet.API.Client.APIGeneric.SaveRequestFB(SocialService.GetSocialNetwork(type).UserId, requestIds, (saveStatus, saveMessage) =>
                 {
                     string responseMessage = saveStatus ? "Bạn đã gửi lời mới thành công." : saveMessage;
                     DialogService.Instance.ShowDialog(new DialogMessage("Gửi lời mời.", responseMessage, null));
