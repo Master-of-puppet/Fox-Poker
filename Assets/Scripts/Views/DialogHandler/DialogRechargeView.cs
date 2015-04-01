@@ -40,7 +40,7 @@ public class DialogRechargeView : BaseDialog<DialogRecharge, DialogRechargeView>
 	void onButtonSubmitCardClickListener (GameObject go)
 	{
 		if(txtSerial.value.Length > 0 && txtPassword.value.Length >0){
-		APIGeneric.RechargeCard(txtPassword.value, txtSerial.value, currentCard.provider, (status, message) =>
+			APIGeneric.RechargeCard(txtPassword.value, txtSerial.value,Utility.ReadData.GetTrackId(), currentCard.provider, (status, message) =>
    		{
 			Logger.Log("Send RechargeCard - Status: " + status);
 			Logger.Log("Send RechargeCard - Message: " + message);
