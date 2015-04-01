@@ -1,23 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using Puppet.Core.Model;
+using Puppet.Core.Network.Http;
 
 public class CardRechargeView : MonoBehaviour {
 	#region UnityEditor
 	public UITexture texture;
 	#endregion	
-	CardRecharge model;
-	Action<CardRecharge> action;
+	DataRecharge model;
+	Action<DataRecharge> action;
 	void OnEnable(){
 		UIEventListener.Get (gameObject).onClick += OnClicked;
 	}
 	void OnDisable(){
 		UIEventListener.Get (gameObject).onClick -= OnClicked;
 	}
-	public void SetData(CardRecharge model,Action<CardRecharge> action){
+	public void SetData(DataRecharge model,Action<DataRecharge> action){
 		this.model = model;
-		texture.mainTexture = model.texture;
 		this.action = action;
+        PuApp.Instance.GetImage(model.image, (txture) => texture.mainTexture = txture);
 		NGUITools.AddWidgetCollider (gameObject);
 	}
 
@@ -26,7 +28,4 @@ public class CardRechargeView : MonoBehaviour {
 		if (action != null)
 			action (model);
 	}
-}
-public class CardRecharge{
-	public Texture2D texture;
 }
