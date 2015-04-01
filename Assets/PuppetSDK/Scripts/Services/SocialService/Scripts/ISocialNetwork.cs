@@ -5,6 +5,7 @@ namespace Puppet.Service
 	public interface ISocialNetwork
 	{
 	    string AccessToken { get; }
+        string AppId { get; }
 	    string UserId { get; set; }
 	    bool IsLoggedIn { get; }
 

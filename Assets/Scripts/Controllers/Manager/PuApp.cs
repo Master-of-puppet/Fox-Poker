@@ -110,20 +110,21 @@ public class PuApp : Singleton<PuApp>
 
     public void RequestInviteApp(string message)
     {
-        Puppet.Service.SocialService.AppRequest(SocialType.Facebook, message, null, null, (status, requestIds) => 
+        SocialType type = SocialType.Facebook;
+        Puppet.Service.SocialService.AppRequest(type, message, null, null, (status, requestIds) => 
         {
-           if(status)
-           {
-               Puppet.API.Client.APIGeneric.SaveRequestFB(SocialService.GetSocialNetwork(SocialType.Facebook).UserId, requestIds, (saveStatus, saveMessage) =>
-               {
-                   string responseMessage = saveStatus ? "Bạn đã gửi lời mới thành công." : message;
-                   DialogService.Instance.ShowDialog(new DialogMessage("Gửi lời mời.", responseMessage, null));
-               });
-           }
-           else
-           {
-               DialogService.Instance.ShowDialog(new DialogMessage("Gửi lời mời.", "Không thể gửi lời mới cho bạn bè", null));
-           }
+            if(status)
+            {
+                Puppet.API.Client.APIGeneric.SaveRequestFB(SocialService.GetAppId(type), SocialService.GetSocialNetwork(type).UserId, requestIds, (saveStatus, saveMessage) =>
+                {
+                    string responseMessage = saveStatus ? "Bạn đã gửi lời mới thành công." : saveMessage;
+                    DialogService.Instance.ShowDialog(new DialogMessage("Gửi lời mời.", responseMessage, null));
+                });
+            }
+            else
+            {
+                DialogService.Instance.ShowDialog(new DialogMessage("Gửi lời mời.", "Không thể gửi lời mới cho bạn bè", null));
+            }
         });
     }
 

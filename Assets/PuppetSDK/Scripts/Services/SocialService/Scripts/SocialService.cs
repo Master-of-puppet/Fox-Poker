@@ -84,6 +84,11 @@ namespace Puppet.Service
 	        GetSocialNetwork(type).SocialLogout();
 	    }
 
+        public static string GetAppId(SocialType type)
+        {
+            return GetSocialNetwork(type).AppId;
+        }
+
 	    public static void SocialLogin(SocialType type)
 	    {
 	        GetSocialNetwork(type).SocialLogin();
@@ -121,11 +126,8 @@ namespace Puppet.Service
         {
             if (SocialService.GetSocialNetwork(type).IsLoggedIn)
             {
-                if (loginCallback != null)
-                {
-                    loginCallback();
-                    loginCallback = null;
-                }
+                if (_loginCallback != null)
+                    _loginCallback();
             }
             else
             {
