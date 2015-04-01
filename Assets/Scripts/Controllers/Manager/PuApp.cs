@@ -110,7 +110,7 @@ public class PuApp : Singleton<PuApp>
 
     public void RequestInviteApp(string message)
     {
-        Puppet.Service.SocialService.AppRequest(SocialType.Facebook, "", null, null, (status, requestIds) => 
+        Puppet.Service.SocialService.AppRequest(SocialType.Facebook, message, null, null, (status, requestIds) => 
         {
            if(status)
            {
