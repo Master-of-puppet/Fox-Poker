@@ -57,8 +57,10 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
     {
         BrowseImageService.Instance.BrowseImageFromGallary((status, texture) =>
         {
-            isChangedAvatar = true;
-            avatar.mainTexture = texture;
+            if (status) { 
+                isChangedAvatar = true;
+                avatar.mainTexture = texture;
+            }
         });
     }
     void onClickToDefaultAvatar(GameObject go)
@@ -74,7 +76,14 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 		if (ValidateField ()) {
             APIUser.ChangeUseInformationSpecial(email.value, phoneNumber.value, null);
 		}
+        if (isChangedAvatar)
+            APIUser.ChangeUseInformation(((Texture2D)avatar.mainTexture).EncodeToPNG(), OnChangeAvatarCallBack);
 	}
+
+    private void OnChangeAvatarCallBack(bool status, string message)
+    {
+        Logger.Log("========> " + status);
+    }
 	bool ValidateField(){
 
 		bool isEmail = Regex.IsMatch(email.value,EMAIL_REGEX, RegexOptions.IgnoreCase);
