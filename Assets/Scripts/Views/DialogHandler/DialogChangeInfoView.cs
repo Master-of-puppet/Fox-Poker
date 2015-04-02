@@ -54,9 +54,7 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 
 	public void initView(){
 		userName.value = data.info.info.userName;
-        Logger.Log("=============> " + data.info.info);
 		fullName.value = data.info.info.lastName + data.info.info.firstName;
-        
         PuApp.Instance.GetImage(data.info.info.avatar, (texture) => avatar.mainTexture = texture);
 		//fullName.value = data.info.info.lastName + data.info.info.firstName;
 	}
