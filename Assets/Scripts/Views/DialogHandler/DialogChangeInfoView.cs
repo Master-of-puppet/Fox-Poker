@@ -4,16 +4,20 @@ using Puppet.Service;
 using Puppet.Core.Model;
 using Puppet.API.Client;
 using Puppet;
+using System.Text.RegularExpressions;
 
 
 [PrefabAttribute(Name = "Prefabs/Dialog/UserInfo/DialogChangeInfo", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
 public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfoView> {
-	#region UnityEditor
-	public UIInput userName,fullName,email,phoneNumber,address;
-	public GameObject btnSubmit;
+    #region UnityEditor
+    public UIInput userName, fullName, email, phoneNumber, address;
+    public GameObject btnSubmit, btnOpenGalery;
+    public UIToggle toggleMale, toggleFemale;
+    public GameObject[] btnDefaultAvatars;
     public UITexture avatar;
-	public UIToggle toggleMale, toggleFemale;
-	#endregion
+    #endregion
+    private static string EMAIL_REGEX = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
+    bool isChangedAvatar = false;
 	public override void ShowDialog (DialogChangeInfo data)
 	{
 		base.ShowDialog (data);
@@ -22,11 +26,16 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 	protected override void OnEnable ()
 	{
 		base.OnEnable ();
-		UIEventListener.Get (fullName.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite>().gameObject).onClick = onClickEditFullName;
-		UIEventListener.Get (email.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick = onClickEditEmail;
-		UIEventListener.Get (phoneNumber.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick = onClickEditPhone;
-		UIEventListener.Get (address.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick = onClickEditAddress;
-		UIEventListener.Get (btnSubmit).onClick += onClickSubmit;
+        UIEventListener.Get(fullName.GetComponentInChildren<UIAnchor>().GetComponentInChildren<UISprite>().gameObject).onClick = onClickEditFullName;
+        UIEventListener.Get(email.GetComponentInChildren<UIAnchor>().GetComponentInChildren<UISprite>().gameObject).onClick = onClickEditEmail;
+        UIEventListener.Get(phoneNumber.GetComponentInChildren<UIAnchor>().GetComponentInChildren<UISprite>().gameObject).onClick = onClickEditPhone;
+        UIEventListener.Get(address.GetComponentInChildren<UIAnchor>().GetComponentInChildren<UISprite>().gameObject).onClick = onClickEditAddress;
+        UIEventListener.Get(btnSubmit).onClick += onClickSubmit;
+        UIEventListener.Get(btnOpenGalery).onClick += onClickOpenGallery;
+        foreach (GameObject defaultAvatar in btnDefaultAvatars)
+        {
+            UIEventListener.Get(defaultAvatar).onClick += onClickToDefaultAvatar;
+        } 
 	
 	}
 	protected override void OnDisable ()
@@ -36,12 +45,50 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 //		UIEventListener.Get (email.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick -= onClickEditEmail;
 //		UIEventListener.Get (phoneNumber.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick -= onClickEditPhone;
 //		UIEventListener.Get (address.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick -= onClickEditAddress;
-		UIEventListener.Get (btnSubmit).onClick -= onClickSubmit;
+        UIEventListener.Get(btnSubmit).onClick -= onClickSubmit;
+        UIEventListener.Get(btnOpenGalery).onClick -= onClickOpenGallery;
+        foreach (GameObject defaultAvatar in btnDefaultAvatars)
+        {
+            UIEventListener.Get(defaultAvatar).onClick -= onClickToDefaultAvatar;
+        } 
 	}
+
+    private void onClickOpenGallery(GameObject go)
+    {
+        BrowseImageService.Instance.BrowseImageFromGallary((status, texture) =>
+        {
+            isChangedAvatar = true;
+            avatar.mainTexture = texture;
+        });
+    }
+    void onClickToDefaultAvatar(GameObject go)
+    {
+        isChangedAvatar = true;
+        avatar.mainTexture = go.GetComponentInChildren<UITexture>().mainTexture;
+    }
 
 	void onClickSubmit (GameObject go)
 	{
-		APIUser.ChangeUseInformationSpecial (email.value, phoneNumber.value, OnSubmitChangeInfoCallBack);
+		int gender = toggleMale.value == true ? 0 : 1;
+		APIUser.ChangeUseInformation (fullName.value,"","",gender,address.value,"",OnSubmitChangeInfoCallBack);
+		if (ValidateField ()) {
+            APIUser.ChangeUseInformationSpecial(email.value, phoneNumber.value, null);
+		}
+	}
+	bool ValidateField(){
+
+		bool isEmail = Regex.IsMatch(email.value,EMAIL_REGEX, RegexOptions.IgnoreCase);
+		bool isPhoneNumber = (phoneNumber.value.Length == 10 || phoneNumber.value.Length == 11);
+		if (!isEmail){
+			DialogService.Instance.ShowDialog (new DialogMessage("Thông báo","Email không đúng định dạng",null));
+           return false;
+   		}
+   		else if(!isPhoneNumber){
+			DialogService.Instance.ShowDialog (new DialogMessage("Thông báo","Email không đúng định dạng",null));
+           return false;
+		}
+   		return true;
+
 	}
 
 	void OnSubmitChangeInfoCallBack (bool status, string message)
