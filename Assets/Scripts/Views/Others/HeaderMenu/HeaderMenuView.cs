@@ -100,6 +100,12 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		presenter.OnShowLobbyRowTypeCallBack = OnLobbyShowTypeHandler;
         presenter.onHandleQuit = onGameplayQuitCallback;
 	}
+
+    void OnDestroy()
+    {
+        if(presenter != null)
+            presenter.ViewEnd();
+    }
     
 	public void SetChangeTypeLobbyCallBack(Action callback){
 		lobbyChangeTypeCallBack = callback;
