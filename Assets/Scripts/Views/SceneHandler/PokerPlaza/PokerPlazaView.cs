@@ -3,18 +3,50 @@ using System.Collections;
 using Puppet;
 using Puppet.API.Client;
 using Puppet.Service;
+using System.Collections.Generic;
 
 public class PokerPlazaView : MonoBehaviour ,IPlazaView{
-	public GameObject btnPlayNow,btnLeague,btnLobby,btnEvent,btnHelp;
+	#region UnityEditor
+	public GameObject btnPromotionMission,btnPromotionDaily,btnPromotionFriend;
+	List<GameObject> btnEvents;
+	public GameObject btnPlayNow,btnLeague,btnLobby,btnEvent,btnHelp,btnReceiverEvent;
+	public UITable tableEvent,tablePromotion;
+	public UISprite indicatorEvent,indicatorPromotion;
+	#endregion
+
 	void Start () {
-		HeaderMenuView.Instance.ShowInWorldGame();
+		//HeaderMenuView.Instance.ShowInWorldGame();
         presenter = new PokerPlazaPresenter(this);
+		btnEvents = new List <GameObject>();
         UIEventListener.Get(btnPlayNow).onClick += this.OnBtnPlayNowClick;
         UIEventListener.Get(btnLobby).onClick += this.OnBtnLobbyClick;
         UIEventListener.Get(btnLeague).onClick += this.OnBtnLeagueClick;
         UIEventListener.Get(btnEvent).onClick += this.OnBtnEventClick;
 		UIEventListener.Get(btnHelp).onClick += this.OnBtnHelpClick;
+		UIEventListener.Get (btnPromotionMission).onClick += this.OnClickPromotionMission;
+		UIEventListener.Get (btnPromotionDaily).onClick += this.OnClickPromotionDaily;
+		UIEventListener.Get (btnPromotionFriend).onClick += this.OnClickPromotionFriend;
+		tablePromotion.GetComponent<UICenterOnChild> ().onCenter += onTableCentered;
+	}
 
+	void OnClickPromotionMission (GameObject go)
+	{
+
+	}
+
+	void OnClickPromotionDaily (GameObject go)
+	{
+
+	}
+
+	void OnClickPromotionFriend (GameObject go)
+	{
+		DialogService.Instance.ShowDialog (new DialogListFriend(new List<Puppet.Core.Model.UserInfo>()));
+	}
+
+	void onTableCentered (GameObject go)
+	{
+		Debug.Log("==============> " + go.name + go.gameObject.transform.localPosition);
 	}
 
 	void OnBtnHelpClick (GameObject go)
