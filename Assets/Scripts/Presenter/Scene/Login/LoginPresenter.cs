@@ -94,11 +94,13 @@ public class LoginPresenter : ILoginPresenter
     }
 	public void LoginWithUserName (string username, string password)
 	{
+        LoadingView.Instance.Show(false);
 		APILogin.GetAccessToken (username, password,GetAccessTokenCallBack);
 	}
 
 	public void GetAccessTokenWithSocial (string accessToken)
 	{
+        LoadingView.Instance.Show(false);
 		APILogin.GetAccessTokenFacebook (accessToken, OnGetAccessTokenWithFacebookCallBack);
 	}
 
@@ -111,6 +113,7 @@ public class LoginPresenter : ILoginPresenter
 	{
 	
 		if (data.ContainsKey ("suggestUser")) {
+            LoadingView.Instance.Show(true) ;
 			DialogService.Instance.ShowDialog (new DialogRegister (data ["suggestUser"].ToString(), RegisterComplete));
 		} else if (data.ContainsKey ("accessToken")) {
 			LoginWithAccessToken(data["accessToken"].ToString());
@@ -134,12 +137,11 @@ public class LoginPresenter : ILoginPresenter
 	{
         if (!status)
         {
-            Logger.Log("============> " + message);
             ShowDialogErrorInMainThread(message);
         }
         else
         {
-            
+            LoadingView.Instance.Show(true);   
         }
 	}
 
@@ -153,6 +155,7 @@ public class LoginPresenter : ILoginPresenter
     {
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
+            LoadingView.Instance.Show(true);
             view.ShowError(message);
         });
 

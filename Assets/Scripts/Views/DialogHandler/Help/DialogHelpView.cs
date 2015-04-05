@@ -11,7 +11,9 @@ namespace Puppet.Service
         public UIToggle btnFAQ, btnRule, btnExp, btnFeedBack;
         public UISprite foreground;
         public GameObject contentFeedBack, contentwebView;
+        public GameObject TopLeft, BottomRight;
         #endregion
+        int aTop, aLeft, aBottom, aRight;
 #if UNITY_ANDROID || UNITY_IOS
        
         protected override void OnEnable()
@@ -22,7 +24,6 @@ namespace Puppet.Service
             EventDelegate.Add(btnExp.onChange, OnBtnEXPChanged);
             EventDelegate.Add(btnFeedBack.onChange, OnBtnFeedBackChanged);
             initEventWebView();
-//			SetWebView ();
         }
         private void initEventWebView()
         {
@@ -40,8 +41,19 @@ namespace Puppet.Service
                 contentwebView.GetComponent<UniWebView>().OnEvalJavaScriptFinished -= OnEvalJavaScriptFinished;
             }
         }
-
-
+        IEnumerator StartShowDialog()
+        {
+            yield return new WaitForEndOfFrame();
+            Vector3 topLeft = UICamera.mainCamera.WorldToScreenPoint(TopLeft.transform.position);
+            Vector3 bottomRight = UICamera.mainCamera.WorldToScreenPoint(BottomRight.transform.position);
+            aTop = Screen.height - Mathf.FloorToInt(topLeft.y);
+            aLeft = Mathf.FloorToInt(topLeft.x);
+            aBottom = Mathf.FloorToInt(bottomRight.y);
+            aRight = Screen.width - Mathf.FloorToInt(bottomRight.x);
+#if UNITY_ANDROID || UNITY_IOS
+            SetWebView();
+#endif
+        }
 
         protected override void OnDisable()
         {
@@ -57,21 +69,7 @@ namespace Puppet.Service
 		private void SetWebView()
         {
 
-            //int uiFactor = UniWebViewHelper.RunningOnRetinaIOS() ? 2 : 1;
-            int uiFactor = 1;
-            UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);
-            float ratioHeight = ((float)mRoot.activeHeight / UniWebViewHelper.screenHeight) * uiFactor;
-            float ratioWidth = ((float)mRoot.manualWidth / UniWebViewHelper.screenWidth) * uiFactor;
-            int width = Mathf.FloorToInt(UniWebViewHelper.screenWidth * ratioWidth / uiFactor);
-            int height = Mathf.FloorToInt(UniWebViewHelper.screenHeight * ratioHeight / uiFactor);
-
-            int webMarginWidth = Mathf.FloorToInt(width - (foreground.width));
-            int webMarginHeight = Mathf.FloorToInt(height - (foreground.height));
-
-            int leftRight = Mathf.FloorToInt(webMarginWidth / (2 * ratioWidth));
-
-            int topbottom = Mathf.RoundToInt((webMarginHeight / (2 * ratioHeight)));
-            contentwebView.GetComponent<UniWebView>().insets = new UniWebViewEdgeInsets(Mathf.RoundToInt((topbottom +130) * ratioHeight), leftRight, Mathf.RoundToInt((topbottom - 20 ) * ratioHeight), leftRight);
+            contentwebView.GetComponent<UniWebView>().insets = new UniWebViewEdgeInsets(aTop, aLeft, aBottom, aRight);
 
         }
         private void OnBtnFeedBackChanged()
@@ -169,8 +167,8 @@ namespace Puppet.Service
         public override void ShowDialog(DialogHelp data)
         {
             base.ShowDialog(data);
+            StartCoroutine(StartShowDialog());
 #if UNITY_ANDROID || UNITY_IOS
-            SetWebView();
             btnFAQ.value = true;
 #endif
         }

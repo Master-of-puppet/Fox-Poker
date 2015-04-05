@@ -32,7 +32,6 @@ public class LoginScene : MonoBehaviour, ILoginView
     {
         presenter = new LoginPresenter(this);
         presenter.ViewStart();
-//		animation.Play ();
 	}
     void OnEnable()
     {
@@ -74,10 +73,7 @@ public class LoginScene : MonoBehaviour, ILoginView
                 idsCard.Add(new PokerCard(items));
             }
 
-        }
-       
-        Logger.Log("========> " + HandEvaluatorConvert.ConvertPokerCardsToString(idsCard)); 
-        
+        }        
     }
 
     void onBtnLoginClick(GameObject gobj)
