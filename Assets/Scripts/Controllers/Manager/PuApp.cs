@@ -48,6 +48,7 @@ public class PuApp : Singleton<PuApp>
 
 	void Dispatcher_onDailyGift(DataDailyGift obj)
 	{
+        this.dailyGift = obj;
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
             DialogService.Instance.ShowDialog(new DialogPromotion(obj));
@@ -146,4 +147,6 @@ public class PuApp : Singleton<PuApp>
                 callback(texture);
         });
     }
+
+    public DataDailyGift dailyGift { get; set; }
 }
