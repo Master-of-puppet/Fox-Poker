@@ -11,7 +11,7 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 	#region UnityEditor
 	public GameObject[] btnFreeGold;
 	public List<GameObject> btnEvents;
-	public GameObject btnPlayNow,btnLeague,btnLobby,btnEvent,btnHelp,btnReceiverEvent;
+	public GameObject btnPlayNow,btnLeague,btnLobby,btnEvent,btnHelp,btnReceiverEvent,btnReplay;
 	public UITable tableEvent,tablePromotion;
     public UISprite indicatorEvent, indicatorPromotion;
 	#endregion
@@ -25,6 +25,7 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
         UIEventListener.Get(btnLeague).onClick += this.OnBtnLeagueClick;
         UIEventListener.Get(btnEvent).onClick += this.OnBtnEventClick;
 		UIEventListener.Get(btnHelp).onClick += this.OnBtnHelpClick;
+        UIEventListener.Get(btnReplay).onClick += this.OnBtnHelpClick;
         foreach (GameObject item in btnFreeGold)
         {
             UIEventListener.Get(item).onClick += this.OnClickPromotion;
@@ -92,6 +93,7 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
         UIEventListener.Get(btnPlayNow).onClick -= this.OnBtnPlayNowClick;
         UIEventListener.Get(btnLobby).onClick -= this.OnBtnLobbyClick;
 		UIEventListener.Get(btnHelp).onClick -= this.OnBtnHelpClick;
+        UIEventListener.Get(btnReplay).onClick -= this.OnBtnHelpClick;
 		UIEventListener.Get(btnLeague).onClick -= this.OnBtnLeagueClick;
         foreach (GameObject item in btnFreeGold)
         {
