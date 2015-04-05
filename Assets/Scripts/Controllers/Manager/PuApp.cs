@@ -51,7 +51,10 @@ public class PuApp : Singleton<PuApp>
         this.dailyGift = obj;
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
-            DialogService.Instance.ShowDialog(new DialogPromotion(obj));
+            ExecuteFuntion(.5f, () =>
+            {
+                DialogService.Instance.ShowDialog(new DialogPromotion(obj));
+            });
         });
 	}
 
