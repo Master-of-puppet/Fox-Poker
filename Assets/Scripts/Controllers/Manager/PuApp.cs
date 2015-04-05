@@ -10,6 +10,7 @@ using Puppet.Core.Model;
 using Puppet.Core.Manager;
 using System;
 
+
 public class PuApp : Singleton<PuApp>
 {
 	public bool changingScene;
@@ -24,19 +25,20 @@ public class PuApp : Singleton<PuApp>
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         setting = new PuSetting("foxpokers.com", "foxpokers.com");
 		gameObject.AddComponent<LogViewer> ();
-    }
+        PingManager.Instance.Load();
 
-    public void StartApplication()
-    {
+
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
             PuMain.Dispatcher.onWarningUpgrade += Dispatcher_onWarningUpgrade;
-			PuMain.Dispatcher.onDailyGift +=Dispatcher_onDailyGift;
+            PuMain.Dispatcher.onDailyGift += Dispatcher_onDailyGift;
             PuMain.Dispatcher.onNoticeMessage += Dispatcher_onNoticeMessage;
         });
 
 		SocialService.SocialStart ();
     }
+
+    public void StartApplication() { }
 
     void Dispatcher_onNoticeMessage(EMessage type, string message)
     {

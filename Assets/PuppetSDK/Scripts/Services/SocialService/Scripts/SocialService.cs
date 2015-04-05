@@ -67,6 +67,7 @@ namespace Puppet.Service
 	    /// </summary>
 	    public static void SocialStart()
 	    {
+            if (Application.isEditor) return;
 	        Instance.facebook.SocialInit();
 	    }
 
@@ -78,6 +79,8 @@ namespace Puppet.Service
 
 	    public static void SocialLogout(SocialType type)
 	    {
+            if (Application.isEditor) return;
+
 	        if (Instance.onLogout != null)
 	            Instance.onLogout(type);
 
@@ -103,6 +106,12 @@ namespace Puppet.Service
 	    /// <param name="action">Method Execute when is already have or not permission to publish</param>
 	    public static void checkPublishPermission(SocialType type, Action<bool> action)
 	    {
+            if (Application.isEditor)
+            {
+                if (action != null) action(false);
+                return;
+            }
+
 	        GetSocialNetwork(type).checkPublishPermission((bool isHasPermission) =>
 	        {
 	            if (!isHasPermission)
@@ -117,6 +126,12 @@ namespace Puppet.Service
 
         public static void AppRequest(SocialType type, string message, string[] to, string title, Action<bool, string[]> onRequestComplete)
         {
+            if (Application.isEditor)
+            {
+                if (onRequestComplete != null) onRequestComplete(false, null);
+                return;
+            }
+
             ProcessLogin(type, () => GetSocialNetwork(type).AppRequest(message, to, title, onRequestComplete));
         }
 
