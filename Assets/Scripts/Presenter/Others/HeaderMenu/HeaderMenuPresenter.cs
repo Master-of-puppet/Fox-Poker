@@ -19,6 +19,8 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 	IHeaderMenuView view;
 	public Action OnShowLobbyRowTypeCallBack;
     public Action onHandleQuit;
+    UserInfo userInfo;
+
 	public HeaderMenuPresenter(IHeaderMenuView view){
 		this.view = view;
 	}
@@ -26,13 +28,21 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 
 	public void ViewStart ()
 	{
-		UserInfo userInfo = Puppet.API.Client.APIUser.GetUserInformation ();
+		userInfo = Puppet.API.Client.APIUser.GetUserInformation ();
+        userInfo.onDataChanged += OnDataUserChange;
+
 		view.ShowUserName(userInfo.info.userName);
 		if(userInfo.assets !=null && userInfo.assets.content.Length > 0)
 			view.ShowChip(userInfo.assets.content[0].value.ToString());
         PuApp.Instance.GetImage(userInfo.info.avatar, (texture) => view.ShowAvatar(texture));
         
 	}
+
+    void OnDataUserChange(IDataModel info)
+    {
+        UserInfo user = (UserInfo)info;
+        view.ShowChip(user.assets.GetAsset(EAssets.Chip).value.ToString());
+    }
 
 	public void OnBackPressed ()
 	{
@@ -54,7 +64,7 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 
 	public void ViewEnd ()
 	{
-
+        userInfo.onDataChanged -= OnDataUserChange;
 	}
 
 

@@ -288,7 +288,7 @@ public class PokerPlayerUI : MonoBehaviour
         btnGift.transform.localPosition = giftPosition;
     }
 
-    void playerModel_onDataChanged()
+    void playerModel_onDataChanged(IDataModel model)
     {
         UpdateUI(data);
     }
