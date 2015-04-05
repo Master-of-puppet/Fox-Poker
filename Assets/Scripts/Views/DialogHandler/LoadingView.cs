@@ -18,7 +18,7 @@ public class LoadingView : SingletonPrefab<LoadingView>
 	#region UnityEditor
 	public UISprite transparentLeft, transparentRight;
 	public UI2DSprite loadingIcon;
-	public bool isClose = false;
+	private bool isClose = false;
 	int width ;
 	int height;
 	#endregion
@@ -28,23 +28,23 @@ public class LoadingView : SingletonPrefab<LoadingView>
 
 	public void CalculatorTwoBackground(){
 		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);
-		
 		float ratio = (float)mRoot.activeHeight / Screen.height;
-		
 		width = Mathf.CeilToInt(Screen.width * ratio);
 		height = Mathf.CeilToInt(Screen.height * ratio);
-		
-		
 		transparentLeft.width = transparentRight.width = (int)width / 2;
 		transparentLeft.height = transparentRight.height = (int)height;
-
 		transparentLeft.transform.localPosition = new UnityEngine.Vector3(-width/1.3f,0f,0f);
 		transparentRight.transform.localPosition = new UnityEngine.Vector3(width/1.3f,0f,0f);
 		StartTranslate ();
 	}
-	public void Show(){
-		CalculatorTwoBackground ();
+	public void Show(bool isClose){
+        this.isClose = isClose;
+        if(!isClose)
+        { 
+		    CalculatorTwoBackground ();
+        }
 	}
+
 	private void StartTranslate(){
 		iTween.MoveTo(transparentLeft.gameObject,iTween.Hash("islocal", true,"time",.8,"position",new Vector3(-width/4f,0f,0f),"easetype", iTween.EaseType.easeInOutExpo,"oncomplete","CompleteSlideInto","oncompletetarget",gameObject)); 
 		iTween.MoveTo(transparentRight.gameObject,iTween.Hash("islocal", true,"time",.8,"position",new Vector3(width/4f,0f,0f),"easetype", iTween.EaseType.easeInOutExpo,"oncomplete","CompleteSlideInto","oncompletetarget",gameObject));

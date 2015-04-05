@@ -93,6 +93,12 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
         UIEventListener.Get(btnLobby).onClick -= this.OnBtnLobbyClick;
 		UIEventListener.Get(btnHelp).onClick -= this.OnBtnHelpClick;
 		UIEventListener.Get(btnLeague).onClick -= this.OnBtnLeagueClick;
+        foreach (GameObject item in btnFreeGold)
+        {
+            UIEventListener.Get(item).onClick += this.OnClickPromotion;
+        }
+
+        tablePromotion.GetComponent<UICenterOnChild>().onCenter += onTablePromotionGoToCenter;
 	}
 	
 	void OnBtnPlayNowClick(GameObject obj){
