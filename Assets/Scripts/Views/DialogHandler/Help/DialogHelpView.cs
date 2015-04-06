@@ -167,8 +167,8 @@ namespace Puppet.Service
         public override void ShowDialog(DialogHelp data)
         {
             base.ShowDialog(data);
-            StartCoroutine(StartShowDialog());
 #if UNITY_ANDROID || UNITY_IOS
+			StartCoroutine(StartShowDialog());
             btnFAQ.value = true;
 #endif
         }
