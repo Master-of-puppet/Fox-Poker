@@ -19,7 +19,6 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 	void Start () {
 		HeaderMenuView.Instance.ShowInWorldGame();
         presenter = new PokerPlazaPresenter(this);
-		btnEvents = new List <GameObject>();
         UIEventListener.Get(btnPlayNow).onClick += this.OnBtnPlayNowClick;
         UIEventListener.Get(btnLobby).onClick += this.OnBtnLobbyClick;
         UIEventListener.Get(btnLeague).onClick += this.OnBtnLeagueClick;
@@ -30,11 +29,40 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
         {
             UIEventListener.Get(item).onClick += this.OnClickPromotion;
         }
-
         tablePromotion.GetComponent<UICenterOnChild>().onCenter += onTablePromotionGoToCenter;
-        initCreateIndicator(btnFreeGold.Length, indicatorPromotion); 
+        tableEvent.GetComponent<UICenterOnChild>().onCenter += onTableEventGoToCenter;
+        initIndicator(btnFreeGold.Length, indicatorPromotion);
+        fetchEvent();
 	}
 
+ 
+    private void fetchEvent()
+    {
+        Puppet.API.Client.APIGeneric.GetInfoEvents((status, message, data) =>
+        {
+            if (status)
+            {
+                foreach (DataEvent e in data.items)
+                {
+                    PlazaEventItem itemEvent = PlazaEventItem.Create(e);
+                    itemEvent.transform.parent = tableEvent.transform;
+                    itemEvent.transform.localPosition = Vector3.zero;
+                    itemEvent.transform.localScale= Vector3.one;
+                    UIEventListener.Get(itemEvent.gameObject).onClick += OnClickToEvent;
+                    btnEvents.Add(itemEvent.gameObject);
+                }
+                tableEvent.Reposition();
+                initIndicator(btnEvents.Count, indicatorEvent);
+            }
+            tableEvent.GetComponent<UICenterOnChild>().CenterOn(tableEvent.GetComponent<UICenterOnChild>().centeredObject.transform);
+        });
+    }
+
+    private void OnClickToEvent(GameObject go)
+    {
+        string url = go.GetComponent<PlazaEventItem>().evt.url;
+        DialogService.Instance.ShowDialog(new DialogEvent(url));
+    }
 	void OnClickPromotion (GameObject go)
 	{
         switch (go.name)
@@ -57,7 +85,15 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 	}
 
 
-
+    private void onTableEventGoToCenter(GameObject centeredObject)
+    {
+        int indexIndicator = btnEvents.FindIndex(item => item == centeredObject);
+        Vector3 currentPosition = indicatorEvent.transform.localPosition;
+        UISprite foreground = indicatorEvent.transform.FindChild("Foreground").GetComponent<UISprite>();
+        int positionX = foreground.width / 2 + indexIndicator * foreground.width;
+        Vector3 translateTo = new Vector3(positionX, 0, 0);
+        foreground.transform.localPosition = translateTo;
+    }
     void onTablePromotionGoToCenter(GameObject  go)
 	{
         int indexIndicator = Array.FindIndex(btnFreeGold, item => item == go);
@@ -68,7 +104,7 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
         foreground.transform.localPosition = translateTo;
 
 	}
-    private void initCreateIndicator(int size,UISprite sprite)
+    private void initIndicator(int size,UISprite sprite)
     {
         sprite.width = size * 16;
         sprite.transform.localPosition = new Vector3(-sprite.width/2,sprite.transform.localPosition.y,sprite.transform.localPosition.z);
@@ -80,7 +116,7 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 
     private void OnBtnEventClick(GameObject go)
     {
-		DialogService.Instance.ShowDialog (new DialogEvent ());
+		DialogService.Instance.ShowDialog (new DialogEvent (null));
     }
 
     private void OnBtnLeagueClick(GameObject go)
@@ -99,7 +135,12 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
         {
             UIEventListener.Get(item).onClick += this.OnClickPromotion;
         }
-
+        foreach (GameObject item in btnEvents)
+        {
+            if(item.GetComponent<PlazaEventItem>() !=null){
+                UIEventListener.Get(item).onClick -= this.OnClickToEvent;
+            }
+        }
         tablePromotion.GetComponent<UICenterOnChild>().onCenter += onTablePromotionGoToCenter;
 	}
 	
