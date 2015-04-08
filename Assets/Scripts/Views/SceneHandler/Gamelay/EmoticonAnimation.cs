@@ -9,7 +9,15 @@ public class EmoticonAnimation : MonoBehaviour {
 		gobj.transform.localScale = Vector3.one;
 		gobj.transform.localPosition = new Vector3 (0f, 50f, 0f);
 		EmoticonAnimation item = gobj.GetComponent<EmoticonAnimation> ();
-		item.killMeAfter (2.0f);
+		UI2DSpriteAnimation ui2Ditem = gobj.GetComponent<UI2DSpriteAnimation> ();
+		EmoticonAnimationLoopNumber numberLoop = gobj.GetComponent<EmoticonAnimationLoopNumber> ();
+		if(numberLoop){
+			UnityEngine.Debug.Log (numberLoop);
+			item.killMeAfter (2.0f);
+		}else{
+			UnityEngine.Debug.Log ("Number Loop not exsit");
+			item.killMeAfter (2.0f);
+		}
 		return item;
 	}
 	public void killMeAfter(float second){
