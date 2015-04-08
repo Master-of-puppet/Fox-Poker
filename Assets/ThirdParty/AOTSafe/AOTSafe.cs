@@ -8,7 +8,7 @@ using System.Reflection;
 /// AOT safe.
 /// http://forum.unity3d.com/threads/168019-quot-System-String-doesn-t-implement-interface-System-Collections-IEnumerator-quot-crash?p=1149128
 /// </summary>
-namespace SKPlanet
+namespace Puppet
 {
 	public class AOTSafe
 	{

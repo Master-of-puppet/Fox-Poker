@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using System.Collections;
+using Puppet.Core.Model;
 
 public class PuSetting
 {
@@ -79,6 +80,8 @@ public class PuSetting
 
     class CurrentSetting : DefaultSetting
     {
+        DataClientDetails _clientDetail;
+
         public override bool UseUnity
         {
             get { return true; }
@@ -95,6 +98,17 @@ public class PuSetting
 
         protected override void AfterInit()
         {
+            _clientDetail = new DataClientDetails();
+            _clientDetail.bundleId = "com.puppet.game.foxpoker";
+            _clientDetail.uniqueId = UniqueDeviceIdentification;
+            _clientDetail.version = new Puppet.Core.Model.Version(1, 0, 0, 100);
+            _clientDetail.distributor = "foxpoker";
+            _clientDetail.platform =
+                Application.isEditor ? "pc" : Application.isWebPlayer ? "web":
+                Application.platform == RuntimePlatform.Android ? "android"  :
+                Application.platform == RuntimePlatform.IPhonePlayer ? "ios" :
+                Application.platform == RuntimePlatform.WindowsPlayer ? "pc" : "others";
+
             IsDebug = UnityEngine.Debug.isDebugBuild;
         }
 
@@ -132,6 +146,14 @@ public class PuSetting
         public override string PathCache
         {
             get { return PuSetting.persistentDataPath; }
+        }
+
+        public override DataClientDetails ClientDetails
+        {
+            get
+            {
+                return _clientDetail;
+            }
         }
 
         public override string UniqueDeviceIdentification
