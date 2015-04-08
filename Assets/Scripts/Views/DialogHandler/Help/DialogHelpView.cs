@@ -2,6 +2,7 @@
 using System.Collections;
 using Puppet.Service;
 using Puppet;
+using Puppet.API.Client;
 namespace Puppet.Service
 {
     [PrefabAttribute(Name = "Prefabs/Dialog/DialogHelp", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
@@ -68,7 +69,11 @@ namespace Puppet.Service
 
 		private void SetWebView()
         {
-
+            if (APIUser.GetUserInformation() != null) { 
+               string url =  contentwebView.GetComponent<UniWebView>().url +"?username="+APIUser.GetUserInformation().info.userName;
+               contentwebView.GetComponent<UniWebView>().url = url;
+               contentwebView.GetComponent<UniWebView>().Load();
+            }
             contentwebView.GetComponent<UniWebView>().insets = new UniWebViewEdgeInsets(aTop, aLeft, aBottom, aRight);
 
         }

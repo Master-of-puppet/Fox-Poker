@@ -54,7 +54,7 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
                 tableEvent.Reposition();
                 initIndicator(btnEvents.Count, indicatorEvent);
             }
-            tableEvent.GetComponent<UICenterOnChild>().CenterOn(tableEvent.GetComponent<UICenterOnChild>().centeredObject.transform);
+            tableEvent.GetComponent<UICenterOnChild>().CenterOn(btnEvents[0].transform);
         });
     }
 
