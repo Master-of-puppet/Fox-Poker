@@ -15,13 +15,13 @@ public class PuSetting
 
 	public string sceneName;
 
-    public PuSetting(string domain, string socketServer)
+    public PuSetting()
     {
         persistentDataPath = Application.persistentDataPath;
         CurrentSetting setting = new CurrentSetting();
         PuMain.Setting = setting;
 		PuMain.Setting.Init();
-        setting.CustomServer(domain, socketServer);
+        setting.CustomServer();
 
         PuMain.Instance.Load();
         PuMain.Dispatcher.onChangeScene += ChangeScene;
@@ -87,27 +87,21 @@ public class PuSetting
             get { return true; }
         }
 
-        public void CustomServer(string domain, string socketServer)
+        public void CustomServer()
         {
-            //DefaultSetting.domain = domain;
-            //DefaultSetting.soketServer = socketServer;
-            server = new ServerMode(socketServer);
-            serverBundle = new WebServerMode(domain);
-            serverWebHttp = new WebServerMode(domain);
+            server = new ServerMode(AppConfig.SocketUrl, AppConfig.SocketPort);
+            serverBundle = new WebServerMode(AppConfig.HttpUrl, AppConfig.HttPort);
+            serverWebHttp = new WebServerMode(AppConfig.HttpUrl, AppConfig.HttPort);
         }
 
         protected override void AfterInit()
         {
             _clientDetail = new DataClientDetails();
-            _clientDetail.bundleId = "com.puppet.game.foxpoker";
+            _clientDetail.bundleId = AppConfig.Instance.BundleId;
             _clientDetail.uniqueId = UniqueDeviceIdentification;
-            _clientDetail.version = new Puppet.Core.Model.Version(1, 0, 0, 100);
-            _clientDetail.distributor = "foxpoker";
-            _clientDetail.platform =
-                Application.isEditor ? "pc" : Application.isWebPlayer ? "web":
-                Application.platform == RuntimePlatform.Android ? "android"  :
-                Application.platform == RuntimePlatform.IPhonePlayer ? "ios" :
-                Application.platform == RuntimePlatform.WindowsPlayer ? "pc" : "others";
+            _clientDetail.version = new Puppet.Core.Model.Version(AppConfig.Instance.AppVersionValues[0], AppConfig.Instance.AppVersionValues[1], AppConfig.Instance.AppVersionValues[2], AppConfig.Instance.AppVersionValues[3]);
+            _clientDetail.distributor = AppConfig.DistributorName;
+            _clientDetail.platform = AppConfig.Platform;
 
             IsDebug = UnityEngine.Debug.isDebugBuild;
         }
@@ -167,17 +161,18 @@ public class PuSetting
         class ServerMode : IServerMode
         {
             string domain;
-            public ServerMode(string domain)
+            int port;
+            public ServerMode(string domain, int port)
             {
+                this.port = port;
                 if (!string.IsNullOrEmpty(domain))
                     this.domain = domain;
                 else
                     this.domain = "127.0.0.1";
             }
+            public string GetBaseUrl() { return string.Format("{0}:{1}", domain, Port); }
 
-            public string GetBaseUrl() { return string.Format("https://{0}:{1}", Domain, Port); }
-
-            public int Port { get { return 9933; } }
+            public int Port { get { return port; } }
 
             public string Domain { get { return domain; } }
 
@@ -187,17 +182,18 @@ public class PuSetting
         class WebServerMode : IServerMode
         {
             string domain;
-            public WebServerMode(string domain)
+            int port;
+            public WebServerMode(string domain, int port)
             {
+                this.port = port;
                 if (!string.IsNullOrEmpty(domain))
                     this.domain = domain;
                 else
                     this.domain = "127.0.0.1";
             }
+            public string GetBaseUrl() { return string.Format("{0}:{1}", domain, Port); }
 
-            public string GetBaseUrl() { return string.Format("http://{0}:{1}", Domain, Port); }
-
-            public int Port { get { return 80; } }
+            public int Port { get { return port; } }
 
             public string Domain { get { return domain; } }
 

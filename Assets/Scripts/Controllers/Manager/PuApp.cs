@@ -23,7 +23,8 @@ public class PuApp : Singleton<PuApp>
     {
         sleepTimeout = Screen.sleepTimeout;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        setting = new PuSetting("foxpokers.com", "foxpokers.com");
+        setting = new PuSetting();
+
 		gameObject.AddComponent<LogViewer> ();
         PingManager.Instance.Load();
 

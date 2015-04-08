@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
+using System.IO;
+using System;
+using System.Linq;
+using System.Diagnostics;
 
 namespace Puppet
 {
@@ -9,14 +13,14 @@ namespace Puppet
 	{
 		private AppConfig config;
 
-        GUIContent distributeNameLabel = new GUIContent("Distributor Name [?]:", "For your own use, example:'dev', 'qa', 'prod'");
-        GUIContent httpUrlLabel = new GUIContent("Web Server URL [?]:", "Server Url for Http Web Request");
-        GUIContent httpPortLabel = new GUIContent("Port Web [?]:", "Port own use for Web Server, example: '80', '8888', '8080'");
-		GUIContent socketUrlLabel = new GUIContent("Socket Server URL [?]:", "Server Url for Socket");
-        GUIContent socketPortLabel = new GUIContent("Port Socket [?]:", "Port own use for Socket Server, example: '80', '8888', '8080'");
-		GUIContent appVersionLabel = new GUIContent("App Version [?]:", "Application Version, example: 1.0.0");
-		GUIContent platformTypwLabel = new GUIContent("Platform Type [?]:", "Platform Type, reference for Platform specific functions");
-		GUIContent bundleIdLabel = new GUIContent("App Bundle Identifier [?]:", "Application Bundle Id, example: com.abc.helloworld");
+        GUIContent distributeNameLabel = new GUIContent("Distributor Name [?]", "For your own use, example:'dev', 'qa', 'prod'");
+        GUIContent httpUrlLabel = new GUIContent("Web Server URL [?]", "Server Url for Http Web Request");
+        GUIContent httpPortLabel = new GUIContent("Port [?]", "Port own use for Web Server, example: '80', '8888', '8080'");
+		GUIContent socketUrlLabel = new GUIContent("Socket Server URL [?]", "Server Url for Socket");
+        GUIContent socketPortLabel = new GUIContent("Port [?]", "Port own use for Socket Server, example: '80', '8888', '8080'");
+		GUIContent appVersionLabel = new GUIContent("App Version [?]", "Application Version, example: 1.0.0");
+		GUIContent platformTypwLabel = new GUIContent("Platform Type [?]", "Platform Type, reference for Platform specific functions");
+		GUIContent bundleIdLabel = new GUIContent("App Bundle Identifier [?]", "Application Bundle Id, example: com.abc.helloworld");
 		
 		public void OnEnable ()
 		{
@@ -31,6 +35,8 @@ namespace Puppet
 			AppVersionGUI ();
 			PlatformGUI ();
 			BundleGUI ();
+
+            BuildUI();
 		}
 
 		private void EnvironmentGUI()
@@ -52,7 +58,7 @@ namespace Puppet
 				GUI.changed = false;
                 config.SetDistributtor(i, EditorGUILayout.TextField(config.HttpUrls[i], GUILayout.Width(Screen.width / 3f)));
                 GUI.changed = false;
-                config.SetHttpPort(i, EditorGUILayout.TextField(config.HttpPorts[i], GUILayout.Width(Screen.width / 3f)));
+                config.SetHttpPort(i, EditorGUILayout.IntField(config.HttpPorts[i], GUILayout.Width(Screen.width / 3f)));
 				EditorGUILayout.EndHorizontal();
 			}
 			EditorGUILayout.BeginHorizontal();
@@ -67,16 +73,16 @@ namespace Puppet
 				envURLs.Add("");
 				config.HttpUrls = envURLs.ToArray();
 
-                var httpPorts = new List<string>(config.HttpPorts);
-                httpPorts.Add("80");
+                var httpPorts = new List<int>(config.HttpPorts);
+                httpPorts.Add(80);
                 config.HttpPorts = httpPorts.ToArray();
 
 				var skUrls = new List<string>(config.SocketUrls);
 				skUrls.Add("");
                 config.SocketUrls = skUrls.ToArray();
 
-                var socketPorts = new List<string>(config.SocketPorts);
-                socketPorts.Add("8888");
+                var socketPorts = new List<int>(config.SocketPorts);
+                socketPorts.Add(8888);
                 config.SocketPorts = socketPorts.ToArray();
 			}
 
@@ -92,7 +98,7 @@ namespace Puppet
 					envURLs.RemoveAt(envURLs.Count - 1);
 					config.HttpUrls = envURLs.ToArray();
 
-                    var httpPorts = new List<string>(config.HttpPorts);
+                    var httpPorts = new List<int>(config.HttpPorts);
                     httpPorts.RemoveAt(httpPorts.Count - 1);
                     config.HttpPorts = httpPorts.ToArray();
 
@@ -100,7 +106,7 @@ namespace Puppet
 					skUrls.RemoveAt(skUrls.Count - 1);
 					config.SocketUrls = skUrls.ToArray();
 
-                    var socketPorts = new List<string>(config.SocketPorts);
+                    var socketPorts = new List<int>(config.SocketPorts);
                     socketPorts.RemoveAt(socketPorts.Count - 1);
                     config.SocketPorts = socketPorts.ToArray();
 				}
@@ -121,7 +127,7 @@ namespace Puppet
 				GUI.changed = false;
                 config.SetSocketUrl(i, EditorGUILayout.TextField(config.SocketUrls[i], GUILayout.Width(Screen.width / 3f)));
                 GUI.changed = false;
-                config.SetSocketPort(i, EditorGUILayout.TextField(config.SocketPorts[i], GUILayout.Width(Screen.width / 3f)));
+                config.SetSocketPort(i, EditorGUILayout.IntField(config.SocketPorts[i], GUILayout.Width(Screen.width / 3f)));
 				EditorGUILayout.EndHorizontal();
 			}
 			EditorGUILayout.Space();
@@ -144,72 +150,55 @@ namespace Puppet
 		private void AppVersionGUI ()
 		{
 			EditorGUILayout.HelpBox("4) Application Version", MessageType.None);
-			config.AppVersion = EditableField(appVersionLabel, config.AppVersion);
+			
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Major", GUILayout.Width(Screen.width / 4f));
+            EditorGUILayout.LabelField("Minor", GUILayout.Width(Screen.width / 4f));
+            EditorGUILayout.LabelField("Patch", GUILayout.Width(Screen.width / 4f));
+            EditorGUILayout.LabelField("Build", GUILayout.Width(Screen.width / 4f));
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            for (int i = 0; i < config.AppVersionValues.Length; i++)
+            {
+                config.SetAppVersionValues(i, EditorGUILayout.IntField(config.AppVersionValues[i], GUILayout.Width(Screen.width / 4f)));
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditableField(new GUIContent("Current version: ", ""), config.AppVersion);
+            EditorGUILayout.EndHorizontal();
+
 			EditorGUILayout.Space();
 		}
 
 		private void PlatformGUI ()
 		{
-			EditorGUILayout.HelpBox("6) Add Platform(s) associated with the development", MessageType.None);
-			if (config.PlatformLabels.Length == 0 || config.PlatformLabels[config.SelectedPlatformIndex] == "0")
-			{
-				EditorGUILayout.HelpBox("Invalid Platform Type", MessageType.Error);
-			}
+			EditorGUILayout.HelpBox("5) Update Platform(s) value associated with the development", MessageType.None);
+			
 			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField(platformTypwLabel);
+            EditorGUILayout.LabelField(platformTypwLabel);
 			EditorGUILayout.EndHorizontal();
 			for (int i = 0; i < config.PlatformLabels.Length; ++i)
 			{
 				EditorGUILayout.BeginHorizontal();
-				config.SetPlatformLabel(i, EditorGUILayout.TextField(config.PlatformLabels[i]));
+                string title = i == 0 ? "Standalone: " : i == 1 ? "Web Player: " : i == 2 ? "Android: " : i == 3 ? "iOS: " : "Other platforms: ";
+                GUIContent content = new GUIContent(title, "");
+                config.SetPlatformLabel(i, EditableField(content, config.PlatformLabels[i]));
 				GUI.changed = false;
-				//			if (GUI.changed)
-				//				ManifestMod.GenerateManifest();
 				EditorGUILayout.EndHorizontal();
 			}
-			EditorGUILayout.BeginHorizontal();
 			
-			if (GUILayout.Button("Add Another Platform Type"))
-			{
-				var platformLabels = new List<string>(config.PlatformLabels);
-				platformLabels.Add("New Platform");
-				config.PlatformLabels = platformLabels.ToArray();
-			}
-			
-			if (config.PlatformLabels.Length > 1)
-			{
-				if (GUILayout.Button("Remove Last Platform Type"))
-				{
-					var platformLabels = new List<string>(config.PlatformLabels);
-					platformLabels.RemoveAt(platformLabels.Count - 1);
-					config.PlatformLabels = platformLabels.ToArray();
-				}
-			}
-			EditorGUILayout.EndHorizontal();
 			EditorGUILayout.Space();
-			
-			if (config.PlatformLabels.Length > 1)
-			{
-				EditorGUILayout.HelpBox("7) Select a Platform to be compiled with this game", MessageType.None);
-				GUI.changed = false;
-				config.SetPlatformIndex(EditorGUILayout.Popup("Selected Platform Type: ", config.SelectedPlatformIndex, config.PlatformLabels));
-				//			if (GUI.changed)
-				//				ManifestMod.GenerateManifest();
-				EditorGUILayout.Space();
-			}
-			else
-			{
-				config.SetPlatformIndex (0);
-			}
 		}
 
 		private void BundleGUI ()
 		{
-			EditorGUILayout.HelpBox("8) Add iOS bundle id or Android package name", MessageType.None);
+			EditorGUILayout.HelpBox("6) Add iOS bundle id or Android package name", MessageType.None);
 			config.BundleId = EditableField(bundleIdLabel, config.BundleId);
 			EditorGUILayout.Space();
 		}
-		
+
 		private string EditableField (GUIContent label, string value)
 		{
 			string ret = "";
@@ -223,16 +212,138 @@ namespace Puppet
 			return ret;
 		}
 
-		[MenuItem ("Puppet Editor/Edit Application Configuration", priority=0)]
+        [MenuItem("Puppet SDK/Edit Application Configuration", priority = 0)]
 		static void EditSettings ()
 		{
 			Selection.activeObject = AppConfig.Instance;
 		}
 
-        [MenuItem("Puppet Editor/PlayerPrefs Delete All", priority = 99)]
+        [MenuItem("Puppet SDK/PlayerPrefs Delete All", priority = 99)]
         static void PlayerPrefsDeleteAll()
         {
             PlayerPrefs.DeleteAll();
         }
-	}
+
+        [MenuItem("Puppet SDK/Build/Android")]
+        static void BuildAndroid()
+        {
+            PerformBuild(BuildTarget.Android, AppConfig.Instance.IsDevelopmentBuild);
+        }
+        [MenuItem("Puppet SDK/Build/iOS")]
+        static void BuildiOS()
+        {
+            PerformBuild(BuildTarget.iPhone, AppConfig.Instance.IsDevelopmentBuild);
+        }
+        [MenuItem("Puppet SDK/Build/PC")]
+        static void BuildPC()
+        {
+            PerformBuild(BuildTarget.StandaloneWindows, AppConfig.Instance.IsDevelopmentBuild);
+        }
+        [MenuItem("Puppet SDK/Support - Report Bug")]
+        static void Support()
+        {
+            Application.OpenURL("http://jira.chieuvuong.com/browse/FP/");
+            Application.OpenURL("mailto:vietdungvn88@gmail.com?subject=Need Support in PuppetSDK&body=Hi Dung,I need support for issue");
+        }
+        
+        #region BUILD
+        private void BuildUI()
+        {
+            GUILayout.FlexibleSpace();
+
+            config.IsDevelopmentBuild = EditorGUILayout.Toggle("Is Development Build: ", config.IsDevelopmentBuild);
+            EditorGUILayout.Space();
+            config.LastBuildTarget = (BuildTarget)EditorGUILayout.EnumPopup("Platform Build Target: ", config.LastBuildTarget);
+            EditorGUILayout.Space();
+
+            if (GUILayout.Button("Perform Build - " + config.LastBuildTarget.ToString(), GUILayout.Height(Screen.height / 12f)))
+                PerformBuild(config.LastBuildTarget, config.IsDevelopmentBuild);
+        }
+        static void PerformBuild(BuildTarget targetBuild, bool isDevelopment)
+        {
+            UnityEngine.Debug.Log("*****PerformBuild - Build target: " + targetBuild);
+
+            //EditorUserBuildSettings.SwitchActiveBuildTarget(targetBuild);
+            EditorUserBuildSettings.appendProject = true;
+            EditorUserBuildSettings.allowDebugging = false;
+            EditorUserBuildSettings.development = isDevelopment;
+
+            if (targetBuild == BuildTarget.Android)
+            {
+                PlayerSettings.Android.keystorePass = "puppet#2014";
+                PlayerSettings.Android.keyaliasName = "foxpoker";
+                PlayerSettings.Android.keyaliasPass = "puppet#2014";
+            }
+
+            UnityEngine.Debug.Log("*****PerformBuild - Using the bundle id: " + PlayerSettings.bundleIdentifier);
+
+            string buildTargetDirect = Application.dataPath.Replace("/Assets", string.Format("/Build/{0}", targetBuild.ToString().ToLower()));
+            if (Directory.Exists(buildTargetDirect) == false)
+                Directory.CreateDirectory(buildTargetDirect);
+
+            string locationPath = string.Format("{0}/{1}", buildTargetDirect, "FoxPoker");
+            if (targetBuild == BuildTarget.Android)
+                locationPath += string.Format("_{0:yyyyMMddHHmm}.apk", DateTime.Now);
+            else if (targetBuild == BuildTarget.StandaloneWindows || targetBuild == BuildTarget.StandaloneWindows64)
+                locationPath += ".exe";
+            else if (targetBuild == BuildTarget.StandaloneOSXIntel || targetBuild == BuildTarget.StandaloneOSXIntel64 || targetBuild == BuildTarget.StandaloneOSXUniversal)
+                locationPath += ".app";
+
+            UnityEngine.Debug.Log("*****PerformBuild - UNITY_BUILD_TARGET Use path: " + locationPath);
+
+            string[] buildScenes = (from scene in EditorBuildSettings.scenes where scene.enabled select scene.path).ToArray();
+            var result = BuildPipeline.BuildPlayer(buildScenes, locationPath, targetBuild,
+                targetBuild == BuildTarget.iPhone ? BuildOptions.SymlinkLibraries | BuildOptions.Development | BuildOptions.None : BuildOptions.None
+            );
+
+            if (result.Length > 0)
+                UnityEngine.Debug.LogError("*****PerformBuild - Result: " + result);
+
+            OpenExplorer(buildTargetDirect);
+        }
+
+        static bool OpenExplorer(string path)
+        {
+            bool isError = false;
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.RedirectStandardOutput = true;
+                startInfo.RedirectStandardError = true;
+                startInfo.UseShellExecute = false;
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+#if UNITY_EDITOR_OSX
+                startInfo.FileName = "sh";
+			    startInfo.Arguments = string.Format("open -a Terminal {0}", path);
+#elif UNITY_EDITOR_WIN
+                startInfo.FileName = "C:\\Windows\\system32\\cmd.exe";
+                startInfo.Arguments = string.Format("/c explorer {0}", path.Replace("/", "\\"));
+#endif
+                Process p = Process.Start(startInfo);
+                p.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
+                {
+                    if (e.Data != null)
+                        UnityEngine.Debug.Log("OpenExplorer: " + e.Data);
+                };
+                p.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
+                {
+                    if (e.Data != null)
+                    {
+                        UnityEngine.Debug.LogError("OpenExplorer: " + e.Data);
+                        isError = true;
+                    }
+                };
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+                p.WaitForExit();
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("OpenExplorer: " + e.Message);
+                return false;
+            }
+            return !isError;
+        }
+        #endregion
+    }
 }

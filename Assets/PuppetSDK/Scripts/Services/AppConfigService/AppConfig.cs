@@ -42,29 +42,31 @@ namespace Puppet
 		}
 
         [SerializeField]
-        private string[] distributorLabels = new[] { "Distributor Name" };
+        private string[] distributorLabels = new[] { "foxpoker" };
 		[SerializeField]
 		private int selectedDistributeIndex = 0;
 		[SerializeField]
-        private string[] httpUrls = new[] { "Http Server Url" };
+        private string[] httpUrls = new[] { "http://foxpokers.com" };
         [SerializeField]
-        private string[] httpPorts = new[] { "80" };
+        private int[] httpPorts = new int[] { 80 };
 
 		[SerializeField]
-        private string[] socketUrls = new[] { "Socket Server Url" };
+        private string[] socketUrls = new[] { "foxpokers.com" };
         [SerializeField]
-        private string[] socketPorts = new[] { "8888" };
+        private int[] socketPorts = new int[] { 9933 };
+
+        [SerializeField]
+        private int[] appVersionValues = new int[4] { 1, 0, 0, 100 };
 
 		[SerializeField]
-		private string appVersion;
-
-		[SerializeField]
-		private int selectedPlatformIndex = 0;
-		[SerializeField]
-		private string[] platformLabels = new[] { "Platform Name" };
+		private string[] platformLabels = new[] { "pc", "web", "android", "ios", "others" };
 
 		[SerializeField]
 		private string bundleId;
+        [SerializeField]
+        private int lastBuild = 13;
+        [SerializeField]
+        private bool developmentBuild = true;
 
 		public void Load () {}
 
@@ -106,7 +108,7 @@ namespace Puppet
 			}
 		}
 
-        public void SetHttpPort(int index, string value)
+        public void SetHttpPort(int index, int value)
         {
             if (httpPorts[index] != value)
             {
@@ -115,7 +117,7 @@ namespace Puppet
             }
         }
 
-        public string[] HttpPorts
+        public int[] HttpPorts
         {
             get { return httpPorts; }
             set
@@ -150,7 +152,7 @@ namespace Puppet
 			}
 		}
 
-        public void SetSocketPort(int index, string value)
+        public void SetSocketPort(int index, int value)
         {
             if (socketPorts[index] != value)
             {
@@ -159,7 +161,7 @@ namespace Puppet
             }
         }
 
-        public string[] SocketPorts
+        public int[] SocketPorts
         {
             get { return socketPorts; }
             set
@@ -202,6 +204,14 @@ namespace Puppet
 			}
 		}
 
+        public static int HttPort
+        {
+            get
+            {
+                return Instance.httpPorts[Instance.SelectedDistributeIndex];
+            }
+        }
+
 		public static string SocketUrl
 		{
 			get
@@ -209,6 +219,14 @@ namespace Puppet
 				return Instance.socketUrls[Instance.SelectedDistributeIndex];
 			}
 		}
+
+        public static int SocketPort
+        {
+            get
+            {
+                return Instance.socketPorts[Instance.SelectedDistributeIndex];
+            }
+        }
 
 		public static string DistributorName
 		{
@@ -228,53 +246,48 @@ namespace Puppet
 			}
 		}
 		#endregion
-		
+
+        #region App Version
+        public void SetAppVersionValues(int index, int value)
+        {
+            if (appVersionValues[index] != value)
+            {
+                appVersionValues[index] = value;
+                UpdateAppVersion();
+            }
+        }
+
+        public int[] AppVersionValues
+        {
+            get { return appVersionValues; }
+            set
+            {
+                if (appVersionValues != value)
+                {
+                    appVersionValues = value;
+                    UpdateAppVersion();
+                }
+            }
+        }
+
 		public string AppVersion
 		{
 			get
 			{
-				#if UNITY_EDITOR
-				appVersion = PlayerSettings.bundleVersion;
-				#endif
-				return appVersion;
-			}
-			set
-			{
-				if (!string.Equals (appVersion, value))
-				{
-					appVersion = value;
-					#if UNITY_EDITOR
-					PlayerSettings.bundleVersion = value;
-					#endif
-					DirtyEditor ();
-				}
+                return string.Format("{0}.{1}.{2}.{3}", AppVersionValues[0], AppVersionValues[1], AppVersionValues[2], AppVersionValues[3]);
 			}
 		}
 
-		#region Platform
-		public void SetPlatformIndex(int index)
-		{
-			if (selectedPlatformIndex != index)
-			{
-				selectedPlatformIndex = index;
-				DirtyEditor();
-			}
-		}
-		
-		public int SelectedPlatformIndex
-		{
-			get { return selectedPlatformIndex; }
-		}
-		
-		public void SetPlatform(int index, string value)
-		{
-			if (platformLabels[index] != value)
-			{
-				platformLabels[index] = value;
-				DirtyEditor();
-			}
-		}
-		
+        void UpdateAppVersion()
+        {
+#if UNITY_EDITOR
+            PlayerSettings.bundleVersion = AppVersion;
+#endif
+            DirtyEditor();
+        }
+        #endregion
+
+        #region Platform
 		public void SetPlatformLabel(int index, string value)
 		{
 			if (platformLabels[index] != value)
@@ -296,12 +309,21 @@ namespace Puppet
 				}
 			}
 		}
-		
+
 		public static string Platform
 		{
 			get
 			{
-				return Instance.platformLabels[Instance.SelectedPlatformIndex];
+                return 
+                    Application.isEditor ? Instance.platformLabels[0] : 
+                    Application.isWebPlayer ? Instance.platformLabels[1] :
+                    Application.platform == RuntimePlatform.Android ? Instance.platformLabels[2] :
+                    Application.platform == RuntimePlatform.IPhonePlayer ? Instance.platformLabels[3] :
+                    Application.platform == RuntimePlatform.OSXPlayer ? Instance.platformLabels[0] :
+                    Application.platform == RuntimePlatform.LinuxPlayer ? Instance.platformLabels[0] :
+                    Application.platform == RuntimePlatform.WindowsPlayer ? Instance.platformLabels[0] : 
+                    Application.platform == RuntimePlatform.OSXDashboardPlayer ? Instance.platformLabels[0] :
+                    Instance.platformLabels[4];
 			}
 		}
 		
@@ -313,30 +335,6 @@ namespace Puppet
 					&& AppConfig.Platform.Length > 0 
 						&& !AppConfig.Platform.Equals("0");
 			}
-		}
-
-		public void SelectPlatformByPlatformLabel (string platformLabel)
-		{
-			int index = GetIndexByPlatformLabel (platformLabel);
-			if (index >= 0)
-			{
-				SetPlatformIndex (index);
-			}
-		}
-		
-		private int GetIndexByPlatformLabel (string platformLabel)
-		{
-			int result = -1;
-			for (int i = 0; i < platformLabels.Length; i++)
-			{
-				if (string.Equals (platformLabel, platformLabels[i]))
-				{
-					result = i;
-					break;
-				}
-			}
-			
-			return result;
 		}
 		#endregion
 
@@ -361,6 +359,38 @@ namespace Puppet
 				}
 			}
 		}
+
+        public BuildTarget LastBuildTarget
+        {
+            get
+            {
+                return (BuildTarget)lastBuild;
+            }
+            set
+            {
+                if (lastBuild != (int)value)
+                {
+                    lastBuild = (int)value;
+                    DirtyEditor();
+                }
+            }
+        }
+
+        public bool IsDevelopmentBuild
+        {
+            get
+            {
+                return developmentBuild;
+            }
+            set
+            {
+                if (developmentBuild != value)
+                {
+                    developmentBuild = value;
+                    DirtyEditor();
+                }
+            }
+        }
 
 		
 		private static void DirtyEditor()
