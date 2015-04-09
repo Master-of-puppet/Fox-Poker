@@ -19,6 +19,9 @@ ExportedObj/
 *.user
 *.unityproj
 *.booproj
+Build/
+Assets/UnityVS
+Assets/UnityVS.meta
  
 # ============ #
 # OS generated #

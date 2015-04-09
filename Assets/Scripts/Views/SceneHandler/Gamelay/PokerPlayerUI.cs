@@ -44,8 +44,14 @@ public class PokerPlayerUI : MonoBehaviour
         PokerObserver.Instance.onTurnChange += Instance_dataTurnGame;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
         PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
+        UIEventListener.Get(btnGift).onClick += OnOpenGift;
         UIEventListener.Get(gameObject).onClick += OnOpenProfile;
         PuMain.Dispatcher.onChatMessage += ShowMessage;
+    }
+
+    private void OnOpenGift(GameObject go)
+    {
+        DialogService.Instance.ShowDialog(new DialogListGift());
     }
 
     void OnDisable()
@@ -54,8 +60,10 @@ public class PokerPlayerUI : MonoBehaviour
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
         PokerObserver.Instance.onUpdatePot -= Instance_onUpdatePot;
         PuMain.Dispatcher.onChatMessage -= ShowMessage;
+        UIEventListener.Get(btnGift).onClick -= OnOpenGift;
         UIEventListener.Get(gameObject).onClick -= OnOpenProfile;
     }
+
     private void OnOpenProfile(GameObject gobj) {
         if (!PokerObserver.Instance.IsMainPlayer (UserName)) {
 			DialogService.Instance.ShowDialog (new DialogPlayerInfo (data));

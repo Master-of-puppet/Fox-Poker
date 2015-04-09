@@ -15,66 +15,80 @@ using Puppet.Service;
 
 namespace Puppet.Service
 {
-	[PrefabAttribute(Name = "Prefabs/Dialog/DialogPromotion", Depth = 9, IsAttachedToCamera = true, IsUIPanel = true)]
-	public class DialogPromotionView :BaseDialog<DialogPromotion, DialogPromotionView>
-	{
+    [PrefabAttribute(Name = "Prefabs/Dialog/DialogPromotion", Depth = 9, IsAttachedToCamera = true, IsUIPanel = true)]
+    public class DialogPromotionView : BaseDialog<DialogPromotion, DialogPromotionView>
+    {
 
 
-		#region UnityEditor
-		public UITable tableGift;
-		#endregion
-		public override void ShowDialog (DialogPromotion data)
-		{
-			base.ShowDialog (data);
-			ShowPromotion (data.gift);
-		}
-		private void ShowPromotion(DataDailyGift data){
-			for (int i = 0; i < data.values.Length; i++) {
-				string day = "";
-				string[] values= Utility.Convert.ConvertMoneyAndShortCut(data.values[i]);
-				if(data.chainIndex == i){
-					day = "Hôm nay";
-				}else{
-					day = "Ngày " + (i+1);
-				}
-				int index = -1;
-				if(i == 0)
-					index = i;
-				else if(i < data.values.Length - 1)
-					index = 1;
-				else {
-					index = 2;
-				}
-				PromotionPresenter presenter = new PromotionPresenter(day,values[0],values[1],index,delegate() {
-					API.Client.APIGeneric.GetDailyGift();
-					GameObject.Destroy(gameObject);
-				});
-				PromotionView view = presenter.View as PromotionView;
-				view.gameObject.name = "day " + i;
-				view.transform.parent = tableGift.transform;
-				view.transform.localScale = Vector3.one;
-				view.transform.localPosition = Vector2.zero;
-				if(i<data.chainIndex)
-					view.ShowActive();
-				else if(i > data.chainIndex){
-					if(i == data.values.Length -1){
-						view.ShowActive();
-					}else{
-						view.ShowDeactive();
-					}
-				}else{
-					view.ShowAnmation(true);
-				}
+        #region UnityEditor
+        public UITable tableGift;
+        #endregion
+        public override void ShowDialog(DialogPromotion data)
+        {
+            base.ShowDialog(data);
+            ShowPromotion(data.gift);
+        }
+        private void ShowPromotion(DataDailyGift data)
+        {
+            for (int i = 0; i < data.values.Length; i++)
+            {
+                string day = "";
+                string[] values = Utility.Convert.ConvertMoneyAndShortCut(data.values[i]);
+                if (data.chainIndex == i)
+                {
+                    day = "Hôm nay";
+                }
+                else
+                {
+                    day = "Ngày " + (i + 1);
+                }
+                int index = -1;
+                if (i == 0)
+                    index = i;
+                else if (i < data.values.Length - 1)
+                    index = 1;
+                else
+                {
+                    index = 2;
+                }
+                PromotionPresenter presenter = new PromotionPresenter(day, values[0], values[1], index, delegate()
+                {
+                    API.Client.APIGeneric.GetDailyGift();
+                    GameObject.Destroy(gameObject);
+                });
+                PromotionView view = presenter.View as PromotionView;
+                view.gameObject.name = "day " + i;
+                view.transform.parent = tableGift.transform;
+                view.transform.localScale = Vector3.one;
+                view.transform.localPosition = Vector2.zero;
+                if (i < data.chainIndex)
+                    view.ShowActive();
+                else if (i > data.chainIndex)
+                {
+                    if (i == data.values.Length - 1)
+                    {
+                        view.ShowActive();
+                    }
+                    else
+                    {
+                        view.ShowDeactive();
+                    }
+                }
+                else
+                {
+                    view.ShowAnmation(true);
+                }
 
-			}
-			tableGift.Reposition ();
-		}
-	}
+            }
+            tableGift.Reposition();
+        }
+    }
 }
 
 
 public class DialogPromotion : AbstractDialogData
 {
+    public override bool IsMessageDialog { get { return true; } }
     public DataDailyGift gift;
     public DialogPromotion(DataDailyGift gift)
         : base()
@@ -83,10 +97,10 @@ public class DialogPromotion : AbstractDialogData
     }
     public override void ShowDialog()
     {
-        PuApp.Instance.ExecuteFuntion(.5f, () =>
-        {
+        //PuApp.Instance.ExecuteFuntion(.5f, () =>
+        //{
             DialogPromotionView.Instance.ShowDialog(this);
-        });
+        //});
     }
 }
 

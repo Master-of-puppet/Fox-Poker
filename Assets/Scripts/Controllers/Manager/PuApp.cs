@@ -23,7 +23,8 @@ public class PuApp : Singleton<PuApp>
     {
         sleepTimeout = Screen.sleepTimeout;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        setting = new PuSetting("foxpokers.com", "foxpokers.com");
+        setting = new PuSetting();
+
 		gameObject.AddComponent<LogViewer> ();
         PingManager.Instance.Load();
 
@@ -50,9 +51,13 @@ public class PuApp : Singleton<PuApp>
 
 	void Dispatcher_onDailyGift(DataDailyGift obj)
 	{
+        this.dailyGift = obj;
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
-            DialogService.Instance.ShowDialog(new DialogPromotion(obj));
+            ExecuteFuntion(.5f, () =>
+            {
+                DialogService.Instance.ShowDialog(new DialogPromotion(obj));
+            });
         });
 	}
 
@@ -148,4 +153,6 @@ public class PuApp : Singleton<PuApp>
                 callback(texture);
         });
     }
+
+    public DataDailyGift dailyGift { get; set; }
 }

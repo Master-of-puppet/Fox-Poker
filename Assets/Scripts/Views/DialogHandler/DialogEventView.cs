@@ -2,6 +2,7 @@
 using System.Collections;
 using Puppet.Service;
 using Puppet;
+using System;
 namespace Puppet.Service
 {
 	[PrefabAttribute(Name = "Prefabs/Dialog/DialogEvent", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
@@ -50,6 +51,10 @@ namespace Puppet.Service
 
 		private void SetWebView()
         {
+            if (!String.IsNullOrEmpty(data.url)) { 
+                contentwebView.GetComponent<UniWebView>().url = data.url;
+                contentwebView.GetComponent<UniWebView>().Load();
+            }
             contentwebView.GetComponent<UniWebView>().insets = new UniWebViewEdgeInsets(aTop, aLeft, aBottom, aRight);
         }
 
@@ -109,7 +114,10 @@ namespace Puppet.Service
     }
     public class DialogEvent : AbstractDialogData
     {
-
+        public string url;
+        public DialogEvent(string url) {
+            this.url = url;
+        }
         public override void ShowDialog()
         {
             DialogEventView.Instance.ShowDialog(this);

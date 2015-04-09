@@ -42,6 +42,7 @@ public class DialogRegisterView : BaseDialog<DialogRegister,DialogRegisterView>
 			}
 				if (pass.Equals(rePass))
 				{
+                    LoadingView.Instance.Show(false);
 					APILogin.QuickRegister(name, pass, QuickRegisterCallBack);
 				}
 				else

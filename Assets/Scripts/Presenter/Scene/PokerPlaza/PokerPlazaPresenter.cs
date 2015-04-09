@@ -22,15 +22,18 @@ public class PokerPlazaPresenter : IPlazaPresenter
 
     public void JoinLobby()
     {
+        LoadingView.Instance.Show(false);
 		PuApp.Instance.setting.sceneName = Scene.LobbyScene.ToString ();
         Application.LoadLevel(Scene.LobbyScene.ToString());
     }
 
     public void PlayNow()
     {
+        LoadingView.Instance.Show(false);
         //APIPlaza.Play();
         APILobby.QuickJoinLobby((status, message, data) =>
         {
+            LoadingView.Instance.Show(true)  ;
             Puppet.Logger.Log("Quick Join Game: {0} - Message: {1}", status, message);
         });
     }

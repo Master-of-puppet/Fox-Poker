@@ -75,9 +75,10 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 		APIUser.ChangeUseInformation (fullName.value,"","",gender,address.value,"",OnSubmitChangeInfoCallBack);
 		if (ValidateField ()) {
             APIUser.ChangeUseInformationSpecial(email.value, phoneNumber.value, null);
+
+            if (isChangedAvatar)
+                APIUser.ChangeUseInformation(((Texture2D)avatar.mainTexture).EncodeToPNG(), OnChangeAvatarCallBack);
 		}
-        if (isChangedAvatar)
-            APIUser.ChangeUseInformation(((Texture2D)avatar.mainTexture).EncodeToPNG(), OnChangeAvatarCallBack);
 	}
 
     private void OnChangeAvatarCallBack(bool status, string message)
@@ -86,16 +87,25 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
     }
 	bool ValidateField(){
 
-		bool isEmail = Regex.IsMatch(email.value,EMAIL_REGEX, RegexOptions.IgnoreCase);
-		bool isPhoneNumber = (phoneNumber.value.Length == 10 || phoneNumber.value.Length == 11);
-		if (!isEmail){
-			DialogService.Instance.ShowDialog (new DialogMessage("Thông báo","Email không đúng định dạng",null));
-           return false;
-   		}
-   		else if(!isPhoneNumber){
-			DialogService.Instance.ShowDialog (new DialogMessage("Thông báo","Email không đúng định dạng",null));
-           return false;
-		}
+        if (!string.IsNullOrEmpty(email.value))
+        {
+            bool isEmail = Regex.IsMatch(email.value, EMAIL_REGEX, RegexOptions.IgnoreCase);
+            if (!isEmail)
+            {
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Email không đúng định dạng", null));
+                return false;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(phoneNumber.value))
+        {
+            bool isPhoneNumber = (phoneNumber.value.Length == 10 || phoneNumber.value.Length == 11);
+            if (!isPhoneNumber)
+            {
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Phone không đúng định dạng", null));
+                return false;
+            }
+        }
    		return true;
 
 	}
