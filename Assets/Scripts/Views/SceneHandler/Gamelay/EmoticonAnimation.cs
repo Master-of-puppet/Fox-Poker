@@ -8,8 +8,11 @@ public class EmoticonAnimation : MonoBehaviour {
 		gobj.transform.parent = parent;
 		gobj.transform.localScale = Vector3.one;
 		gobj.transform.localPosition = new Vector3 (0f, 50f, 0f);
-		EmoticonAnimation item = gobj.GetComponent<EmoticonAnimation> ();
-		item.killMeAfter (2.0f);
+        EmoticonAnimation item = gobj.GetComponent<EmoticonAnimation>();
+        if (item == null) {
+            item = gobj.AddComponent<EmoticonAnimation>();
+        };
+        item.killMeAfter(2.0f);
 		return item;
 	}
 	public void killMeAfter(float second){
