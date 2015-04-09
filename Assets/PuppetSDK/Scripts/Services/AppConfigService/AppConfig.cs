@@ -360,6 +360,7 @@ namespace Puppet
 			}
 		}
 
+#if UNITY_EDITOR
         public BuildTarget LastBuildTarget
         {
             get
@@ -375,6 +376,7 @@ namespace Puppet
                 }
             }
         }
+#endif
 
         public bool IsDevelopmentBuild
         {
