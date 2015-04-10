@@ -1,5 +1,7 @@
-﻿using Puppet.API.Client;
+﻿using Puppet;
+using Puppet.API.Client;
 using Puppet.Core.Model;
+using Puppet.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +35,10 @@ public class PokerPlazaPresenter : IPlazaPresenter
         //APIPlaza.Play();
         APILobby.QuickJoinLobby((status, message, data) =>
         {
-            LoadingView.Instance.Show(true)  ;
-            Puppet.Logger.Log("Quick Join Game: {0} - Message: {1}", status, message);
+            LoadingView.Instance.Show(true);
+            int roomId = System.Convert.ToInt32(data);
+            if (roomId < 0)
+                DialogService.Instance.ShowDialog(new DialogMessage("Message", message, null));
         });
     }
 

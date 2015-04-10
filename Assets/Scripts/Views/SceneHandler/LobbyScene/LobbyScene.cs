@@ -75,7 +75,11 @@ public class LobbyScene : MonoBehaviour,ILobbyView
     {
         APILobby.QuickJoinLobby((status, message, data) =>
         {
-            Puppet.Logger.Log("Quick Join Game: {0} - Message: {1}", status, message);
+            int roomId = System.Convert.ToInt32(data);
+            if (roomId == -1)
+                APILobby.CreateLobby(presenter.SelectedChannel.configuration.betting[0], 9, null);
+            else if (roomId == -2)
+                DialogService.Instance.ShowDialog(new DialogMessage("Message", message, null));
         });
     }
 
