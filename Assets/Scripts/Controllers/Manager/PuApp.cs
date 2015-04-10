@@ -45,7 +45,11 @@ public class PuApp : Singleton<PuApp>
     {
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
-            DialogService.Instance.ShowDialog(new DialogMessage("Warning", message, null));
+            string title = 
+                type == EMessage.Message ? "Thông báo" : 
+                type == EMessage.Warning ? "Cảnh báo" :
+                type == EMessage.Error ? "Lỗi" : type.ToString();
+            DialogService.Instance.ShowDialog(new DialogMessage(title, message, null));
         });
     }
 
