@@ -17,11 +17,11 @@ public class PokerGameplayView : MonoBehaviour
 {
     #region UnityEditor
     public GameObject btnGameMini, btnRule, btnSendMessage;
-	public GameObject btnViewCheckBox, btnFollowBetCheckBox, btnFollowAllBetCheckbox;
+	public GameObject btnViewCheckBox, btnFollowBetCheckBox, btnFollowAllBetCheckbox,btnShareFacebook,btnCloseLayoutShareFacebook;
     public UILabel lbMessage;
 	public UILabel lbTime,lbTitle;
     public PokerGameplayPlaymat playmat;
-
+    
 
     public List<DataChat> dataChat;
     #endregion
@@ -60,17 +60,37 @@ public class PokerGameplayView : MonoBehaviour
         //UIEventListener.Get(btnGameMini).onClick += OnButtonGameMiniClickCallBack;
         UIEventListener.Get(btnRule).onClick += OnButtonRuleClickCallBack;
         UIEventListener.Get(btnSendMessage).onClick += OnButtonSendMessageClickCallBack;
+        UIEventListener.Get(btnShareFacebook).onClick += OnClickButtnShowDialogShare;
+        UIEventListener.Get(btnCloseLayoutShareFacebook).onClick += OnClickButtonCloseLayoutShareFacebook;
         PuMain.Dispatcher.onChatMessage += ShowMessage;
     }
 
+    private void OnClickButtnShowDialogShare(GameObject go)
+    {
+        string title = "";
+        string description ="";
+        DialogService.Instance.ShowDialog(new DialogGameplayShare(title, description, ""));
+    }
+    private void showLayoutShare()
+    {
+        btnShareFacebook.transform.parent.gameObject.SetActive(true);
+    }
+    private void OnClickButtonCloseLayoutShareFacebook(GameObject go)
+    {
+        btnShareFacebook.transform.parent.gameObject.SetActive(false);
+    }
     void OnDisable()
     {
         PokerObserver.Instance.onEncounterError -= Instance_onEncounterError;
         //UIEventListener.Get(btnGameMini).onClick -= OnButtonGameMiniClickCallBack;
         UIEventListener.Get(btnRule).onClick -= OnButtonRuleClickCallBack;
         UIEventListener.Get(btnSendMessage).onClick -= OnButtonSendMessageClickCallBack;
+        UIEventListener.Get(btnShareFacebook).onClick -= OnClickButtnShowDialogShare;
+        UIEventListener.Get(btnCloseLayoutShareFacebook).onClick -= OnClickButtonCloseLayoutShareFacebook;
         PuMain.Dispatcher.onChatMessage -= ShowMessage;
     }
+
+    
     private void ShowMessage(DataChat message) {
         if (message.GetChatType() == DataChat.ChatType.Public)
         {
