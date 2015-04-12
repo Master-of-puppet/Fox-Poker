@@ -43,7 +43,23 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void LoadChannels()
     {
+        APILobby.AddListener(onCreateCallback, onUpdateCallback, onDeleteCallback);
         APILobby.GetGroupsLobby(OnGetGroupNameCallback);
+    }
+
+    private void onDeleteCallback(List<DataLobby> obj)
+    {
+        view.RemoveLobby(obj);
+    }
+
+    private void onUpdateCallback(List<DataLobby> obj)
+    {
+        view.UpdateLobby(obj);  
+    }
+
+    private void onCreateCallback(List<DataLobby> obj)
+    {
+
     }
 
     private void OnGetGroupNameCallback(bool status, string message, List<Puppet.Core.Model.DataChannel> data)
@@ -85,15 +101,6 @@ public class PokerLobbyPresenter : ILobbyPresenter
             {
                 this.lobbies = data;
                 view.DrawLobbies(data);
-            }
-            else
-            {
-                List<DataLobby> lobbiesDeleted = lobbies.Except(data).ToList();
-                if (lobbiesDeleted.Count > 0)
-                    view.RemoveLobby(lobbiesDeleted);
-                List<DataLobby> lobbiesAdded = data.Except(lobbies).ToList();
-                if (lobbiesAdded.Count > 0)
-                    view.AddLobby(lobbiesAdded);
             }
         }
         else
