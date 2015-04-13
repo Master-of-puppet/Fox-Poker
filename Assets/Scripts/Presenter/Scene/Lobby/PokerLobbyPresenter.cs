@@ -47,19 +47,31 @@ public class PokerLobbyPresenter : ILobbyPresenter
         APILobby.GetGroupsLobby(OnGetGroupNameCallback);
     }
 
-    private void onDeleteCallback(List<DataLobby> obj)
+    private void onDeleteCallback(DataLobby obj)
     {
-        view.RemoveLobby(obj);
+        if (Lobbies != null) { 
+            DataLobby lob = Lobbies.Find(i => i.roomId == obj.roomId);
+            if (lob != null)
+            {
+                view.RemoveLobby(obj);
+                Lobbies.Remove(lob);
+            }
+        }
     }
 
-    private void onUpdateCallback(List<DataLobby> obj)
+    private void onUpdateCallback(DataLobby obj)
     {
-        view.UpdateLobby(obj);  
+        view.UpdateLobby(obj);
+        DataLobby lob = Lobbies.Find(i => i.roomId == obj.roomId);
+        lob = obj;
     }
 
-    private void onCreateCallback(List<DataLobby> obj)
+    private void onCreateCallback(DataLobby obj)
     {
-
+        if (Lobbies != null && Lobbies.Find(item=>item.roomId == obj.roomId) == null)
+        {
+            view.AddLobby(obj);
+        }
     }
 
     private void OnGetGroupNameCallback(bool status, string message, List<Puppet.Core.Model.DataChannel> data)
