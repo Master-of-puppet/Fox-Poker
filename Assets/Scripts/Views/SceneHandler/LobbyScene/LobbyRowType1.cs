@@ -29,6 +29,12 @@ public class LobbyRowType1 : MonoBehaviour
     }
     public void setData(DataLobby lobby)
     {
+        if (data != null) {
+            for (int i = 0; i < slots.Length; i++)
+            {
+                slots[i].SetActive(false);
+            }
+        }
         this.data = lobby;
 		double smallBind = lobby.gameDetails.betting / 2;
 		title.text = "Phòng : " + lobby.roomId + " - $" + smallBind+"/"+lobby.gameDetails.betting;
