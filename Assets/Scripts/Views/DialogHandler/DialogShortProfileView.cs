@@ -32,7 +32,7 @@ public class DialogShortProfileView : BaseDialog<DialogShortProfile, DialogShort
 	{
 		base.ShowDialog (data);
 		lbUserName.text = data.info.userName;
-		lbChip.text = data.info.GetAvailableChip ().ToString();
+        lbChip.text = data.info.GetGlobalAvailableChip().ToString();
         PuApp.Instance.GetImage(data.info.avatar, (texture) => avatar.mainTexture = texture);
 	}
 }
