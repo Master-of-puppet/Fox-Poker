@@ -71,6 +71,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
         if (Lobbies != null && Lobbies.Find(item=>item.roomId == obj.roomId) == null)
         {
             view.AddLobby(obj);
+            Lobbies.Add(obj);
         }
     }
 

@@ -29,42 +29,22 @@ public class LobbyRowType1 : MonoBehaviour
     }
     public void setData(DataLobby lobby)
     {
-        if (data != null) {
-            for (int i = 0; i < slots.Length; i++)
-            {
-                slots[i].SetActive(false);
-            }
-        }
+        for (int i = 0; i < slots.Length; i++)
+            slots[i].SetActive(false);
+
         this.data = lobby;
 		double smallBind = lobby.gameDetails.betting / 2;
 		title.text = "Phòng : " + lobby.roomId + " - $" + smallBind+"/"+lobby.gameDetails.betting;
-        if (data.gameDetails.numPlayers == 5)
+        
+		if (data.users != null && data.users.Length > 0) 
         {
-            for (int i = 0; i < slots.Length; i++)
-            {
-                for (int j = 0; j < arrayIndex5Player.Length; j++)
-                {
-                    int index = arrayIndex5Player[j];
-                    if (i == index)
-                        slots[index].SetActive(true);
-                }
-            }
-        }
-        else
-        {
-            for (int i = 0; i < slots.Length; i++)
-            {
-                slots[i].SetActive(true);
-            }
-        }
-		if (data.users != null && data.users.Length > 0) {
             foreach (DataPlayerController item in data.users)
             {
                 int index = item.slotIndex;
                 if (data.gameDetails.numPlayers == 5)
-                {
                     index = arrayIndex5Player[item.slotIndex];
-                }
+
+                slots[index].SetActive(true);
                 slots[index].GetComponent<LobbySlot>().setData(item);
             }
 		}
