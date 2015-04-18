@@ -37,7 +37,9 @@ public class DialogGameplayShareView : BaseDialog<DialogGameplayShare, DialogGam
     {
         if (pressValue == true)
         {
-
+            APIGeneric.PostFacebook(FB.AccessToken, data.title, null, delegate(bool status, string message) {
+                GameObject.Destroy(gameObject);
+            });
         }
         base.OnPressButton(pressValue, data);
        
