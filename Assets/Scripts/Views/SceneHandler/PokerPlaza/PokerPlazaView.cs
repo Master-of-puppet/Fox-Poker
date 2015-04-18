@@ -60,8 +60,17 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 
     private void OnClickToEvent(GameObject go)
     {
-        string url = go.GetComponent<PlazaEventItem>().evt.url;
-        DialogService.Instance.ShowDialog(new DialogEvent(url));
+        PlazaEventItem itemEvent = go.GetComponent<PlazaEventItem>();
+        string url = itemEvent.evt.url;
+        if (itemEvent.evt.GetEventType() == Puppet.EventType.WebView)
+        {
+            DialogService.Instance.ShowDialog(new DialogEvent(url));
+        }
+        else
+        {
+            url = itemEvent.evt.extra_url;
+            Application.OpenURL(url);
+        }
     }
 	void OnClickPromotion (GameObject go)
 	{

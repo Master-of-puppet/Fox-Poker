@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Puppet.Core.Model;
+using Puppet.API.Client;
 
 public class LobbySlotUserInfo : MonoBehaviour {
 
@@ -10,6 +11,7 @@ public class LobbySlotUserInfo : MonoBehaviour {
 	#endregion
 	public void showUserInfo(DataPlayerController user){
 		userName.text = user.userName;
+        PuApp.Instance.GetImage(user.avatar, (texture) => avatar.mainTexture = texture);
 	}
 
 }

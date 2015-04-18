@@ -25,7 +25,7 @@ public class LobbyRowType2 : MonoBehaviour
     void Start () {
 	
 	}
-    private void setData(DataLobby data)
+    public void setData(DataLobby data)
     {
         this.data = data;
         lbRoomNumber.text = data.roomId.ToString();

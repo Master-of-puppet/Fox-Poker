@@ -45,7 +45,7 @@ public class DialogPlayerInfoView : BaseDialog<DialogPlayerInfo, DialogPlayerInf
     }
     public void initView() {
         lbUserName.text = data.player.userName;
-        lbChip.text = data.player.GetAvailableChip().ToString();
+        lbChip.text = data.player.GetGlobalAvailableChip().ToString();
         PuApp.Instance.GetImage(data.player.avatar, (texture) => avatar.mainTexture = texture);
     }
 }

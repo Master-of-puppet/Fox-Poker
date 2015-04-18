@@ -113,6 +113,7 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 	void OnSubmitChangeInfoCallBack (bool status, string message)
 	{
 		if (status) {
+            initView();
 			DialogService.Instance.ShowDialog(new DialogMessage("Thông báo",message,null));
 		}
 
@@ -121,6 +122,17 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 	public void initView(){
 		userName.value = data.info.info.userName;
 		fullName.value = data.info.info.lastName + data.info.info.firstName;
+        email.value = data.info.info.email;
+        phoneNumber.value = data.info.info.mobile;
+        if (data.info.info.gender == 0)
+        {
+            toggleMale.value = true;
+        }
+        else
+        {
+            toggleFemale.value = true;
+        }
+        address.value = data.info.info.address;
         PuApp.Instance.GetImage(data.info.info.avatar, (texture) => avatar.mainTexture = texture);
 		//fullName.value = data.info.info.lastName + data.info.info.firstName;
 	}
