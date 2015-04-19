@@ -15,7 +15,7 @@ using Puppet.Core.Model;
 public class PokerGameplayPlaymat : MonoBehaviour
 {
     #region UNITY EDITOR
-    public GameObject prefabBetObject;
+    public GameObject prefabBetObject,btnShareFacebook,btnCloseLayoutShareFacebook;
     public GameObject positionEffectDealCard;
     public Transform []positionDealCards;
     public PokerPotManager potContainer;
@@ -43,6 +43,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
         PokerObserver.Instance.onUpdateRoomMaster += Instance_onUpdateRoomMaster;
+        UIEventListener.Get(btnShareFacebook).onClick += OnClickButtnShowDialogShare;
+        UIEventListener.Get(btnCloseLayoutShareFacebook).onClick += OnClickButtonCloseLayoutShareFacebook;
         PuMain.Dispatcher.onChatMessage += onShowMessage;
     }
 
@@ -58,6 +60,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
         PokerObserver.Instance.onUpdateRoomMaster -= Instance_onUpdateRoomMaster;
         PuMain.Dispatcher.onChatMessage -= onShowMessage;
+        UIEventListener.Get(btnShareFacebook).onClick -= OnClickButtnShowDialogShare;
+        UIEventListener.Get(btnCloseLayoutShareFacebook).onClick -= OnClickButtonCloseLayoutShareFacebook;
     }
     private void onShowMessage(DataChat message)
     {
@@ -101,6 +105,20 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 iTween.MoveTo(pointFrom, iTween.Hash("islocal", true, "position", pointMoveTo, "time", 1.5f, "oncomplete", "onMoveItemInteractionComplete", "oncompletetarget", gameObject, "oncompleteparams", tweenValue));
             }
         }
+    }
+    private void OnClickButtnShowDialogShare(GameObject go)
+    {
+        string title = "Bạn đã đạt "+rankWin +" hãy chia sẻ để mọi người cùng biết";
+        string description = "";
+        DialogService.Instance.ShowDialog(new DialogGameplayShare(title, description, ""));
+    }
+    private void showLayoutShare()
+    {
+        btnShareFacebook.transform.parent.gameObject.SetActive(true);
+    }
+    private void OnClickButtonCloseLayoutShareFacebook(GameObject go)
+    {
+        btnShareFacebook.transform.parent.gameObject.SetActive(false);
     }
     public void onMoveItemInteractionComplete(object vals)
     {
@@ -428,7 +446,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
         foreach (ResponseResultSummary summary in responseData.pots)
         {
             ResponseMoneyExchange playerWin = Array.Find<ResponseMoneyExchange>(summary.players, p => p.winner);
-
             List<string> lstWinner = new List<string>();
             foreach (ResponseMoneyExchange item in summary.players)
             {
@@ -436,8 +453,13 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 {
                     lstWinner.Add(item.userName);
 
-                    if (PokerObserver.Instance.IsMainPlayer(item.userName))
+                    if (PokerObserver.Instance.IsMainPlayer(item.userName)){
                         PuSound.Instance.Play(SoundType.PlayerWin);
+                        string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players, rdp => rdp.userName == item.userName).ranking;
+                    //    RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
+
+                        ShowBtnShareFacebook(rankWin);
+                    }
                 }
             }
 
@@ -504,6 +526,18 @@ public class PokerGameplayPlaymat : MonoBehaviour
         ResetNewRound();
         PokerObserver.Instance.isWaitingFinishGame = false;
         PokerObserver.Game.EndFinishGame();
+    }
+
+    private void ShowBtnShareFacebook(string rank)
+    {
+        StartCoroutine(_ShowBtnShareFacebook(rank));
+    }
+    private IEnumerator _ShowBtnShareFacebook(string rank)
+    {
+        this.rankWin = rank;
+        showLayoutShare();
+        yield return new WaitForSeconds(3.0f);
+        OnClickButtonCloseLayoutShareFacebook(null);
     }
 
     void Instance_dataUpdateGame(ResponseUpdateGame data)
@@ -663,4 +697,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
     }
 
     public object spriteArray { get; set; }
+
+    public string rankWin { get; set; }
 }

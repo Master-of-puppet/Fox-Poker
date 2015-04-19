@@ -21,7 +21,7 @@ public class PokerGameplayView : MonoBehaviour
     public UILabel lbMessage;
 	public UILabel lbTime,lbTitle;
     public PokerGameplayPlaymat playmat;
-
+    
 
     public List<DataChat> dataChat;
     #endregion
@@ -60,8 +60,10 @@ public class PokerGameplayView : MonoBehaviour
         //UIEventListener.Get(btnGameMini).onClick += OnButtonGameMiniClickCallBack;
         UIEventListener.Get(btnRule).onClick += OnButtonRuleClickCallBack;
         UIEventListener.Get(btnSendMessage).onClick += OnButtonSendMessageClickCallBack;
+
         PuMain.Dispatcher.onChatMessage += ShowMessage;
     }
+
 
     void OnDisable()
     {
@@ -69,8 +71,11 @@ public class PokerGameplayView : MonoBehaviour
         //UIEventListener.Get(btnGameMini).onClick -= OnButtonGameMiniClickCallBack;
         UIEventListener.Get(btnRule).onClick -= OnButtonRuleClickCallBack;
         UIEventListener.Get(btnSendMessage).onClick -= OnButtonSendMessageClickCallBack;
+      
         PuMain.Dispatcher.onChatMessage -= ShowMessage;
     }
+
+    
     private void ShowMessage(DataChat message) {
         if (message.GetChatType() == DataChat.ChatType.Public)
         {
