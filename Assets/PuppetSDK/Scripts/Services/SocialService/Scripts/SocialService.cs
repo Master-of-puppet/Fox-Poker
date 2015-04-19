@@ -134,6 +134,16 @@ namespace Puppet.Service
 
             ProcessLogin(type, () => GetSocialNetwork(type).AppRequest(message, to, title, onRequestComplete));
         }
+        public static void GetAccessToken(SocialType type, Action<bool, string> onGetToken)
+        {
+            if (Application.isEditor)
+            {
+                if (onGetToken != null) onGetToken(false, string.Empty);
+                return;
+            }
+
+            ProcessLogin(type, () => { if (onGetToken != null) onGetToken(true, GetSocialNetwork(type).AccessToken); });
+        }
 
         #region HANDLE LOGIN SOCIAL
         static Action loginCallback;
