@@ -74,6 +74,8 @@ namespace Puppet.Service
     {
         public override bool IsMessageDialog { get { return true; } }
 
+        public DialogMessage(string title, string content) : this(title, content, null) {}
+
         public DialogMessage(string title, string content, Action<bool?> callback) : base()
         {
             this.Title = title;

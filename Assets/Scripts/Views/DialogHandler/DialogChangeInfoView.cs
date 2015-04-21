@@ -8,7 +8,8 @@ using System.Text.RegularExpressions;
 
 
 [PrefabAttribute(Name = "Prefabs/Dialog/UserInfo/DialogChangeInfo", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
-public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfoView> {
+public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfoView> 
+{
     #region UnityEditor
     public UIInput userName, fullName, email, phoneNumber, address;
     public GameObject btnSubmit, btnOpenGalery;
@@ -16,13 +17,16 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
     public GameObject[] btnDefaultAvatars;
     public UITexture avatar;
     #endregion
+
     private static string EMAIL_REGEX = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
     bool isChangedAvatar = false;
+
 	public override void ShowDialog (DialogChangeInfo data)
 	{
 		base.ShowDialog (data);
 		initView ();
 	}
+
 	protected override void OnEnable ()
 	{
 		base.OnEnable ();
@@ -38,13 +42,10 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
         } 
 	
 	}
+
 	protected override void OnDisable ()
 	{
 		base.OnDisable ();
-//		UIEventListener.Get (fullName.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite>().gameObject).onClick -= onClickEditFullName;
-//		UIEventListener.Get (email.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick -= onClickEditEmail;
-//		UIEventListener.Get (phoneNumber.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick -= onClickEditPhone;
-//		UIEventListener.Get (address.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject).onClick -= onClickEditAddress;
         UIEventListener.Get(btnSubmit).onClick -= onClickSubmit;
         UIEventListener.Get(btnOpenGalery).onClick -= onClickOpenGallery;
         foreach (GameObject defaultAvatar in btnDefaultAvatars)
@@ -69,30 +70,46 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
         avatar.mainTexture = go.GetComponentInChildren<UITexture>().mainTexture;
     }
 
+    int totalChange;
 	void onClickSubmit (GameObject go)
 	{
-		int gender = toggleMale.value == true ? 0 : 1;
-		APIUser.ChangeUseInformation (fullName.value,"","",gender,address.value,"",OnSubmitChangeInfoCallBack);
-		if (ValidateField ()) {
-            APIUser.ChangeUseInformationSpecial(email.value, phoneNumber.value, null);
+        totalChange = 0;
+        if (ValidateField())
+        {
+		    int gender = toggleMale.value == true ? 0 : 1;
+            DataUser userInfo = data.info.info;
+
+            if (!userInfo.firstName.Equals(fullName.value.Trim()) || userInfo.gender != gender)
+            {
+                totalChange++;
+                APIUser.ChangeUseInformation(fullName.value, "", "", gender, address.value, "", OnSubmitChangeInfoCallBack);
+            }
+
+            if (!userInfo.email.Equals(email.value.Trim()) || !userInfo.mobile.Equals(phoneNumber.value.Trim()))
+            {
+                totalChange++;
+                APIUser.ChangeUseInformationSpecial(email.value, phoneNumber.value, OnSubmitChangeInfoCallBack);
+            }
 
             if (isChangedAvatar)
-                APIUser.ChangeUseInformation(((Texture2D)avatar.mainTexture).EncodeToPNG(), OnChangeAvatarCallBack);
+            {
+                totalChange++;
+                APIUser.ChangeUseInformation(((Texture2D)avatar.mainTexture).EncodeToPNG(), OnSubmitChangeInfoCallBack);
+            }
+
+            if (totalChange == 0)
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Không có thông tin gì thay đổi."));
 		}
 	}
 
-    private void OnChangeAvatarCallBack(bool status, string message)
+	bool ValidateField()
     {
-        Logger.Log("========> " + status);
-    }
-	bool ValidateField(){
-
         if (!string.IsNullOrEmpty(email.value))
         {
             bool isEmail = Regex.IsMatch(email.value, EMAIL_REGEX, RegexOptions.IgnoreCase);
             if (!isEmail)
             {
-                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Email không đúng định dạng", null));
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Email không đúng định dạng"));
                 return false;
             }
         }
@@ -102,44 +119,42 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
             bool isPhoneNumber = (phoneNumber.value.Length == 10 || phoneNumber.value.Length == 11);
             if (!isPhoneNumber)
             {
-                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Phone không đúng định dạng", null));
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Phone không đúng định dạng"));
                 return false;
             }
         }
-   		return true;
 
+   		return true;
 	}
 
 	void OnSubmitChangeInfoCallBack (bool status, string message)
-	{
-		if (status) {
-            initView();
-			DialogService.Instance.ShowDialog(new DialogMessage("Thông báo",message,null));
-		}
-
-	}
-
-	public void initView(){
-		userName.value = data.info.info.userName;
-		fullName.value = data.info.info.lastName + data.info.info.firstName;
-        email.value = data.info.info.email;
-        phoneNumber.value = data.info.info.mobile;
-        if (data.info.info.gender == 0)
+    {
+        if (!status) 
         {
-            toggleMale.value = true;
-        }
+			DialogService.Instance.ShowDialog(new DialogMessage("Thay đổi thông tin không thành công.",message));
+		}
         else
         {
-            toggleFemale.value = true;
+            totalChange--;
+            if (totalChange == 0)
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Thay đổi thông tin cá nhân thành công."));
         }
-        address.value = data.info.info.address;
+	}
+
+	public void initView()
+    {
+		userName.value = data.info.info.userName.Trim();
+        fullName.value = string.Format("{0} {1} {2}", data.info.info.firstName.Trim(), data.info.info.middleName.Trim(), data.info.info.lastName.Trim()).Trim();
+        email.value = data.info.info.email.Trim();
+        phoneNumber.value = data.info.info.mobile.Trim();
+        toggleMale.value = data.info.info.gender == 0;
+        toggleFemale.value = data.info.info.gender == 1;
+        address.value = data.info.info.address.Trim();
         PuApp.Instance.GetImage(data.info.info.avatar, (texture) => avatar.mainTexture = texture);
-		//fullName.value = data.info.info.lastName + data.info.info.firstName;
 	}
 
 	void onClickEditFullName (GameObject go)
 	{
-
 		fullName.collider.enabled = true;
 		fullName.isSelected = true;
 		fullName.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject.SetActive (false);
@@ -166,7 +181,9 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 		address.GetComponentInChildren<UIAnchor> ().GetComponentInChildren<UISprite> ().gameObject.SetActive (false);
 	}
 }
-public class DialogChangeInfo : AbstractDialogData{
+
+public class DialogChangeInfo : AbstractDialogData
+{
 	public UserInfo info;
 	public DialogChangeInfo(UserInfo info) : base(){
 		this.info = info;
