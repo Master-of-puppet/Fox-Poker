@@ -79,7 +79,7 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 		    int gender = toggleMale.value == true ? 0 : 1;
             DataUser userInfo = data.info.info;
 
-            if (!userInfo.firstName.Equals(fullName.value.Trim()) || userInfo.gender != gender)
+            if (!userInfo.firstName.Equals(fullName.value.Trim()) || userInfo.gender != gender || !userInfo.address.Equals(address.value.Trim()))
             {
                 totalChange++;
                 APIUser.ChangeUseInformation(fullName.value, "", "", gender, address.value, "", OnSubmitChangeInfoCallBack);
