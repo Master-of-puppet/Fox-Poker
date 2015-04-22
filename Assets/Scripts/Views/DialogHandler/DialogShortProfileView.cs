@@ -36,7 +36,7 @@ public class DialogShortProfileView : BaseDialog<DialogShortProfile, DialogShort
         if(data.info.numberTotalGames !=0)
             lbPercentWin.text = (data.info.numberWinGames / data.info.numberTotalGames)+ "%";
         else
-            lbPercentWin.text = "100%";
+            lbPercentWin.text = "0%";
         PuApp.Instance.GetImage(data.info.avatar, (texture) => avatar.mainTexture = texture);
 	}
 }

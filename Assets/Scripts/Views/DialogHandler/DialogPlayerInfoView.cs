@@ -46,6 +46,13 @@ public class DialogPlayerInfoView : BaseDialog<DialogPlayerInfo, DialogPlayerInf
     public void initView() {
         lbUserName.text = data.player.userName;
         lbChip.text = data.player.GetGlobalAvailableChip().ToString();
+        string percent = "Tỷ lệ thắng : 0 %";
+        if (data.player.numberTotalGames > 0) {
+            percent = "Tỷ lệ thắng : " +data.player.numberWinGames / data.player.numberTotalGames + "%";
+            
+        }
+        lbPercenWin.text = percent;
+        lbTotalPlay.text = "Tổng số trận : " + data.player.numberTotalGames;
         PuApp.Instance.GetImage(data.player.avatar, (texture) => avatar.mainTexture = texture);
     }
 }
