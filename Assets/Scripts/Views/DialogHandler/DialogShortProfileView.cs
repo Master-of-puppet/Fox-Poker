@@ -9,7 +9,7 @@ using Puppet.Poker.Models;
 [PrefabAttribute(Name = "Prefabs/Dialog/UserInfo/DialogShortProfile", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
 public class DialogShortProfileView : BaseDialog<DialogShortProfile, DialogShortProfileView> {
 	#region UnityEditor
-	public UILabel lbUserName,lbChip,lbLevel;
+	public UILabel lbUserName,lbChip,lbLevel,lbPercentWin;
 	public UITexture avatar;
     public GameObject btnGift, btnItem;
 	#endregion
@@ -33,6 +33,10 @@ public class DialogShortProfileView : BaseDialog<DialogShortProfile, DialogShort
 		base.ShowDialog (data);
 		lbUserName.text = data.info.userName;
         lbChip.text = data.info.GetGlobalAvailableChip().ToString();
+        if(data.info.numberTotalGames !=0)
+            lbPercentWin.text = (data.info.numberWinGames / data.info.numberTotalGames)+ "%";
+        else
+            lbPercentWin.text = "100%";
         PuApp.Instance.GetImage(data.info.avatar, (texture) => avatar.mainTexture = texture);
 	}
 }

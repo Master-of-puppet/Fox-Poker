@@ -457,8 +457,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
                         PuSound.Instance.Play(SoundType.PlayerWin);
                         string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players, rdp => rdp.userName == item.userName).ranking;
                     //    RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
-
-                        ShowBtnShareFacebook(rankWin);
+                        
+		                UserInfo userInfo = Puppet.API.Client.APIUser.GetUserInformation ();
+                        if (!string.IsNullOrEmpty(userInfo.info.facebookId))
+                            ShowBtnShareFacebook(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
                     }
                 }
             }
