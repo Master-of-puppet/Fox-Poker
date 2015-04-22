@@ -18,7 +18,7 @@ namespace Puppet
         GUIContent httpPortLabel = new GUIContent("Port [?]", "Port own use for Web Server, example: '80', '8888', '8080'");
 		GUIContent socketUrlLabel = new GUIContent("Socket Server URL [?]", "Server Url for Socket");
         GUIContent socketPortLabel = new GUIContent("Port [?]", "Port own use for Socket Server, example: '80', '8888', '8080'");
-		GUIContent appVersionLabel = new GUIContent("App Version [?]", "Application Version, example: 1.0.0");
+		GUIContent appVersionLabel = new GUIContent("App Version [?]", "Currrent Application Version, example: 1.0.0.1000");
 		GUIContent platformTypwLabel = new GUIContent("Platform Type [?]", "Platform Type, reference for Platform specific functions");
 		GUIContent bundleIdLabel = new GUIContent("App Bundle Identifier [?]", "Application Bundle Id, example: com.abc.helloworld");
 		
@@ -166,7 +166,7 @@ namespace Puppet
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-            EditableField(new GUIContent("Current version: ", ""), config.AppVersion);
+            EditableField(appVersionLabel, config.AppVersion);
             EditorGUILayout.EndHorizontal();
 
 			EditorGUILayout.Space();
@@ -222,6 +222,18 @@ namespace Puppet
         static void PlayerPrefsDeleteAll()
         {
             PlayerPrefs.DeleteAll();
+        }
+
+        [MenuItem("Puppet SDK/Delete Cache", priority = 98)]
+        static void DeleteCacheDirectory()
+        {
+            System.IO.DirectoryInfo directory = new System.IO.DirectoryInfo(Application.persistentDataPath);
+            EmptyDirectory(directory);
+        }
+        public static void EmptyDirectory(System.IO.DirectoryInfo directory)
+        {
+            foreach (System.IO.FileInfo file in directory.GetFiles()) file.Delete();
+            foreach (System.IO.DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
         }
 
         [MenuItem("Puppet SDK/Build/Android")]

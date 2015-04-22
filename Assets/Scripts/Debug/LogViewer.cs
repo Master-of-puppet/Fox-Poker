@@ -67,11 +67,15 @@ public class LogViewer : MonoBehaviour
         isBlockUI = DEFAULT_BLOCK_2D_UI;
         GameObject.DontDestroyOnLoad(gameObject);
         Application.RegisterLogCallback(HandleLog);
+
+        AppDomain.CurrentDomain.UnhandledException += HandleUnresolvedException;
+						
     }
 
     void OnDestroy()
     {
         Application.RegisterLogCallback(null);
+        AppDomain.CurrentDomain.UnhandledException -= HandleUnresolvedException;
     }
 
     void BeginDraw()
@@ -354,7 +358,27 @@ public class LogViewer : MonoBehaviour
         if (entries.Count > LIMIT_LINE)
             entries.RemoveAt(0);
     }
-    List<WWWForm> listSendError = new List<WWWForm>();
+
+    private void HandleUnresolvedException(object sender, UnhandledExceptionEventArgs args)
+    {
+        if (args == null || args.ExceptionObject == null) return;
+        if (args.ExceptionObject.GetType() != typeof(Exception)) return;
+
+        string message, stackTrace;
+        try
+        {
+            Exception e = (Exception)args.ExceptionObject;
+
+            message = args.IsTerminating ? "LogUnhandledException: " + e.Message : "LogHandledException: " + e.Message;
+            stackTrace = e.StackTrace;
+        }
+        catch (System.Exception e) 
+        {
+            message = "HandleUnresolvedException: " + e.Message;
+            stackTrace = e.StackTrace;
+        }
+        HandleLog(message, stackTrace, LogType.Exception);
+    }
 
     void ExecuteCommand(string text)
     {
@@ -367,6 +391,9 @@ public class LogViewer : MonoBehaviour
                 break;
             case "check":
                 int entryId = int.Parse(GetParam(command, "entry", 0).Trim().ToLower());
+                switch (entryId)
+                {
+                }
                 break;
             case "watch":
                 break;
