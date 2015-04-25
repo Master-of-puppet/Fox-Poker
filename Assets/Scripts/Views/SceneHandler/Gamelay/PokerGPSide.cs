@@ -111,11 +111,18 @@ public class PokerGPSide : MonoBehaviour
             bool showSit = false;
             switch(data.GetActionState())
             {
+                case PokerPlayerChangeAction.playerQuitGame:
                 case PokerPlayerChangeAction.playerRemoved:
                 case PokerPlayerChangeAction.waitingPlayerAdded:
                     showSit = true;
                     wasBuyChip = false;
                     break;
+                case PokerPlayerChangeAction.playerAdded:
+                    wasBuyChip = true;
+                    if (onPlayerSitdown != null)
+                        onPlayerSitdown(!wasBuyChip);
+                    break;
+
             }
             SetActiveButton(showSit);
         }
@@ -138,11 +145,7 @@ public class PokerGPSide : MonoBehaviour
                     {
                         PokerObserver.Instance.SitDown(slot, betting);
                         Puppet.API.Client.APIPokerGame.SetAutoBuy(autoBuy);
-                        wasBuyChip = true;
                     }
-
-                    if (onPlayerSitdown != null)
-                        onPlayerSitdown(!wasBuyChip);
                 });
             }
             else
