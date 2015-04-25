@@ -128,19 +128,27 @@ public class PokerGPSide : MonoBehaviour
     {
         if (wasBuyChip == false)
         {
-            //PokerObserver.Instance.SitDown(slot, gameDetails.customConfiguration.SmallBlind * 20);
-            DialogBuyChip dialog = new DialogBuyChip(PokerObserver.Game.SmallBlind, (betting, autoBuy) =>
+            IDialogData dialog;
+            
+            if (PokerObserver.Game.CanBePlay)
             {
-                if (betting >= PokerObserver.Game.SmallBlind)
+                dialog = new DialogBuyChip(PokerObserver.Game.SmallBlind, (betting, autoBuy) =>
                 {
-                    PokerObserver.Instance.SitDown(slot, betting);
-                    Puppet.API.Client.APIPokerGame.SetAutoBuy(autoBuy);
-                    wasBuyChip = true;
-                }
+                    if (betting >= PokerObserver.Game.SmallBlind)
+                    {
+                        PokerObserver.Instance.SitDown(slot, betting);
+                        Puppet.API.Client.APIPokerGame.SetAutoBuy(autoBuy);
+                        wasBuyChip = true;
+                    }
 
-                if (onPlayerSitdown != null)
-                    onPlayerSitdown(!wasBuyChip);
-            });
+                    if (onPlayerSitdown != null)
+                        onPlayerSitdown(!wasBuyChip);
+                });
+            }
+            else
+            {
+                dialog = new DialogMessage("Thông báo", "Số tiền của bạn không đủ.");
+            }
             DialogService.Instance.ShowDialog(dialog);
         }
     }

@@ -158,7 +158,10 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         }
         else if(currentType == EButtonType.OutGame)
         {
-            Puppet.API.Client.APIPokerGame.AutoSitDown();
+            if (PokerObserver.Game.CanBePlay)
+                Puppet.API.Client.APIPokerGame.AutoSitDown();
+            else
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Số tiền của bạn không đủ."));
         }
     }
 	double GetMaxBinded(){
