@@ -157,7 +157,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     }
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
-        timeStartGame = Time.realtimeSinceStartup + (data.time / 1000f);
+        SetCountDown(data.time, data.time);
         ResetNewRound();
     }
 
@@ -567,6 +567,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             if(data.pot != null && data.pot.Length > 0)
                 potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(data.pot));
         }
+        SetCountDown(data.remainingTime, data.totalTime);
     }
 
     public PokerPlayerUI GetPlayerController(string userName)
@@ -689,6 +690,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 ResetCountdown();
             }
         }
+    }
+
+    void SetCountDown(int remainingTime, int totalTime)
+    {
+        timeStartGame = Time.realtimeSinceStartup + (remainingTime / 1000f);
     }
 
     void ResetCountdown()
