@@ -106,7 +106,7 @@ public class PokerGPSide : MonoBehaviour
 
     void Instance_onPlayerListChanged(ResponsePlayerListChanged data)
     {
-        if(PokerObserver.Instance.IsMainPlayer(data.player.userName))
+        if(PokerObserver.Game.IsMainPlayer(data.player.userName))
         {
             bool showSit = false;
             switch(data.GetActionState())

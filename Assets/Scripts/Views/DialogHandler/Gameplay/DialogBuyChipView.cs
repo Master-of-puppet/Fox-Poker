@@ -61,7 +61,7 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
         minValue = data.smallBind * 20;
         maxValue = data.smallBind * 400;
         defaultValue = data.smallBind * 200;
-        double playerMoney = PokerObserver.Instance.mUserInfo.assets.GetAsset(EAssets.Chip).value;
+        double playerMoney = PokerObserver.Game.mUserInfo.assets.GetAsset(EAssets.Chip).value;
 
         if (playerMoney < maxValue)
             maxValue = playerMoney;

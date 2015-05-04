@@ -22,7 +22,6 @@ public class PokerObserver
     public event Action<ResponseError> onEncounterError;
     public event Action<ResponseUpdateRoomMaster> onUpdateRoomMaster;
 
-    public UserInfo mUserInfo;
     public bool isWaitingFinishGame = false;
     
     static PokerObserver _instance;
@@ -41,15 +40,9 @@ public class PokerObserver
         get { return Puppet.API.Client.APIPokerGame.GetPokerGameplay(); }
     }
 
-    public static string UserName
-    {
-        get { return Instance.mUserInfo.info.userName; }
-    }
-
     public void StartGame()
     {
         isWaitingFinishGame = false;
-        mUserInfo = Puppet.API.Client.APIUser.GetUserInformation();
         Puppet.Poker.EventDispatcher.onGameEvent += EventDispatcher_onGameEvent;
         Game.StartListenerEvent();
     }
@@ -103,46 +96,19 @@ public class PokerObserver
     #region HANDLE BUTTON
     public void QuitGame()
     {
-        APIGeneric.BackScene(null);
-        _instance = null;
+        APIGeneric.BackScene((status, message) =>
+        {
+            if (status)
+            {
+                Puppet.Poker.EventDispatcher.onGameEvent -= EventDispatcher_onGameEvent;
+                _instance = null;
+            }
+        });
     }
 
     public void SitDown(int slotServer, double betting)
     {
         APIPokerGame.SitDown(slotServer, betting);
-    }
-    #endregion
-
-    #region PLAYER
-    public bool IsMainPlayer(string userName)
-    {
-        return mUserInfo.info.userName == userName;
-    }
-
-    public bool IsMainPlayerSatDown()
-    {
-        return Game.ListPlayerInGame.Find(userName => userName == mUserInfo.info.userName) != null;
-    }
-
-    public bool IsMainTurn { get { try { return Game.CurrentPlayer.userName == Game.MainPlayer.userName; } catch { return false; } } }
-
-    public int GetTotalPlayerNotFold()
-    {
-        return PokerObserver.Game.ListPlayer.FindAll(p => p.GetPlayerState() != PokerPlayerState.fold && p.GetPlayerState() != PokerPlayerState.none).Count;
-    }
-    #endregion
-
-    #region BETTING VALUE
-    public double CurrentBettingDiff
-    {
-        get
-        {
-            if (Game.CurrentPlayer == null)
-                return 0;
-            double leftMoney = Game.CurrentPlayer.GetMoney();
-            double diff = Game.MaxCurrentBetting - Game.MainPlayer.currentBet;
-            return leftMoney > diff ? diff : leftMoney;
-        }
     }
     #endregion
 }

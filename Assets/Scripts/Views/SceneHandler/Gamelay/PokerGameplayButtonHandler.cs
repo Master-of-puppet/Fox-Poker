@@ -105,17 +105,17 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         {
             if (PokerObserver.Game.MaxCurrentBetting == 0)
             {
-                if (PokerObserver.Instance.IsMainTurn)
+                if (PokerObserver.Game.IsMainTurn)
                     PuSound.Instance.Play(SoundType.CheckCard);
 
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CHECK, 0);
             }
             else
             {
-                if (PokerObserver.Instance.IsMainTurn)
+                if (PokerObserver.Game.IsMainTurn)
                     PuSound.Instance.Play(SoundType.RaiseCost);
 
-                double diff = PokerObserver.Instance.CurrentBettingDiff;
+                double diff = PokerObserver.Game.CurrentBettingDiff;
                 if (diff > 0)
                 {
                     Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, diff);
@@ -131,7 +131,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     }
     void OnClickButton2(GameObject go)
     {
-        if (currentType == EButtonType.InTurn && PokerObserver.Instance.IsMainTurn)
+        if (currentType == EButtonType.InTurn && PokerObserver.Game.IsMainTurn)
             PuSound.Instance.Play(SoundType.FoldCard);
 
         OnButton2Clicked(false);
@@ -143,7 +143,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         {
 			bettingDialog = new DialogBetting(GetMaxBinded(), GetMaxRaise(),(money) =>
             {
-                if (currentType == EButtonType.InTurn && PokerObserver.Instance.IsMainTurn)
+                if (currentType == EButtonType.InTurn && PokerObserver.Game.IsMainTurn)
                     PuSound.Instance.Play(SoundType.RaiseCost);
 
                 Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
@@ -232,7 +232,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
             if ((type == EButtonType.InTurn || type == EButtonType.OutTurn) && slot == EButtonSlot.First)
             {
-                double diff = PokerObserver.Instance.CurrentBettingDiff;
+                double diff = PokerObserver.Game.CurrentBettingDiff;
                 if(diff > 0)
                     return diff.ToString("#,##");
             }
@@ -244,7 +244,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         //if (slot == EButtonSlot.First && type == EButtonType.InTurn)
         if (slot == EButtonSlot.First)
         {
-            if(PokerObserver.Game.MaxCurrentBetting == 0 || PokerObserver.Instance.CurrentBettingDiff == 0)
+            if(PokerObserver.Game.MaxCurrentBetting == 0 || PokerObserver.Game.CurrentBettingDiff == 0)
                 return "XEM BÀI";
         }
         else if (slot == EButtonSlot.First && type == EButtonType.OutTurn)
@@ -276,7 +276,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void Instance_onPlayerListChanged(ResponsePlayerListChanged data)
     {
-        if (PokerObserver.Instance.IsMainPlayer(data.player.userName))
+        if (PokerObserver.Game.IsMainPlayer(data.player.userName))
         {
             switch (data.GetActionState())
             {
@@ -312,21 +312,21 @@ public class PokerGameplayButtonHandler : MonoBehaviour
 
     void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
-        if (PokerObserver.Instance.IsMainPlayerSatDown())
+        if (PokerObserver.Game.IsMainPlayerSatDown)
         {
             if(PokerObserver.Instance.isWaitingFinishGame || !PokerObserver.Game.IsMainPlayerInGame)
                 SetEnableButtonType(EButtonType.InGame);
             else if (data.toPlayer != null)
             {
                 ButtonItem selectedButton = Array.Find<ButtonItem>(itemButtons, button => button.toggle.value);
-                SetEnableButtonType(PokerObserver.Instance.IsMainTurn ? EButtonType.InTurn : EButtonType.OutTurn);
+                SetEnableButtonType(PokerObserver.Game.IsMainTurn ? EButtonType.InTurn : EButtonType.OutTurn);
 
                 if (selectedButton != null)
                 {
                     if (selectedButton.slot == EButtonSlot.First && data.GetActionState() != PokerPlayerState.call && data.GetActionState() != PokerPlayerState.check)
                         selectedButton.toggle.value = false;
 
-                    if (PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Instance.IsMainPlayer(data.toPlayer.userName))
+                    if (PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.IsMainPlayer(data.toPlayer.userName))
                     {
                         if (selectedButton.slot == EButtonSlot.First && (data.GetActionState() == PokerPlayerState.call || data.GetActionState() == PokerPlayerState.check))
                             OnClickButton1(selectedButton.button);
@@ -346,13 +346,13 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
-        if (PokerObserver.Instance.IsMainPlayerSatDown())
+        if (PokerObserver.Game.IsMainPlayerSatDown)
             SetEnableButtonType(EButtonType.InGame);
     }
 
     void Instance_onFinishGame(ResponseFinishGame obj)
     {
-        if (PokerObserver.Instance.IsMainPlayerSatDown())
+        if (PokerObserver.Game.IsMainPlayerSatDown)
             SetEnableButtonType(EButtonType.InGame);
     }
 }

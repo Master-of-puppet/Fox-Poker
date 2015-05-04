@@ -183,7 +183,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     private void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
-        if (data.toPlayer != null && PokerObserver.Instance.IsMainPlayer(data.toPlayer.userName))
+        if (data.toPlayer != null && PokerObserver.Game.IsMainPlayer(data.toPlayer.userName))
             PuSound.Instance.Play(SoundType.YourTurn);
 
         if (data.dealComminityCards != null && data.dealComminityCards.Length > 0)
@@ -320,7 +320,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
                 Vector3 cardMoveTo = Vector3.zero;
                 //cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().transform.localPosition;
-                if (PokerObserver.Instance.IsMainPlayer(p.userName))
+                if (PokerObserver.Game.IsMainPlayer(p.userName))
                 {
                     cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardMainPlayer[i].transform.localPosition;
                     cardObjects.transform.parent = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardMainPlayer[i].transform.parent;
@@ -349,7 +349,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         GameObject cardObjects = (GameObject)table["cardObject"];
         int index = (int)table["index"];
         int cardId = (int)table["cardId"];
-        if (PokerObserver.Instance.IsMainPlayer(userName))
+        if (PokerObserver.Game.IsMainPlayer(userName))
         {
             cardObjects.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cardId), index);
         }
@@ -371,7 +371,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 if(cardObjects[i] == null)
                     cardObjects[i] = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
 
-            if (PokerObserver.Instance.IsMainPlayer(p.userName))
+            if (PokerObserver.Game.IsMainPlayer(p.userName))
             {
                 if (hands.Length == handSize)
                     for (int i = 0; i < handSize; i++)
@@ -405,7 +405,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         if (responseData.pots.Length > 0)
             timeEffectPot /= responseData.pots.Length;
 
-        bool isFaceUp = PokerObserver.Instance.GetTotalPlayerNotFold() > 1;
+        bool isFaceUp = PokerObserver.Game.GetTotalPlayerNotFold > 1;
         if (isFaceUp)
         {
             if (responseData.dealComminityCards.Length == 5)
@@ -453,10 +453,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 {
                     lstWinner.Add(item.userName);
 
-                    if (PokerObserver.Instance.IsMainPlayer(item.userName)){
+                    if (PokerObserver.Game.IsMainPlayer(item.userName)){
                         PuSound.Instance.Play(SoundType.PlayerWin);
                         string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players, rdp => rdp.userName == item.userName).ranking;
-                    //    RankEndGameModel playerWinRank = new RankEndGameModel(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
                         
 		                UserInfo userInfo = Puppet.API.Client.APIUser.GetUserInformation ();
                         if (!string.IsNullOrEmpty(userInfo.info.facebookId))
@@ -554,7 +553,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             int[] hands = null;
             foreach (PokerPlayerController player in data.players)
             {
-                if (PokerObserver.Instance.IsMainPlayer(player.userName))
+                if (PokerObserver.Game.IsMainPlayer(player.userName))
                     hands = player.hand;
 
                 SetPositionAvatarPlayer(player.userName);
@@ -586,7 +585,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerPlayerChangeAction state = dataPlayer.GetActionState();
         if(state == PokerPlayerChangeAction.playerAdded)
         {
-            if (PokerObserver.Instance.IsMainPlayer(dataPlayer.player.userName))
+            if (PokerObserver.Game.IsMainPlayer(dataPlayer.player.userName))
                 PuSound.Instance.Play(SoundType.Sit_Down);
 
             SetPositionAvatarPlayer(dataPlayer.player.userName);
@@ -594,7 +593,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         else if ((state == PokerPlayerChangeAction.playerRemoved || state == PokerPlayerChangeAction.playerQuitGame)
             && dictPlayerObject.ContainsKey(dataPlayer.player.userName))
         {
-            if (PokerObserver.Instance.IsMainPlayer(dataPlayer.player.userName))
+            if (PokerObserver.Game.IsMainPlayer(dataPlayer.player.userName))
                 PuSound.Instance.Play(SoundType.StandUp);
 
             if(PokerObserver.Game.Dealer == dataPlayer.player.userName)

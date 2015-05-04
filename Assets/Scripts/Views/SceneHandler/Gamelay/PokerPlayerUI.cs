@@ -65,7 +65,7 @@ public class PokerPlayerUI : MonoBehaviour
     }
 
     private void OnOpenProfile(GameObject gobj) {
-        if (!PokerObserver.Instance.IsMainPlayer (UserName)) {
+        if (!PokerObserver.Game.IsMainPlayer (UserName)) {
 			DialogService.Instance.ShowDialog (new DialogPlayerInfo (data));
 		} else {
 			DialogService.Instance.ShowDialog(new DialogShortProfile(data));
@@ -159,11 +159,11 @@ public class PokerPlayerUI : MonoBehaviour
         ResponseFinishCardPlayer cardPlayer = Array.Find<ResponseFinishCardPlayer>(data.players, p => p.userName == this.data.userName);
         if (cardPlayer != null && cardPlayer.cards != null)
         {
-            if (PokerObserver.Instance.IsMainPlayer(cardPlayer.userName))
+            if (PokerObserver.Game.IsMainPlayer(cardPlayer.userName))
                 return;
 
             //FP-128 Người chơi bỏ bài, chờ ván mới, đứng xem không nhìn thấy bài tay của những người chơi so bài
-            bool isFaceUp = PokerObserver.Instance.GetTotalPlayerNotFold() > 1;// PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer.GetPlayerState() != PokerPlayerState.fold;
+            bool isFaceUp = PokerObserver.Game.GetTotalPlayerNotFold > 1;
             if (isFaceUp)
             {
                 for (int i = 0; i < cardPlayer.cards.Length; i++)
@@ -309,10 +309,10 @@ public class PokerPlayerUI : MonoBehaviour
         }
         
 
-        cardOnHands.transform.parent = PokerObserver.Instance.IsMainPlayer(data.userName) ? side.positionCardMainPlayer[index].transform : side.positionCardFaceCards[index].transform;
+        cardOnHands.transform.parent = PokerObserver.Game.IsMainPlayer(data.userName) ? side.positionCardMainPlayer[index].transform : side.positionCardFaceCards[index].transform;
         cardOnHands.transform.localRotation = Quaternion.identity;
         cardOnHands.transform.localPosition = Vector3.zero;
-        cardOnHands.transform.localScale = PokerObserver.Instance.IsMainPlayer(data.userName) ? Vector3.one : Vector3.one / 3;
+        cardOnHands.transform.localScale = PokerObserver.Game.IsMainPlayer(data.userName) ? Vector3.one : Vector3.one / 3;
     }
     public void UpdateSetCardObject(GameObject[] cardOnHands)
     {
@@ -320,10 +320,10 @@ public class PokerPlayerUI : MonoBehaviour
 
         for (int i = 0; i < cardOnHands.Length; i++)
         {
-            cardOnHands[i].transform.parent = PokerObserver.Instance.IsMainPlayer(data.userName) ? side.positionCardMainPlayer[i].transform : side.positionCardFaceCards[i].transform;
+            cardOnHands[i].transform.parent = PokerObserver.Game.IsMainPlayer(data.userName) ? side.positionCardMainPlayer[i].transform : side.positionCardFaceCards[i].transform;
             cardOnHands[i].transform.localRotation = Quaternion.identity;
             cardOnHands[i].transform.localPosition = Vector3.zero;
-            cardOnHands[i].transform.localScale = PokerObserver.Instance.IsMainPlayer(data.userName) ? Vector3.one : Vector3.one / 3;
+            cardOnHands[i].transform.localScale = PokerObserver.Game.IsMainPlayer(data.userName) ? Vector3.one : Vector3.one / 3;
         }
     }
 
@@ -360,7 +360,7 @@ public class PokerPlayerUI : MonoBehaviour
             realtime = Time.realtimeSinceStartup;
             timerSlider.value = timeCountDown / totalCountDown;
 
-            if(timeCountDown <= START_COUNTDOWN_SOUND_FROM && PokerObserver.Instance.IsMainTurn)
+            if(timeCountDown <= START_COUNTDOWN_SOUND_FROM && PokerObserver.Game.IsMainTurn)
             {
                 if (COUNTDOWN_ONE_SECOND <= 0f)
                 {

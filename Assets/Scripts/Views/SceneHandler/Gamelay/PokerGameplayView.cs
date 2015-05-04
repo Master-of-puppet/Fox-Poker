@@ -169,7 +169,6 @@ public class PokerGameplayView : MonoBehaviour
             {
                 Logger.Log("========> id" + items );    
             }
-           
         }
         Dictionary<string, int[]> dictHand = obj;
         if (dictHand.ContainsKey(TestModeGUI.KEY_COMUTITY_CARD))
@@ -181,6 +180,7 @@ public class PokerGameplayView : MonoBehaviour
         }
         APIPokerGame.GetOrderHand(dictHand);        
     }
+
     private string FormatPercent(double v)
     {
         if (v != 0.0)
