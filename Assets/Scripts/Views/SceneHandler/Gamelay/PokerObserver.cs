@@ -37,7 +37,7 @@ public class PokerObserver
 
     public static PokerGameplay Game
     {
-        get { return Puppet.API.Client.APIPokerGame.GetPokerGameplay(); }
+        get { return APIPokerGame.GetPokerGameplay(); }
     }
 
     public void StartGame()
@@ -106,9 +106,24 @@ public class PokerObserver
         });
     }
 
-    public void SitDown(int slotServer, double betting)
+    public void SitDown(int slotServer, double betting, bool isAutoBuy)
     {
-        APIPokerGame.SitDown(slotServer, betting);
+        APIPokerGame.SitDown(slotServer, betting, isAutoBuy);
+    }
+
+    public void Request(PokerRequestPlay type, double value)
+    {
+        APIPokerGame.PlayRequest(type, value);
+    }
+
+    public void AutoSitDown()
+    {
+        APIPokerGame.AutoSitDown();
+    }
+
+    public void StandUp()
+    {
+        APIPokerGame.StandUp();
     }
     #endregion
 }

@@ -27,7 +27,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
     List<PokerPotItem> _listPotMarkers = new List<PokerPotItem>();
     float timeStartGame;
-    private static string ITEM_INTERACTION_PREFIX = "PII";
+    string winWithRank;
+
+    private const string ITEM_INTERACTION_PREFIX = "PII";
     void Awake()
     {
         objectDealer.SetActive(false);
@@ -108,14 +110,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
     }
     private void OnClickButtnShowDialogShare(GameObject go)
     {
-        string title = "Bạn đã đạt "+rankWin +" hãy chia sẻ để mọi người cùng biết";
-        string description = "";
-        DialogService.Instance.ShowDialog(new DialogGameplayShare(title, description, ""));
+        DialogService.Instance.ShowDialog(new DialogGameplayShare(string.Format("Bạn đã đạt {0} hãy chia sẻ để mọi người cùng biết", winWithRank), string.Empty, string.Empty));
     }
-    private void showLayoutShare()
-    {
-        btnShareFacebook.transform.parent.gameObject.SetActive(true);
-    }
+    
     private void OnClickButtonCloseLayoutShareFacebook(GameObject go)
     {
         btnShareFacebook.transform.parent.gameObject.SetActive(false);
@@ -457,9 +454,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
                         PuSound.Instance.Play(SoundType.PlayerWin);
                         string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players, rdp => rdp.userName == item.userName).ranking;
                         
-		                UserInfo userInfo = Puppet.API.Client.APIUser.GetUserInformation ();
-                        if (!string.IsNullOrEmpty(userInfo.info.facebookId))
-                            ShowBtnShareFacebook(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin));
+                        if (!string.IsNullOrEmpty(PokerObserver.Game.mUserInfo.info.facebookId))
+                            StartCoroutine(ShowBtnShareFacebook(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin), 3f));
                     }
                 }
             }
@@ -529,15 +525,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Game.EndFinishGame();
     }
 
-    private void ShowBtnShareFacebook(string rank)
+    private IEnumerator ShowBtnShareFacebook(string rank, float timeAutoClose)
     {
-        StartCoroutine(_ShowBtnShareFacebook(rank));
-    }
-    private IEnumerator _ShowBtnShareFacebook(string rank)
-    {
-        this.rankWin = rank;
-        showLayoutShare();
-        yield return new WaitForSeconds(3.0f);
+        this.winWithRank = rank;
+        btnShareFacebook.transform.parent.gameObject.SetActive(true);
+        yield return new WaitForSeconds(timeAutoClose);
         OnClickButtonCloseLayoutShareFacebook(null);
     }
 
@@ -700,10 +692,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         timeStartGame = -1;
         lbCountdown.fontSize = 100;
-        lbCountdown.text = "";
+        lbCountdown.text = string.Empty;
     }
-
-    public object spriteArray { get; set; }
-
-    public string rankWin { get; set; }
 }

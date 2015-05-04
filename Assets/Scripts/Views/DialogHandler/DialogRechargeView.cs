@@ -140,7 +140,7 @@ public class DialogRechargeView : BaseDialog<DialogRecharge, DialogRechargeView>
     private void OnSMSClickListener(DataRecharge model)
     {
         string[] templates = Regex.Split(model.template, @"{{");
-        UserInfo userInfo = Puppet.API.Client.APIUser.GetUserInformation ();
+        UserInfo userInfo = PokerObserver.Game.mUserInfo;
         string template = "";
         if (templates[1].Contains("username"))
         {

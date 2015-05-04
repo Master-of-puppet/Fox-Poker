@@ -143,8 +143,7 @@ public class PokerGPSide : MonoBehaviour
                 {
                     if (betting >= PokerObserver.Game.SmallBlind)
                     {
-                        PokerObserver.Instance.SitDown(slot, betting);
-                        Puppet.API.Client.APIPokerGame.SetAutoBuy(autoBuy);
+                        PokerObserver.Instance.SitDown(slot, betting, autoBuy);
                     }
                 });
             }

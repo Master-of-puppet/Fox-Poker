@@ -108,7 +108,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
                 if (PokerObserver.Game.IsMainTurn)
                     PuSound.Instance.Play(SoundType.CheckCard);
 
-                Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CHECK, 0);
+                PokerObserver.Instance.Request(PokerRequestPlay.CHECK, 0);
             }
             else
             {
@@ -118,11 +118,11 @@ public class PokerGameplayButtonHandler : MonoBehaviour
                 double diff = PokerObserver.Game.CurrentBettingDiff;
                 if (diff > 0)
                 {
-                    Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CALL, diff);
+                    PokerObserver.Instance.Request(PokerRequestPlay.CALL, diff);
                 }
                 else if (diff == 0)
                 {
-                    Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CHECK, 0);
+                    PokerObserver.Instance.Request(PokerRequestPlay.CHECK, 0);
                 }
                 else
                     Logger.LogError("==============> Call Betting INVALID");
@@ -146,20 +146,21 @@ public class PokerGameplayButtonHandler : MonoBehaviour
                 if (currentType == EButtonType.InTurn && PokerObserver.Game.IsMainTurn)
                     PuSound.Instance.Play(SoundType.RaiseCost);
 
-                Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, money);
+                PokerObserver.Instance.Request(PokerRequestPlay.RAISE, money);
             }, Array.Find<ButtonItem>(itemButtons, button => button.slot == EButtonSlot.Third).button.transform);
             DialogBettingView bettingView = GameObject.FindObjectOfType<DialogBettingView>();
             if (bettingView == null)
                 DialogService.Instance.ShowDialog(bettingDialog);
-            else {
-                Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.RAISE, bettingView.GetCurrentMoney);
+            else 
+            {
+                PokerObserver.Instance.Request(PokerRequestPlay.RAISE, bettingView.GetCurrentMoney);
                 GameObject.Destroy(bettingView.gameObject);
             }
         }
         else if(currentType == EButtonType.OutGame)
         {
             if (PokerObserver.Game.CanBePlay)
-                Puppet.API.Client.APIPokerGame.AutoSitDown();
+                PokerObserver.Instance.AutoSitDown();
             else
                 DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Số tiền của bạn không đủ."));
         }
@@ -294,10 +295,11 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         if (currentType == EButtonType.InTurn)
         {
             if (!isCheckboxChecked)
-                Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.FOLD, 0);
-            else {
+                PokerObserver.Instance.Request(PokerRequestPlay.FOLD, 0);
+            else 
+            {
                 if (PokerObserver.Game.MainPlayer.currentBet >= PokerObserver.Game.MaxCurrentBetting)
-                    Puppet.API.Client.APIPokerGame.PlayRequest(PokerRequestPlay.CHECK, 0);
+                    PokerObserver.Instance.Request(PokerRequestPlay.CHECK, 0);
                 else
                     OnButton2Clicked(false);
             }

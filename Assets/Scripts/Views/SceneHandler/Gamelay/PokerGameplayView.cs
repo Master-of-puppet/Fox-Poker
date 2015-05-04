@@ -115,12 +115,12 @@ public class PokerGameplayView : MonoBehaviour
 
             DialogService.Instance.ShowDialog(new DialogConfirm("WARNING", text, (action) =>
             {
-                if(action == true)
-                    Puppet.API.Client.APIPokerGame.StandUp();
+                if (action == true)
+                    PokerObserver.Instance.StandUp();
             }));
         }
         else
-            Puppet.API.Client.APIPokerGame.StandUp();
+            PokerObserver.Instance.StandUp();
     }
 
     private void OnClickQuitGame()
@@ -154,10 +154,7 @@ public class PokerGameplayView : MonoBehaviour
         if (!PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer != null && PokerObserver.Game.MainPlayer.isMaster)
         {
             if (GUI.Button(new Rect(0, 150, Screen.width - Screen.width * 0.9f, 35f), "TEST MODE"))
-            {
-                Logger.Log("========> " + APIPokerGame.GetPokerGameplay().ListPlayer.Count);
                 TestModeGUI.Create(ActionRequestOrderHand);
-            }
         }
     }
     public void ActionRequestOrderHand(Dictionary<string, int[]> obj)
@@ -166,15 +163,12 @@ public class PokerGameplayView : MonoBehaviour
         {
             Logger.Log("========> keys" + item + " --- value lenght " + obj[item].Length);
             foreach (var items in obj[item])
-            {
                 Logger.Log("========> id" + items );    
-            }
         }
         Dictionary<string, int[]> dictHand = obj;
         if (dictHand.ContainsKey(TestModeGUI.KEY_COMUTITY_CARD))
         {
             Dictionary<string,int[]> comunityCard = new Dictionary<string,int[]>();
-            /// Request COMUNITY CARD;
             APIPokerGame.GetOrderCommunity(dictHand[TestModeGUI.KEY_COMUTITY_CARD]);
             dictHand.Remove(TestModeGUI.KEY_COMUTITY_CARD);
         }

@@ -76,7 +76,7 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
         slider.numberOfSteps = (int)(maxValue / minValue) + (maxValue % minValue > 0 ? 1 : 0);
         slider.value = (float)(defaultValue / maxValue) - 0.02f;
 
-		string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut(APIUser.GetUserInformation ().assets.content [0].value);
+        string[] moneyAndShortcut = Utility.Convert.ConvertMoneyAndShortCut(PokerObserver.Game.mUserInfo.assets.content[0].value);
         labelTitle.text = "Số Gold hiện tại của bạn: $" + moneyAndShortcut[0] + moneyAndShortcut[1];
     }
     protected override void OnPressButton(bool? pressValue, DialogBuyChip data)
