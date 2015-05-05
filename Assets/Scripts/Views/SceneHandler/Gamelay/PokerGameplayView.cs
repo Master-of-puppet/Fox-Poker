@@ -16,15 +16,16 @@ using HoldemHand;
 public class PokerGameplayView : MonoBehaviour
 {
     #region UnityEditor
+    public PokerGameplayPlaymat playmat;
     public GameObject btnGameMini, btnRule, btnSendMessage;
 	public GameObject btnViewCheckBox, btnFollowBetCheckBox, btnFollowAllBetCheckbox;
     public UILabel lbMessage;
 	public UILabel lbTime,lbTitle;
-    public PokerGameplayPlaymat playmat;
-    
-
-    public List<DataChat> dataChat;
+    public UILabel lbCountdown;
     #endregion
+
+    private List<DataChat> dataChat;
+    float timeStartGame;
 
     void Awake()
     {
@@ -57,6 +58,10 @@ public class PokerGameplayView : MonoBehaviour
     void OnEnable() 
     {
         PokerObserver.Instance.onEncounterError += Instance_onEncounterError;
+        PokerObserver.Game.onFirstTimeJoinGame += Game_onFirstTimeJoinGame;
+        PokerObserver.Instance.onNewRound += Instance_onNewRound;
+        PokerObserver.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
+        PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
         //UIEventListener.Get(btnGameMini).onClick += OnButtonGameMiniClickCallBack;
         UIEventListener.Get(btnRule).onClick += OnButtonRuleClickCallBack;
         UIEventListener.Get(btnSendMessage).onClick += OnButtonSendMessageClickCallBack;
@@ -64,19 +69,22 @@ public class PokerGameplayView : MonoBehaviour
         PuMain.Dispatcher.onChatMessage += ShowMessage;
     }
 
-
     void OnDisable()
     {
         PokerObserver.Instance.onEncounterError -= Instance_onEncounterError;
+        PokerObserver.Game.onFirstTimeJoinGame -= Game_onFirstTimeJoinGame;
+        PokerObserver.Instance.onNewRound -= Instance_onNewRound;
+        PokerObserver.Instance.onEventUpdateHand -= Instance_onEventUpdateHand;
+        PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
         //UIEventListener.Get(btnGameMini).onClick -= OnButtonGameMiniClickCallBack;
         UIEventListener.Get(btnRule).onClick -= OnButtonRuleClickCallBack;
         UIEventListener.Get(btnSendMessage).onClick -= OnButtonSendMessageClickCallBack;
       
         PuMain.Dispatcher.onChatMessage -= ShowMessage;
     }
-
     
-    private void ShowMessage(DataChat message) {
+    private void ShowMessage(DataChat message) 
+    {
         if (message.GetChatType() == DataChat.ChatType.Public)
         {
             if (message.Content.IndexOf(DialogGameplayChatView.EMOTICON_CODE) != 0)
@@ -88,16 +96,35 @@ public class PokerGameplayView : MonoBehaviour
                 }
             }
         }
-        else { 
-            
-        }
     }
+
     void Instance_onEncounterError(ResponseError data)
     {
         if(data.showPopup)
         {
             DialogService.Instance.ShowDialog(new DialogMessage("Error: " + data.errorCode, data.errorMessage, null));
         }
+    }
+
+    void Instance_onPlayerListChanged(ResponsePlayerListChanged data)
+    {
+        if (PokerObserver.Game.ListPlayer.Count <= 1)
+            ResetCountdown();
+    }
+
+    void Game_onFirstTimeJoinGame(ResponseUpdateGame data)
+    {
+        SetCountDown(data.remainingTime, data.totalTime);
+    }
+
+    void Instance_onEventUpdateHand(ResponseUpdateHand obj)
+    {
+        ResetCountdown();
+    }
+
+    void Instance_onNewRound(ResponseWaitingDealCard data)
+    {
+        SetCountDown(data.time, data.time);
     }
 
     private void OnButtonSendMessageClickCallBack(GameObject go)
@@ -149,6 +176,19 @@ public class PokerGameplayView : MonoBehaviour
         }
     }
 
+    private string FormatPercent(double v)
+    {
+        if (v != 0.0)
+        {
+            if (v * 100.0 >= 1.0)
+                return string.Format("{0:##0.0}%", v * 100.0);
+            else
+                return "<1%";
+        }
+        return "n/a";
+    }
+
+    #region TEST MODE - ORDER CARD
     void OnGUI()
     {
         if (!PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer != null && PokerObserver.Game.MainPlayer.isMaster)
@@ -174,19 +214,40 @@ public class PokerGameplayView : MonoBehaviour
         }
         APIPokerGame.GetOrderHand(dictHand);        
     }
+    #endregion
 
-    private string FormatPercent(double v)
+    #region COUNT DOWN TIMER START GAME
+    void Update()
     {
-        if (v != 0.0)
+        float countdown = timeStartGame - Time.realtimeSinceStartup;
+        if (countdown > 0)
         {
-            if (v * 100.0 >= 1.0)
-                return string.Format("{0:##0.0}%", v * 100.0);
-            else
-                return "<1%";
+            int second = Mathf.FloorToInt(countdown);
+            lbCountdown.text = second.ToString();
+
+            if (second == 0)
+            {
+                lbCountdown.fontSize = 60;
+                lbCountdown.text = "Bắt đầu";
+            }
+            else if (second < 0)
+            {
+                ResetCountdown();
+            }
         }
-        return "n/a";
     }
 
-    
+    void SetCountDown(int remainingTime, int totalTime)
+    {
+        timeStartGame = Time.realtimeSinceStartup + (remainingTime / 1000f);
+    }
+
+    void ResetCountdown()
+    {
+        timeStartGame = -1;
+        lbCountdown.fontSize = 100;
+        lbCountdown.text = string.Empty;
+    }
+    #endregion
 }
 

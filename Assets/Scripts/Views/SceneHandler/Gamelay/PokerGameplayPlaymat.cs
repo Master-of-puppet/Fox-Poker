@@ -21,12 +21,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
     public PokerPotManager potContainer;
     public GameObject objectDealer;
     public UILabel lbMyRanking;
-    public UILabel lbCountdown;
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
     List<PokerPotItem> _listPotMarkers = new List<PokerPotItem>();
-    float timeStartGame;
     string winWithRank;
 
     private const string ITEM_INTERACTION_PREFIX = "PII";
@@ -154,7 +152,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
     }
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
-        SetCountDown(data.time, data.time);
         ResetNewRound();
     }
 
@@ -213,7 +210,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
     public List<PokerCard> pocket = new List<PokerCard>();
     void Instance_onEventUpdateHand(ResponseUpdateHand data)
     {
-        ResetCountdown();
         pocket.Clear();
         for (int i = 0; i < data.hand.Length; i++)
         {
@@ -234,7 +230,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         double[] opponent = new double[9];
         if (!Hand.ValidateHand(pocketHand + " " + boards))
         {
-            lbMyRanking.text = "";
+            lbMyRanking.text = string.Empty;
             return;
         }
         Hand.ParseHand(pocketHand + " " + boards, ref count);
@@ -242,7 +238,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         // Don't allow these configurations because of calculation time.
         if (count == 0 || count == 1 || count == 3 || count == 4 || count > 7)
         {
-            lbMyRanking.text = "";
+            lbMyRanking.text = string.Empty;
             return;
         }
         Hand.HandPlayerOpponentOdds(pocketHand, boards, ref player, ref opponent);
@@ -558,7 +554,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
             if(data.pot != null && data.pot.Length > 0)
                 potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(data.pot));
         }
-        SetCountDown(data.remainingTime, data.totalTime);
     }
 
     public PokerPlayerUI GetPlayerController(string userName)
@@ -597,9 +592,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
         }
 
         UpdatePositionPlayers(dataPlayer.player.userName);
-
-        if (PokerObserver.Game.ListPlayer.Count <= 1)
-            ResetCountdown();
     }
 
     void UpdatePositionPlayers(string ignorePlayer)
@@ -662,36 +654,4 @@ public class PokerGameplayPlaymat : MonoBehaviour
         _listPotMarkers.Clear();
     }
     #endregion
-
-    void Update()
-    {
-        float countdown = timeStartGame - Time.realtimeSinceStartup;
-        if (countdown > 0)
-        {
-            int second = Mathf.FloorToInt(countdown);
-            lbCountdown.text = second.ToString();
-
-            if (second == 0)
-            {
-                lbCountdown.fontSize = 60;
-                lbCountdown.text = "Bắt đầu";
-            }
-            else if(second < 0)
-            {
-                ResetCountdown();
-            }
-        }
-    }
-
-    void SetCountDown(int remainingTime, int totalTime)
-    {
-        timeStartGame = Time.realtimeSinceStartup + (remainingTime / 1000f);
-    }
-
-    void ResetCountdown()
-    {
-        timeStartGame = -1;
-        lbCountdown.fontSize = 100;
-        lbCountdown.text = string.Empty;
-    }
 }
