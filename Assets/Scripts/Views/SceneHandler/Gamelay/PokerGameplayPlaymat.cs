@@ -118,6 +118,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     IEnumerator CreateEffectDealCard(PokerPlayerController[] players, int[] hands,int time)
     {
+        PokerObserver.Game.IsClientListening = false;
         PokerPlayerController dealer =  Array.Find<PokerPlayerController>(players, p => p.userName == PokerObserver.Game.Dealer);
         int indexDealer = Array.IndexOf(players, dealer);
         List<PokerPlayerController> playerDeal = new List<PokerPlayerController>();
@@ -161,6 +162,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 yield return new WaitForSeconds(timeWaitForStart);
             }
         }
+        PokerObserver.Game.IsClientListening = true;
     }
     void onMoveCardComplete(object vals) {
         Hashtable table = (Hashtable)vals;
@@ -210,7 +212,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     IEnumerator _onFinishGame(ResponseFinishGame responseData)
     {
         UnMarkPot();
-        PokerObserver.Game.StartFinishGame();
+        PokerObserver.Game.IsClientListening = false;
         PokerObserver.Instance.isWaitingFinishGame = true;
 
         float totalTimeFinishGame = responseData.time / 1000f;
@@ -341,6 +343,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         ResetNewRound();
         PokerObserver.Instance.isWaitingFinishGame = false;
         PokerObserver.Game.EndFinishGame();
+        PokerObserver.Game.IsClientListening = true;
     }
 
     void Instance_dataUpdateGame(ResponseUpdateGame data)

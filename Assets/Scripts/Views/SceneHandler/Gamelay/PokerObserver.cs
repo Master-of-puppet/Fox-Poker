@@ -44,12 +44,13 @@ public class PokerObserver
     {
         isWaitingFinishGame = false;
         Puppet.Poker.EventDispatcher.onGameEvent += EventDispatcher_onGameEvent;
-        Game.StartListenerEvent();
+        Game.IsClientListening = true;
     }
 
     void EventDispatcher_onGameEvent(string command, object data)
     {
-        //Logger.Log(ELogColor.YELLOW, "Client handled: " + command + " - " + DateTime.Now.ToString("hh:mm:ss"));
+        //Logger.Log(ELogColor.YELLOW, "**** Client handled: " + command + " - " + DateTime.Now.ToString("hh:mm:ss"));
+
         if (data is ResponseUpdateGame)
         {
             ResponseUpdateGame dataGame = (ResponseUpdateGame)data;
