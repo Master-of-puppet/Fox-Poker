@@ -64,7 +64,7 @@ GameObject:
   - 114: {fileID: 11400018}
   - 65: {fileID: 6500002}
   m_Layer: 0
-  m_Name: PlayerUI
+  m_Name: PrefabPlayerUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

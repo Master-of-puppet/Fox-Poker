@@ -9,25 +9,24 @@ using Puppet.Poker.Datagram;
 using Puppet;
 using Puppet.Service;
 using Puppet.Utils;
-using HoldemHand;
 using Puppet.Core.Model;
 
 public class PokerGameplayPlaymat : MonoBehaviour
 {
     #region UNITY EDITOR
-    public GameObject prefabBetObject,btnShareFacebook,btnCloseLayoutShareFacebook;
+    public PokerGameplayView gpView;
+    public GameObject prefabBetObject, prefabCard, prefabPlayer;
     public GameObject positionEffectDealCard;
     public Transform []positionDealCards;
     public PokerPotManager potContainer;
     public GameObject objectDealer;
-    public UILabel lbMyRanking;
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
     List<PokerPotItem> _listPotMarkers = new List<PokerPotItem>();
-    string winWithRank;
+    List<GameObject> cardsDeal = new List<GameObject>();
+    int countGenericCard = 0;
 
-    private const string ITEM_INTERACTION_PREFIX = "PII";
     void Awake()
     {
         objectDealer.SetActive(false);
@@ -35,6 +34,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         arrayPokerSide = GameObject.FindObjectsOfType<PokerGPSide>();
 
         PokerObserver.Game.onFirstTimeJoinGame += Game_onFirstTimeJoinGame;
+
         PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
         PokerObserver.Instance.dataUpdateGameChange += Instance_dataUpdateGame;
         PokerObserver.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
@@ -42,15 +42,12 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onNewRound += Instance_onNewRound;
         PokerObserver.Instance.onUpdatePot += Instance_onUpdatePot;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
-        PokerObserver.Instance.onUpdateRoomMaster += Instance_onUpdateRoomMaster;
-        UIEventListener.Get(btnShareFacebook).onClick += OnClickButtnShowDialogShare;
-        UIEventListener.Get(btnCloseLayoutShareFacebook).onClick += OnClickButtonCloseLayoutShareFacebook;
-        PuMain.Dispatcher.onChatMessage += onShowMessage;
     }
 
     void OnDestroy()
     {
         PokerObserver.Game.onFirstTimeJoinGame -= Game_onFirstTimeJoinGame;
+
         PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
         PokerObserver.Instance.dataUpdateGameChange -= Instance_dataUpdateGame;
         PokerObserver.Instance.onEventUpdateHand -= Instance_onEventUpdateHand;
@@ -58,98 +55,15 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Instance.onNewRound -= Instance_onNewRound;
         PokerObserver.Instance.onUpdatePot -= Instance_onUpdatePot;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
-        PokerObserver.Instance.onUpdateRoomMaster -= Instance_onUpdateRoomMaster;
-        PuMain.Dispatcher.onChatMessage -= onShowMessage;
-        UIEventListener.Get(btnShareFacebook).onClick -= OnClickButtnShowDialogShare;
-        UIEventListener.Get(btnCloseLayoutShareFacebook).onClick -= OnClickButtonCloseLayoutShareFacebook;
-    }
-    private void onShowMessage(DataChat message)
-    {
-        if (message.GetChatType() == DataChat.ChatType.Private) {
-            string itemInteraction = message.Content;
-            if (itemInteraction.IndexOf(ITEM_INTERACTION_PREFIX) == 0)
-            {
-                PokerPlayerUI sender = dictPlayerObject[message.Sender.userName].GetComponent<PokerPlayerUI>();
-                PokerPlayerUI receiver = dictPlayerObject[message.ReceiverName].GetComponent<PokerPlayerUI>();
-                GameObject pointTo = new GameObject();
-                pointTo.name = "Point To";
-                pointTo.transform.parent = receiver.transform;
-                pointTo.transform.localScale  = Vector3.one;
-                pointTo.transform.localPosition = Vector3.zero;
-                pointTo.transform.parent = gameObject.transform;
-                Vector3 pointMoveTo = pointTo.transform.localPosition;
-                GameObject.Destroy(pointTo);
-
-                string nameSprite2D = message.Content.Split('_')[1];
-                Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/ItemInteractions/" + nameSprite2D);
-                GameObject pointFrom = new GameObject();
-                pointTo.name = "Point From";
-                pointFrom.transform.parent = sender.transform;
-                pointFrom.transform.localScale = Vector3.one;
-                pointFrom.transform.localPosition = Vector3.zero;
-                pointFrom.transform.parent = gameObject.transform;
-
-                pointFrom.AddComponent<UI2DSprite>().sprite2D = sprites[0];
-                pointFrom.GetComponent<UI2DSprite>().depth = 20;
-                pointFrom.GetComponent<UI2DSprite>().MakePixelPerfect();
-
-                pointFrom.AddComponent<UI2DSpriteAnimation>().frames = Array.FindAll<Sprite>(sprites,sp=>sp.name.Contains(nameSprite2D));
-                pointFrom.GetComponent<UI2DSpriteAnimation>().ignoreTimeScale = false;
-                pointFrom.GetComponent<UI2DSpriteAnimation>().framesPerSecond = 5;
-                pointFrom.GetComponent<UI2DSpriteAnimation>().loop = true;
-                pointFrom.GetComponent<UI2DSpriteAnimation>().Play();
-				pointFrom.name = nameSprite2D;
-                Hashtable tweenValue = new Hashtable();
-                tweenValue.Add("item", pointFrom);
-                tweenValue.Add("spriteArray", Array.FindAll<Sprite>(sprites, sp => sp.name.Contains("finish")));
-                iTween.MoveTo(pointFrom, iTween.Hash("islocal", true, "position", pointMoveTo, "time", 1.5f, "oncomplete", "onMoveItemInteractionComplete", "oncompletetarget", gameObject, "oncompleteparams", tweenValue));
-            }
-        }
-    }
-    private void OnClickButtnShowDialogShare(GameObject go)
-    {
-        DialogService.Instance.ShowDialog(new DialogGameplayShare(string.Format("Bạn đã đạt {0} hãy chia sẻ để mọi người cùng biết", winWithRank), string.Empty, string.Empty));
     }
     
-    private void OnClickButtonCloseLayoutShareFacebook(GameObject go)
-    {
-        btnShareFacebook.transform.parent.gameObject.SetActive(false);
-    }
-    public void onMoveItemInteractionComplete(object vals)
-    {
-        Hashtable table = (Hashtable)vals;
-        GameObject animationObject =(GameObject) table["item"];
-        Sprite[] sprites = (Sprite[] )table["spriteArray"];
-        animationObject.GetComponent<UI2DSpriteAnimation>().Pause();
-        animationObject.GetComponent<UI2DSpriteAnimation>().frames = sprites;
-        animationObject.GetComponent<UI2DSpriteAnimation>().loop = false;
-        animationObject.GetComponent<UI2DSpriteAnimation>().Play();
-		SoundType type = (SoundType)Enum.Parse(typeof(SoundType),animationObject.name);
-		PuSound.Instance.Play (type);
-        StartCoroutine(destroyItemInteractive(animationObject, 2f));
-
-    }
-    IEnumerator destroyItemInteractive(GameObject gobj, float time) {
-        yield return new WaitForSeconds(time);
-        GameObject.Destroy(gobj);
-    }
     void Instance_onUpdatePot(ResponseUpdatePot obj)
     {
         UnMarkPot();
         if (!PokerObserver.Instance.isWaitingFinishGame && obj.pot != null && obj.pot.Length > 0 && obj.pot[0].value > 0)
-        {
-            // foreach (PokerPlayerController controller in PokerObserver.Game.ListPlayer)
-            // {
-            //      dictPlayerObject[controller.userName].GetComponent<PokerPlayerUI>().addMoneyToMainPot();
-            // }
-            //StartCoroutine(updatePotView(obj));
             potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
-        }
     }
-    IEnumerator updatePotView(ResponseUpdatePot obj) {
-        yield return new WaitForSeconds(1.0f);
-        potContainer.UpdatePot(new List<ResponseUpdatePot.DataPot>(obj.pot));
-    }
+    
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
         ResetNewRound();
@@ -165,16 +79,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         potContainer.DestroyAllPot();
         UnMarkPot();
     }
-    void DestroyCardObject(GameObject [] cards)
-    {
-        for (int i = cards.Length - 1; i >= 0;i-- )
-        {
-            GameObject card = cards[i];
-            cardsDeal.Remove(card);
-            GameObject.Destroy(card);
-        }
-    }
-
+    
     private void Instance_dataTurnGame(ResponseUpdateTurnChange data)
     {
         if (data.toPlayer != null && PokerObserver.Game.IsMainPlayer(data.toPlayer.userName))
@@ -183,12 +88,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
         if (data.dealComminityCards != null && data.dealComminityCards.Length > 0)
         {
             CreateCardDeal(data.dealComminityCards);
-            ShowRank();
+            gpView.ShowRank();
         }
     }
 
-    List<GameObject> cardsDeal = new List<GameObject>();
-    int countGenericCard = 0;
     void CreateCardDeal(int [] cards)
     {
         for(int i=0;i<cards.Length;i++)
@@ -196,7 +99,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             if (cardsDeal.Find(o => o.GetComponent<PokerCardObject>().card.cardId == cards[i]) != null)
                 continue;
 
-            GameObject card = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
+            GameObject card = (GameObject)GameObject.Instantiate(prefabCard);
             card.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cards[i]));
             card.transform.parent = positionDealCards[countGenericCard++].transform;
             card.transform.localRotation = Quaternion.identity;
@@ -207,95 +110,21 @@ public class PokerGameplayPlaymat : MonoBehaviour
             PuSound.Instance.Play(SoundType.DealComminity);
         }
     }
-    public List<PokerCard> pocket = new List<PokerCard>();
+
     void Instance_onEventUpdateHand(ResponseUpdateHand data)
     {
-        pocket.Clear();
-        for (int i = 0; i < data.hand.Length; i++)
-        {
-            pocket.Add(new PokerCard(data.hand[i]));
-        }
-        ShowRank();
-        //CreateHand(data.players, data.hand);
         StartCoroutine(CreateEffectDealCard(data.players, data.hand,data.timeForAnimation));
     }
 
-    void ShowRank() {
-        if (pocket.Count == 0) return;
-        
-        string pocketHand = HandEvaluatorConvert.ConvertPokerCardsToString(pocket);
-        string boards = HandEvaluatorConvert.ConvertPokerCardsToString(PokerObserver.Game.DealComminityCards);
-        int count = 0;
-        double[] player = new double[9];
-        double[] opponent = new double[9];
-        if (!Hand.ValidateHand(pocketHand + " " + boards))
-        {
-            lbMyRanking.text = string.Empty;
-            return;
-        }
-        Hand.ParseHand(pocketHand + " " + boards, ref count);
-
-        // Don't allow these configurations because of calculation time.
-        if (count == 0 || count == 1 || count == 3 || count == 4 || count > 7)
-        {
-            lbMyRanking.text = string.Empty;
-            return;
-        }
-        Hand.HandPlayerOpponentOdds(pocketHand, boards, ref player, ref opponent);
-        var indexAtMax = player.ToList().IndexOf(player.Max());
-        string myRank = "";
-        switch ((Hand.HandTypes)indexAtMax)
-        {
-            case Hand.HandTypes.HighCard:
-            case Hand.HandTypes.Pair:
-            case Hand.HandTypes.TwoPair:
-                myRank = "Hai đôi : " + FormatPercent(player[2]);
-                break;
-            case Hand.HandTypes.Trips:
-                myRank = "Ba lá : " + FormatPercent(player[indexAtMax]);
-                break;
-            case Hand.HandTypes.Straight:
-                myRank = "Sảnh  : " + FormatPercent(player[indexAtMax]);
-                break;
-            case Hand.HandTypes.Flush:
-                myRank = "Đồng hoa  : " + FormatPercent(player[indexAtMax]);
-                break;
-            case Hand.HandTypes.FullHouse:
-                myRank = "Cù lũ  : " + FormatPercent(player[indexAtMax]);
-                break;
-            case Hand.HandTypes.FourOfAKind:
-                myRank = "Tứ quý  : " + FormatPercent(player[indexAtMax]);
-                break;
-            case Hand.HandTypes.StraightFlush:
-                myRank = "Sảnh thông  : " + FormatPercent(player[indexAtMax]);
-                break;
-        }
-        lbMyRanking.text = myRank;
-    }
-    private string FormatPercent(double v)
-    {
-        if (v != 0.0)
-        {
-            if (v * 100.0 >= 1.0)
-                return string.Format("{0:##0.0}%", v * 100.0);
-            else
-                return "<1%";
-        }
-        return "n/a";
-    }
     IEnumerator CreateEffectDealCard(PokerPlayerController[] players, int[] hands,int time)
     {
         PokerPlayerController dealer =  Array.Find<PokerPlayerController>(players, p => p.userName == PokerObserver.Game.Dealer);
         int indexDealer = Array.IndexOf(players, dealer);
         List<PokerPlayerController> playerDeal = new List<PokerPlayerController>();
         for (int i = indexDealer; i < players.Length; i++)
-        {
             playerDeal.Add(players[i]);    
-        }
         for (int i = 0; i < indexDealer; i++ )
-        {
             playerDeal.Add(players[i]);
-        }
         
         float timeEffect = (time/1000) ;
         float timeMove = 1.0f;
@@ -304,15 +133,13 @@ public class PokerGameplayPlaymat : MonoBehaviour
         {
             foreach (PokerPlayerController p in playerDeal)
             {
-                GameObject cardObjects = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
+                GameObject cardObjects = (GameObject)GameObject.Instantiate(prefabCard);
                 cardObjects.transform.parent = positionEffectDealCard.transform;
                 cardObjects.transform.localRotation = Quaternion.identity;
                 cardObjects.transform.localPosition = Vector3.zero;
                 cardObjects.transform.localScale = Vector3.one /3;
-                //cardObjects.transform.parent = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().transform.parent.transform;
 
                 Vector3 cardMoveTo = Vector3.zero;
-                //cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().transform.localPosition;
                 if (PokerObserver.Game.IsMainPlayer(p.userName))
                 {
                     cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardMainPlayer[i].transform.localPosition;
@@ -332,7 +159,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
                 PuSound.Instance.Play(SoundType.DealCard);
                 yield return new WaitForSeconds(timeWaitForStart);
-              
             }
         }
     }
@@ -342,12 +168,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         GameObject cardObjects = (GameObject)table["cardObject"];
         int index = (int)table["index"];
         int cardId = (int)table["cardId"];
-        if (PokerObserver.Game.IsMainPlayer(userName))
-        {
-            cardObjects.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cardId), index);
-        }
-        else
-            cardObjects.GetComponent<PokerCardObject>().SetDataCard(new PokerCard(), index);
+        cardObjects.GetComponent<PokerCardObject>().SetDataCard( PokerObserver.Game.IsMainPlayer(userName) ? new PokerCard(cardId) : new PokerCard(), index);
         dictPlayerObject[userName].GetComponent<PokerPlayerUI>().UpdateSetCardObject(cardObjects, index);
         cardsDeal.Add(cardObjects);
     }
@@ -362,7 +183,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 : new GameObject[handSize];
             for (int i = 0; i < handSize;i++)
                 if(cardObjects[i] == null)
-                    cardObjects[i] = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/CardUI"));
+                    cardObjects[i] = (GameObject)GameObject.Instantiate(prefabCard);
 
             if (PokerObserver.Game.IsMainPlayer(p.userName))
             {
@@ -446,12 +267,13 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 {
                     lstWinner.Add(item.userName);
 
-                    if (PokerObserver.Game.IsMainPlayer(item.userName)){
+                    if (PokerObserver.Game.IsMainPlayer(item.userName))
+                    {
                         PuSound.Instance.Play(SoundType.PlayerWin);
                         string rankWin = Array.Find<ResponseFinishCardPlayer>(responseData.players, rdp => rdp.userName == item.userName).ranking;
                         
                         if (!string.IsNullOrEmpty(PokerObserver.Game.mUserInfo.info.facebookId))
-                            StartCoroutine(ShowBtnShareFacebook(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin), 3f));
+                            StartCoroutine(gpView.ShowBtnShareFacebook(UTF8Encoder.DecodeEncodedNonAsciiCharacters(rankWin), 3f));
                     }
                 }
             }
@@ -521,14 +343,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Game.EndFinishGame();
     }
 
-    private IEnumerator ShowBtnShareFacebook(string rank, float timeAutoClose)
-    {
-        this.winWithRank = rank;
-        btnShareFacebook.transform.parent.gameObject.SetActive(true);
-        yield return new WaitForSeconds(timeAutoClose);
-        OnClickButtonCloseLayoutShareFacebook(null);
-    }
-
     void Instance_dataUpdateGame(ResponseUpdateGame data)
     {
         ResetNewRound();
@@ -546,7 +360,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
                 SetPositionAvatarPlayer(player.userName);
                 if(player.inTurn)
-                    GetPlayerController(player.userName).StartTimer(data.totalTime / 1000f, data.remainingTime / 1000f);
+                    GetPlayerUI(player.userName).StartTimer(data.totalTime / 1000f, data.remainingTime / 1000f);
             }
             CreateHand(data.players, hands);
             CreateCardDeal(data.dealComminityCards);
@@ -556,15 +370,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
         }
     }
 
-    public PokerPlayerUI GetPlayerController(string userName)
+    public PokerPlayerUI GetPlayerUI(string userName)
     {
         if(dictPlayerObject.ContainsKey(userName))
             return dictPlayerObject[userName].GetComponent<PokerPlayerUI>();
         return null;
-    }
-
-    void Instance_onUpdateRoomMaster(ResponseUpdateRoomMaster data)
-    {
     }
 
     void Instance_onPlayerListChanged(ResponsePlayerListChanged dataPlayer)
@@ -594,6 +404,16 @@ public class PokerGameplayPlaymat : MonoBehaviour
         UpdatePositionPlayers(dataPlayer.player.userName);
     }
 
+    void DestroyCardObject(GameObject[] cards)
+    {
+        for (int i = cards.Length - 1; i >= 0; i--)
+        {
+            GameObject card = cards[i];
+            cardsDeal.Remove(card);
+            GameObject.Destroy(card);
+        }
+    }
+
     void UpdatePositionPlayers(string ignorePlayer)
     {
         PokerObserver.Game.ListPlayer.ForEach(p =>
@@ -612,7 +432,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             obj = dictPlayerObject[userName];
         else
         {
-            obj = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Gameplay/PlayerUI"));
+            obj = (GameObject)GameObject.Instantiate(prefabPlayer);
             dictPlayerObject.Add(player.userName, obj);
         }
 
@@ -648,9 +468,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
     void UnMarkPot()
     {
         for (int i = _listPotMarkers.Count - 1; i >= 0; i--)
-        {
             GameObject.Destroy(_listPotMarkers[i].gameObject);
-        }
         _listPotMarkers.Clear();
     }
     #endregion

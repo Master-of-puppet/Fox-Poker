@@ -66,7 +66,7 @@ public class PokerPotManager : MonoBehaviour
                 List<PokerPotItem> listPotItems = new List<PokerPotItem>();
                 for (int i = 0; i < data.contributors.Length; i++)
                 {
-                    PokerPlayerUI uiPlayer = playmat.GetPlayerController(data.contributors[i]);
+                    PokerPlayerUI uiPlayer = playmat.GetPlayerUI(data.contributors[i]);
                     if (uiPlayer != null)
                     {
                         PokerPotItem pot = NGUITools.AddChild(uiPlayer.side.positionMoney, playmat.prefabBetObject).GetComponent<PokerPotItem>();
@@ -111,7 +111,7 @@ public class PokerPotManager : MonoBehaviour
             List<ResponseMoneyExchange> winnerPlayers = new List<ResponseMoneyExchange>(System.Array.FindAll<ResponseMoneyExchange>(data.players, p => p.winner));
             foreach(ResponseMoneyExchange exchange in winnerPlayers)
             {
-                PokerPlayerUI uiPlayer = playmat.GetPlayerController(exchange.userName);
+                PokerPlayerUI uiPlayer = playmat.GetPlayerUI(exchange.userName);
                 if(exchange.moneyExchange > 0 && uiPlayer != null)
                 {
                     PokerPotItem pot = NGUITools.AddChild(thisPot.gameObject, thisPot.gameObject).GetComponent<PokerPotItem>();

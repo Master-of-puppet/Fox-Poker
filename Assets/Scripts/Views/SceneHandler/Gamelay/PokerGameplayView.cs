@@ -17,15 +17,20 @@ public class PokerGameplayView : MonoBehaviour
 {
     #region UnityEditor
     public PokerGameplayPlaymat playmat;
+    public GameObject btnShareFacebook, btnCloseLayoutShareFacebook;
     public GameObject btnGameMini, btnRule, btnSendMessage;
 	public GameObject btnViewCheckBox, btnFollowBetCheckBox, btnFollowAllBetCheckbox;
     public UILabel lbMessage;
 	public UILabel lbTime,lbTitle;
     public UILabel lbCountdown;
+    public UILabel lbMyRanking;
     #endregion
 
+    private const string ITEM_INTERACTION_PREFIX = "PII";
+    private List<PokerCard> listMyPokerCard = new List<PokerCard>();
     private List<DataChat> dataChat;
-    float timeStartGame;
+    private float timeStartGame;
+    private string winWithRank;
 
     void Awake()
     {
@@ -62,11 +67,14 @@ public class PokerGameplayView : MonoBehaviour
         PokerObserver.Instance.onNewRound += Instance_onNewRound;
         PokerObserver.Instance.onEventUpdateHand += Instance_onEventUpdateHand;
         PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
-        //UIEventListener.Get(btnGameMini).onClick += OnButtonGameMiniClickCallBack;
+        
         UIEventListener.Get(btnRule).onClick += OnButtonRuleClickCallBack;
         UIEventListener.Get(btnSendMessage).onClick += OnButtonSendMessageClickCallBack;
+        UIEventListener.Get(btnShareFacebook).onClick += OnClickButtnShowDialogShare;
+        UIEventListener.Get(btnCloseLayoutShareFacebook).onClick += OnClickButtonCloseLayoutShareFacebook;
 
         PuMain.Dispatcher.onChatMessage += ShowMessage;
+        PuMain.Dispatcher.onChatMessage += onShowMessage;
     }
 
     void OnDisable()
@@ -76,11 +84,14 @@ public class PokerGameplayView : MonoBehaviour
         PokerObserver.Instance.onNewRound -= Instance_onNewRound;
         PokerObserver.Instance.onEventUpdateHand -= Instance_onEventUpdateHand;
         PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
-        //UIEventListener.Get(btnGameMini).onClick -= OnButtonGameMiniClickCallBack;
+        
         UIEventListener.Get(btnRule).onClick -= OnButtonRuleClickCallBack;
         UIEventListener.Get(btnSendMessage).onClick -= OnButtonSendMessageClickCallBack;
+        UIEventListener.Get(btnShareFacebook).onClick -= OnClickButtnShowDialogShare;
+        UIEventListener.Get(btnCloseLayoutShareFacebook).onClick -= OnClickButtonCloseLayoutShareFacebook;
       
         PuMain.Dispatcher.onChatMessage -= ShowMessage;
+        PuMain.Dispatcher.onChatMessage -= onShowMessage;
     }
     
     private void ShowMessage(DataChat message) 
@@ -98,12 +109,128 @@ public class PokerGameplayView : MonoBehaviour
         }
     }
 
+    private void onShowMessage(DataChat message)
+    {
+        if (message.GetChatType() == DataChat.ChatType.Private)
+        {
+            string itemInteraction = message.Content;
+            if (itemInteraction.IndexOf(ITEM_INTERACTION_PREFIX) == 0)
+            {
+                PokerPlayerUI sender = playmat.GetPlayerUI(message.Sender.userName);
+                PokerPlayerUI receiver = playmat.GetPlayerUI(message.ReceiverName);
+                GameObject pointTo = new GameObject();
+                pointTo.name = "Point To";
+                pointTo.transform.parent = receiver.transform;
+                pointTo.transform.localScale = Vector3.one;
+                pointTo.transform.localPosition = Vector3.zero;
+                pointTo.transform.parent = gameObject.transform;
+                Vector3 pointMoveTo = pointTo.transform.localPosition;
+                GameObject.Destroy(pointTo);
+
+                string nameSprite2D = message.Content.Split('_')[1];
+                Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/ItemInteractions/" + nameSprite2D);
+                GameObject pointFrom = new GameObject();
+                pointTo.name = "Point From";
+                pointFrom.transform.parent = sender.transform;
+                pointFrom.transform.localScale = Vector3.one;
+                pointFrom.transform.localPosition = Vector3.zero;
+                pointFrom.transform.parent = gameObject.transform;
+
+                pointFrom.AddComponent<UI2DSprite>().sprite2D = sprites[0];
+                pointFrom.GetComponent<UI2DSprite>().depth = 20;
+                pointFrom.GetComponent<UI2DSprite>().MakePixelPerfect();
+
+                pointFrom.AddComponent<UI2DSpriteAnimation>().frames = Array.FindAll<Sprite>(sprites, sp => sp.name.Contains(nameSprite2D));
+                pointFrom.GetComponent<UI2DSpriteAnimation>().ignoreTimeScale = false;
+                pointFrom.GetComponent<UI2DSpriteAnimation>().framesPerSecond = 5;
+                pointFrom.GetComponent<UI2DSpriteAnimation>().loop = true;
+                pointFrom.GetComponent<UI2DSpriteAnimation>().Play();
+                pointFrom.name = nameSprite2D;
+                Hashtable tweenValue = new Hashtable();
+                tweenValue.Add("item", pointFrom);
+                tweenValue.Add("spriteArray", Array.FindAll<Sprite>(sprites, sp => sp.name.Contains("finish")));
+                iTween.MoveTo(pointFrom, iTween.Hash("islocal", true, "position", pointMoveTo, "time", 1.5f, "oncomplete", "onMoveItemInteractionComplete", "oncompletetarget", gameObject, "oncompleteparams", tweenValue));
+            }
+        }
+    }
+    void onMoveItemInteractionComplete(object vals)
+    {
+        Hashtable table = (Hashtable)vals;
+        GameObject animationObject = (GameObject)table["item"];
+        Sprite[] sprites = (Sprite[])table["spriteArray"];
+        animationObject.GetComponent<UI2DSpriteAnimation>().Pause();
+        animationObject.GetComponent<UI2DSpriteAnimation>().frames = sprites;
+        animationObject.GetComponent<UI2DSpriteAnimation>().loop = false;
+        animationObject.GetComponent<UI2DSpriteAnimation>().Play();
+        SoundType type = (SoundType)Enum.Parse(typeof(SoundType), animationObject.name);
+        PuSound.Instance.Play(type);
+        StartCoroutine(destroyItemInteractive(animationObject, 2f));
+    }
+    IEnumerator destroyItemInteractive(GameObject gobj, float time)
+    {
+        yield return new WaitForSeconds(time);
+        GameObject.Destroy(gobj);
+    }
+
+    public void ShowRank()
+    {
+        if (listMyPokerCard.Count == 0) 
+            return;
+
+        string pocketHand = HandEvaluatorConvert.ConvertPokerCardsToString(listMyPokerCard);
+        string boards = HandEvaluatorConvert.ConvertPokerCardsToString(PokerObserver.Game.DealComminityCards);
+        int count = 0;
+        double[] player = new double[9];
+        double[] opponent = new double[9];
+        if (!Hand.ValidateHand(pocketHand + " " + boards))
+        {
+            lbMyRanking.text = string.Empty;
+            return;
+        }
+        Hand.ParseHand(pocketHand + " " + boards, ref count);
+
+        // Don't allow these configurations because of calculation time.
+        if (count == 0 || count == 1 || count == 3 || count == 4 || count > 7)
+        {
+            lbMyRanking.text = string.Empty;
+            return;
+        }
+        Hand.HandPlayerOpponentOdds(pocketHand, boards, ref player, ref opponent);
+        var indexAtMax = player.ToList().IndexOf(player.Max());
+        string myRank = "";
+        switch ((Hand.HandTypes)indexAtMax)
+        {
+            case Hand.HandTypes.HighCard:
+            case Hand.HandTypes.Pair:
+            case Hand.HandTypes.TwoPair:
+                myRank = "Hai đôi : " + FormatPercent(player[2]);
+                break;
+            case Hand.HandTypes.Trips:
+                myRank = "Ba lá : " + FormatPercent(player[indexAtMax]);
+                break;
+            case Hand.HandTypes.Straight:
+                myRank = "Sảnh  : " + FormatPercent(player[indexAtMax]);
+                break;
+            case Hand.HandTypes.Flush:
+                myRank = "Đồng hoa  : " + FormatPercent(player[indexAtMax]);
+                break;
+            case Hand.HandTypes.FullHouse:
+                myRank = "Cù lũ  : " + FormatPercent(player[indexAtMax]);
+                break;
+            case Hand.HandTypes.FourOfAKind:
+                myRank = "Tứ quý  : " + FormatPercent(player[indexAtMax]);
+                break;
+            case Hand.HandTypes.StraightFlush:
+                myRank = "Sảnh thông  : " + FormatPercent(player[indexAtMax]);
+                break;
+        }
+        lbMyRanking.text = myRank;
+    }
+
     void Instance_onEncounterError(ResponseError data)
     {
         if(data.showPopup)
-        {
             DialogService.Instance.ShowDialog(new DialogMessage("Error: " + data.errorCode, data.errorMessage, null));
-        }
     }
 
     void Instance_onPlayerListChanged(ResponsePlayerListChanged data)
@@ -117,14 +244,37 @@ public class PokerGameplayView : MonoBehaviour
         SetCountDown(data.remainingTime, data.totalTime);
     }
 
-    void Instance_onEventUpdateHand(ResponseUpdateHand obj)
+    void Instance_onEventUpdateHand(ResponseUpdateHand data)
     {
         ResetCountdown();
+
+        listMyPokerCard.Clear();
+        for (int i = 0; i < data.hand.Length; i++)
+            listMyPokerCard.Add(new PokerCard(data.hand[i]));
+        ShowRank();
     }
 
     void Instance_onNewRound(ResponseWaitingDealCard data)
     {
         SetCountDown(data.time, data.time);
+    }
+
+    private void OnClickButtnShowDialogShare(GameObject go)
+    {
+        DialogService.Instance.ShowDialog(new DialogGameplayShare(string.Format("Bạn đã đạt {0} hãy chia sẻ để mọi người cùng biết", winWithRank), string.Empty, string.Empty));
+    }
+
+    public IEnumerator ShowBtnShareFacebook(string rank, float timeAutoClose)
+    {
+        this.winWithRank = rank;
+        btnShareFacebook.transform.parent.gameObject.SetActive(true);
+        yield return new WaitForSeconds(timeAutoClose);
+        OnClickButtonCloseLayoutShareFacebook(null);
+    }
+
+    private void OnClickButtonCloseLayoutShareFacebook(GameObject go)
+    {
+        btnShareFacebook.transform.parent.gameObject.SetActive(false);
     }
 
     private void OnButtonSendMessageClickCallBack(GameObject go)
@@ -168,10 +318,10 @@ public class PokerGameplayView : MonoBehaviour
     {
         double[] player = new double[9];
         double[] opponent = new double[9];
-        if (playmat.pocket != null && playmat.pocket.Count > 0)
+        if (listMyPokerCard != null && listMyPokerCard.Count > 0)
         {
             string boards = HandEvaluatorConvert.ConvertPokerCardsToString(PokerObserver.Game.DealComminityCards);
-            string pocket = HandEvaluatorConvert.ConvertPokerCardsToString(playmat.pocket);
+            string pocket = HandEvaluatorConvert.ConvertPokerCardsToString(listMyPokerCard);
             DialogService.Instance.ShowDialog(new DialogGameplayRankModel(pocket,boards));
         }
     }
