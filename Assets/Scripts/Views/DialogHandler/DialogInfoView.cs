@@ -59,6 +59,11 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 		lbUserName.text = data.info.info.userName;
 		lbChip.text = data.info.assets.content [0].value.ToString ();
         PuApp.Instance.GetImage(data.info.info.avatar, (texture) => avatar.mainTexture = texture);
+        if (data.info.info.numberTotalGames != 0)
+            lbPrecentsWin.text = (data.info.info.numberWinGames / data.info.info.numberTotalGames) + "%";
+        else
+            lbPrecentsWin.text = "0%";
+        //lbWinMax.text = data.info.info.numberWinGames.ToString() ;
 	}
 }
 

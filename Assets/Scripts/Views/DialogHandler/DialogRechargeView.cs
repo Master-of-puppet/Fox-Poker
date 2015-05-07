@@ -30,6 +30,7 @@ public class DialogRechargeView : BaseDialog<DialogRecharge, DialogRechargeView>
     {
         base.ShowDialog(data);
         initTab();
+        lbSupportPhone.text = data.dataRecharge.support_phone;
 
     }
     protected override void OnEnable()
