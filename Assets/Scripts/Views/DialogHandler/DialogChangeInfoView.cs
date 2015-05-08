@@ -79,13 +79,13 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 		    int gender = toggleMale.value == true ? 0 : 1;
             DataUser userInfo = data.info.info;
 
-            if (!userInfo.firstName.Equals(fullName.value.Trim()) || userInfo.gender != gender || !userInfo.address.Equals(address.value.Trim()))
+            if (!fullName.value.Trim().Equals(userInfo.firstName) || userInfo.gender != gender || !address.value.Trim().Equals(userInfo.address))
             {
                 totalChange++;
                 APIUser.ChangeUseInformation(fullName.value, "", "", gender, address.value, "", OnSubmitChangeInfoCallBack);
             }
 
-            if (!userInfo.email.Equals(email.value.Trim()) || !userInfo.mobile.Equals(phoneNumber.value.Trim()))
+            if (!email.value.Trim().Equals(userInfo.email) || !phoneNumber.value.Trim().Equals(userInfo.mobile))
             {
                 totalChange++;
                 APIUser.ChangeUseInformationSpecial(email.value, phoneNumber.value, OnSubmitChangeInfoCallBack);
