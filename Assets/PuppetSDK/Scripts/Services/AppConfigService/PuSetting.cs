@@ -15,7 +15,8 @@ public class PuSetting
 
 	public string sceneName;
 
-    public PuSetting()
+
+    public PuSetting(Action<float, string> onLoadConfig)
     {
         persistentDataPath = Application.persistentDataPath;
         CurrentSetting setting = new CurrentSetting();
@@ -23,9 +24,8 @@ public class PuSetting
 		PuMain.Setting.Init();
         setting.CustomServer();
 
-        PuMain.Instance.Load();
         PuMain.Dispatcher.onChangeScene += ChangeScene;
-
+        PuMain.Instance.Load(onLoadConfig);
     }
 
     void ChangeScene(EScene fromScene, EScene toScene)

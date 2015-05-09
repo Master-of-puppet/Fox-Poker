@@ -19,13 +19,16 @@ public class PuApp : Singleton<PuApp>
     private int sleepTimeout;
 
     List<KeyValuePair<EMessage, string>> listMessage = new List<KeyValuePair<EMessage, string>>();
-    protected override void Init()
+
+    protected override void Init() { }
+
+    public void StartApplication(Action<float, string> onLoadConfig) 
     {
         sleepTimeout = Screen.sleepTimeout;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        setting = new PuSetting();
+        setting = new PuSetting(onLoadConfig);
 
-		gameObject.AddComponent<LogViewer> ();
+        gameObject.AddComponent<LogViewer>();
         PingManager.Instance.Load();
 
 
@@ -36,10 +39,8 @@ public class PuApp : Singleton<PuApp>
             PuMain.Dispatcher.onNoticeMessage += Dispatcher_onNoticeMessage;
         });
 
-		SocialService.SocialStart ();
+        SocialService.SocialStart();
     }
-
-    public void StartApplication() { }
 
     void Dispatcher_onNoticeMessage(EMessage type, string message)
     {
