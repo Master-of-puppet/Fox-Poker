@@ -58,6 +58,7 @@ public class DialogBuyChipView : BaseDialog<DialogBuyChip,DialogBuyChipView>
     }
     private void initData()
     {
+        autoBuy.value = true;
         minValue = data.smallBind * 20;
         maxValue = data.smallBind * 400;
         defaultValue = data.smallBind * 200;
