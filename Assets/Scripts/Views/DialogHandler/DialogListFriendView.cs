@@ -73,6 +73,7 @@ public class DialogListFriendView : BaseDialog<DialogListFriend,DialogListFriend
                 formInvited.SetActive(false);
                 formProfile.SetActive(true);
             }
+            
         }
 
         private void onClickTabInviteFriend(GameObject go)

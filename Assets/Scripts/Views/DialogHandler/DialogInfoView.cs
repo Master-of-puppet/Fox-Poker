@@ -20,7 +20,7 @@ using Puppet.Core.Network.Http;
 public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 {
 	#region UnityEditor
-	public UILabel lbUserName,lbChip,lbLevel,lbExp,lbMaxChip,lbWinMax,lbPrecentsWin, lbBetWin,lbStatictis;
+	public UILabel lbUserName,lbChip,lbLevel,lbExp,lbNumberWin,lbNumberLost,lbPrecentsWin, lbTotalPlay,lbStatictis;
 	public UISlider sliderExp;
 	public UITexture avatar;
 	public GameObject btnViewStatictis,btnEditAvatar;
@@ -63,6 +63,9 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
             lbPrecentsWin.text = (data.info.info.numberWinGames / data.info.info.numberTotalGames) + "%";
         else
             lbPrecentsWin.text = "0%";
+        lbNumberWin.text = data.info.info.numberWinGames.ToString();
+        lbNumberLost.text = data.info.info.numberLossGames.ToString();
+        lbTotalPlay.text = data.info.info.numberTotalGames.ToString();
         //lbWinMax.text = data.info.info.numberWinGames.ToString() ;
 	}
 }
