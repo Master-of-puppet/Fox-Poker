@@ -30,7 +30,7 @@ public class DialogRechargeView : BaseDialog<DialogRecharge, DialogRechargeView>
     {
         base.ShowDialog(data);
         initTab();
-        lbSupportPhone.text = data.dataRecharge.support_phone;
+        //lbSupportPhone.text = data.dataRecharge.support_phone;
 
     }
     protected override void OnEnable()
@@ -38,7 +38,14 @@ public class DialogRechargeView : BaseDialog<DialogRecharge, DialogRechargeView>
         base.OnEnable();
         UIEventListener.Get(btnClosePanelInputCard).onClick = OnClosePanelInputCard;
         UIEventListener.Get(btnSubmitCard).onClick = onButtonSubmitCardClickListener;
+        UIEventListener.Get(lbSupportPhone.gameObject).onClick = onClickCallPhone ;
     }
+
+    private void onClickCallPhone(GameObject go)
+    {
+        Application.OpenURL("tel://"+lbSupportPhone.text);
+    }
+    
     void onButtonSubmitCardClickListener(GameObject go)
     {
         if (txtSerial.value.Length > 0 && txtPassword.value.Length > 0)
@@ -62,7 +69,7 @@ public class DialogRechargeView : BaseDialog<DialogRecharge, DialogRechargeView>
     private void initTab()
     {
         fetchGroupCard();
-        lbSupportPhone.text = data.dataRecharge.support_phone;
+       // lbSupportPhone.text = data.dataRecharge.support_phone;
 
         foreach (RechargeTab item in data.tabs)
         {

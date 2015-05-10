@@ -77,7 +77,8 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
         switch (go.name)
         {
             case "mission":
-                DialogService.Instance.ShowDialog(new DialogMission());
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Tính năng đang được xây dựng, vui lòng quay lại sau", null));
+                //DialogService.Instance.ShowDialog(new DialogMission());
                 break;
             case "daily":
                 if (PuApp.Instance.dailyGift == null)
