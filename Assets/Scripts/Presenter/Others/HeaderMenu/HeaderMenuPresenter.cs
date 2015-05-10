@@ -35,13 +35,13 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 		if(userInfo.assets !=null && userInfo.assets.content.Length > 0)
 			view.ShowChip(userInfo.assets.content[0].value.ToString());
         PuApp.Instance.GetImage(userInfo.info.avatar, (texture) => view.ShowAvatar(texture));
-        
 	}
 
     void OnDataUserChange(IDataModel info)
     {
         UserInfo user = (UserInfo)info;
         view.ShowChip(user.assets.GetAsset(EAssets.Chip).value.ToString());
+        PuApp.Instance.GetImage(user.info.avatar, (texture) => view.ShowAvatar(texture));
     }
 
 	public void OnBackPressed ()

@@ -24,6 +24,8 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 	public UISlider sliderExp;
 	public UITexture avatar;
 	public GameObject btnViewStatictis,btnEditAvatar;
+    #endregion
+    UserInfo userInfo;
 	protected override void OnEnable ()
 	{
 		base.OnEnable ();
@@ -47,7 +49,7 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 	{
 		DialogService.Instance.ShowDialog (new DialogChangeInfo (data.info)); 
 	}
-	#endregion
+
 	public override void ShowDialog (DialogInfo data)
 	{
 		base.ShowDialog (data);
@@ -68,6 +70,28 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
         lbTotalPlay.text = data.info.info.numberTotalGames.ToString();
         //lbWinMax.text = data.info.info.numberWinGames.ToString() ;
 	}
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+
+        userInfo = Puppet.API.Client.APIUser.GetUserInformation();
+        userInfo.onDataChanged += OnDataUserChange;
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+
+        userInfo.onDataChanged -= OnDataUserChange;
+    }
+
+    void OnDataUserChange(IDataModel info)
+    {
+        UserInfo user = (UserInfo)info;
+        lbChip.text = user.assets.GetAsset(EAssets.Chip).value.ToString();
+        PuApp.Instance.GetImage(user.info.avatar, (texture) => avatar.mainTexture = texture);
+    }
 }
 
 public class DialogInfo : AbstractDialogData{
