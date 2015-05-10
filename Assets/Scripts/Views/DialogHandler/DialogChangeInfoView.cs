@@ -77,16 +77,22 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 		    int gender = toggleMale.value == true ? 0 : 1;
             DataUser userInfo = data.info.info;
 
-            if (!fullName.value.Trim().Equals(userInfo.firstName) || userInfo.gender != gender || !address.value.Trim().Equals(userInfo.address))
+            string emailChange = email.value.Trim();
+            string phoneChange = phoneNumber.value.Trim();
+            string fullNameChange = fullName.value.Trim();
+            string addressChange = address.value.Trim();
+
+            if (!fullNameChange.Equals(userInfo.firstName) || userInfo.gender != gender || !address.value.Trim().Equals(userInfo.address))
             {
                 totalChange++;
-                APIUser.ChangeUseInformation(fullName.value, "", "", gender, address.value, "", OnSubmitChangeInfoCallBack);
+                APIUser.ChangeUseInformation(fullNameChange, "", "", gender, addressChange, "", OnSubmitChangeInfoCallBack);
             }
 
-            if (!email.value.Trim().Equals(userInfo.email) || !phoneNumber.value.Trim().Equals(userInfo.mobile))
+            if ((!string.IsNullOrEmpty(emailChange) && !emailChange.Equals(userInfo.email))
+                || (!string.IsNullOrEmpty(phoneChange) && !phoneChange.Equals(userInfo.mobile)))
             {
                 totalChange++;
-                APIUser.ChangeUseInformationSpecial(email.value, phoneNumber.value, OnSubmitChangeInfoCallBack);
+                APIUser.ChangeUseInformationSpecial(emailChange, phoneChange, OnSubmitChangeInfoCallBack);
             }
 
             if (isChangedAvatar)
