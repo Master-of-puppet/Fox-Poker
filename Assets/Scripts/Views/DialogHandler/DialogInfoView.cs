@@ -67,7 +67,7 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 		lbChip.text = data.info.assets.content [0].value.ToString ();
         PuApp.Instance.GetImage(data.info.info.avatar, (texture) => avatar.mainTexture = texture);
         if (data.info.info.numberTotalGames != 0)
-            lbPrecentsWin.text = (data.info.info.numberWinGames / data.info.info.numberTotalGames) + "%";
+            lbPrecentsWin.text = (data.info.info.numberWinGames / (float)data.info.info.numberTotalGames) + "%";
         else
             lbPrecentsWin.text = "0%";
         lbNumberWin.text = data.info.info.numberWinGames.ToString();
