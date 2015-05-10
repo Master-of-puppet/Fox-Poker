@@ -31,12 +31,17 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
 		base.OnEnable ();
 		UIEventListener.Get (btnViewStatictis).onClick += onClickViewStatictis;
 		UIEventListener.Get (btnEditAvatar).onClick += onClickBtnEdit;
+
+        userInfo = Puppet.API.Client.APIUser.GetUserInformation();
+        userInfo.onDataChanged += OnDataUserChange;
 	}
 	protected override void OnDisable ()
 	{
 		base.OnDisable ();
 		UIEventListener.Get (btnViewStatictis).onClick -= onClickViewStatictis;
 		UIEventListener.Get (btnEditAvatar).onClick -= onClickBtnEdit;
+
+        userInfo.onDataChanged -= OnDataUserChange;
 	}
 
 	void onClickViewStatictis (GameObject go)
@@ -70,21 +75,6 @@ public class DialogInfoView : BaseDialog<DialogInfo,DialogInfoView>
         lbTotalPlay.text = data.info.info.numberTotalGames.ToString();
         //lbWinMax.text = data.info.info.numberWinGames.ToString() ;
 	}
-
-    protected override void OnEnable()
-    {
-        base.OnEnable();
-
-        userInfo = Puppet.API.Client.APIUser.GetUserInformation();
-        userInfo.onDataChanged += OnDataUserChange;
-    }
-
-    protected override void OnDisable()
-    {
-        base.OnDisable();
-
-        userInfo.onDataChanged -= OnDataUserChange;
-    }
 
     void OnDataUserChange(IDataModel info)
     {
