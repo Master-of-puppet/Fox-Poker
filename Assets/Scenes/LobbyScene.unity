@@ -100,7 +100,7 @@ Transform:
   m_GameObject: {fileID: 56237837}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .00312500005, y: .00312500005, z: .00312500005}
+  m_LocalScale: {x: .00312012481, y: .00312012481, z: .00312012481}
   m_Children:
   - {fileID: 169214224}
   - {fileID: 1333486108}
@@ -584,7 +584,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 565335458}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 540, y: 270, z: 0}
+  m_LocalPosition: {x: 470, y: 270, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1365371506}
@@ -984,7 +984,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 692264113}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -31.5, z: 0}
+  m_LocalPosition: {x: 0, y: -31.75, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 915647695}
@@ -1019,8 +1019,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1079
-  mHeight: 477
+  mWidth: 940
+  mHeight: 478
   mDepth: 0
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
@@ -1049,7 +1049,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1079, y: 477, z: 0}
+  m_Size: {x: 940, y: 478, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &732612629
 GameObject:
@@ -1190,7 +1190,7 @@ MonoBehaviour:
   smoothDragStart: 1
   iOSDragEmulation: 1
   scrollWheelFactor: .25
-  momentumAmount: 35
+  momentumAmount: 135
   horizontalScrollBar: {fileID: 0}
   verticalScrollBar: {fileID: 0}
   showScrollBars: 1
@@ -1316,8 +1316,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: .392156869}
   mPivot: 4
-  mWidth: 1099
-  mHeight: 640
+  mWidth: 960
+  mHeight: 641
   mDepth: -93
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
@@ -1472,8 +1472,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1099
-  mHeight: 640
+  mWidth: 960
+  mHeight: 641
   mDepth: -95
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
@@ -1696,7 +1696,7 @@ MonoBehaviour:
   smoothDragStart: 1
   iOSDragEmulation: 1
   scrollWheelFactor: .25
-  momentumAmount: 35
+  momentumAmount: 135
   horizontalScrollBar: {fileID: 0}
   verticalScrollBar: {fileID: 0}
   showScrollBars: 1
@@ -1744,7 +1744,7 @@ MonoBehaviour:
   startingRenderQueue: 3009
   mAlpha: 1
   mClipping: 3
-  mClipRange: {x: 0, y: -31.5, z: 1079, w: 477}
+  mClipRange: {x: 0, y: -31.75, z: 940, w: 477.5}
   mClipSoftness: {x: 4, y: 4}
   mDepth: 2
   mSortingOrder: 0
@@ -2151,7 +2151,7 @@ MonoBehaviour:
   startingRenderQueue: 3009
   mAlpha: 1
   mClipping: 3
-  mClipRange: {x: 447.75, y: -42.6197205, z: 894.5, w: 85.2394409}
+  mClipRange: {x: 377.5, y: -42.6197205, z: 755, w: 85.2394409}
   mClipSoftness: {x: 0, y: 0}
   mDepth: 5
   mSortingOrder: 0
@@ -2319,13 +2319,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 108
+  mWidth: 110
   mHeight: 26
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.15384626
+  aspectRatio: 4.23076916
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 187136d4621c59742a85fed83c59ce2e, type: 3}
   mFont: {fileID: 0}
@@ -2525,7 +2525,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1725298947}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -540, y: 0, z: 0}
+  m_LocalPosition: {x: -470, y: -3.81469727e-06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 905973450}
@@ -2841,8 +2841,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1099
-  mHeight: 640
+  mWidth: 960
+  mHeight: 641
   mDepth: -99
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
@@ -2935,8 +2935,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1079
-  mHeight: 540
+  mWidth: 940
+  mHeight: 541
   mDepth: -96
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
@@ -2978,7 +2978,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2042605298}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .477611959, y: 320, z: 0}
+  m_LocalPosition: {x: 0, y: 320.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1333486108}
@@ -3024,7 +3024,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2117466515}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -540, y: 270, z: 0}
+  m_LocalPosition: {x: -470, y: 270, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1359443228}

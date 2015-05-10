@@ -367,7 +367,7 @@ namespace Puppet
                 EditorApplication.isPlaying = false;
                 return;
             }
-            //EditorApplication.SaveCurrentSceneIfUserWantsTo();
+            EditorApplication.SaveCurrentSceneIfUserWantsTo();
             EditorApplication.OpenScene("Assets/Scenes/SplashScene.unity");
             EditorApplication.isPlaying = true;
         }

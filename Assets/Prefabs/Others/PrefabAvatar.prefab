@@ -26,6 +26,7 @@ GameObject:
   - 4: {fileID: 441744}
   - 114: {fileID: 11441744}
   - 65: {fileID: 6541744}
+  - 114: {fileID: 11494756}
   m_Layer: 0
   m_Name: PrefabAvatar
   m_TagString: Untagged
@@ -177,6 +178,19 @@ MonoBehaviour:
   mAtlas: {fileID: 11400000, guid: f312d31541b434e83aee5c1817a62d48, type: 2}
   mSpriteName: border_avatar
   mFillCenter: 1
+--- !u!114 &11494756
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 141744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f02842fa4878db54f9587ff4de7d9f2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollView: {fileID: 0}
+  draggablePanel: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
