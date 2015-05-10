@@ -357,5 +357,20 @@ namespace Puppet
             return !isError;
         }
         #endregion
+
+        #region PLAY WITH SPLASH SCREEN
+        [MenuItem("Puppet SDK/Play SplashScreen %0")]
+        public static void PlayFromPrelaunchScene()
+        {
+            if (EditorApplication.isPlaying == true)
+            {
+                EditorApplication.isPlaying = false;
+                return;
+            }
+            //EditorApplication.SaveCurrentSceneIfUserWantsTo();
+            EditorApplication.OpenScene("Assets/Scenes/SplashScene.unity");
+            EditorApplication.isPlaying = true;
+        }
+        #endregion
     }
 }
