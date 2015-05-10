@@ -26,7 +26,7 @@ namespace UnityEditor.FacebookEditor
 
                 // Find and run through all projmods files to patch the project
 
-                string projModPath = System.IO.Path.Combine(Application.dataPath, "Facebook/Editor/iOS");
+				string projModPath = System.IO.Path.Combine(Application.dataPath, "ThirdParty/Facebook/Editor/iOS");
                 var files = System.IO.Directory.GetFiles(projModPath, "*.projmods", System.IO.SearchOption.AllDirectories);
                 foreach (var file in files)
                 {
