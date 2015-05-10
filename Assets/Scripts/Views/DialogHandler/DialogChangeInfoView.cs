@@ -13,13 +13,17 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
     #region UnityEditor
     public UIInput userName, fullName, email, phoneNumber, address;
     public GameObject btnSubmit, btnOpenGalery;
-    public UIToggle toggleMale, toggleFemale;
-    public GameObject[] btnDefaultAvatars;
+    public UIToggle toggleMale, toggleFemale; 
     public UITexture avatar;
+
+    public GameObject prefabAvatarChangeInfo;
+    public UITable avatarTableView;
+    public UIScrollView avatarScrollView;
     #endregion
 
     private static string EMAIL_REGEX = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
     bool isChangedAvatar = false;
+    string defaultAvatar = string.Empty;
 
 	public override void ShowDialog (DialogChangeInfo data)
 	{
@@ -36,11 +40,6 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
         UIEventListener.Get(address.GetComponentInChildren<UIAnchor>().GetComponentInChildren<UISprite>().gameObject).onClick = onClickEditAddress;
         UIEventListener.Get(btnSubmit).onClick += onClickSubmit;
         UIEventListener.Get(btnOpenGalery).onClick += onClickOpenGallery;
-        foreach (GameObject defaultAvatar in btnDefaultAvatars)
-        {
-            UIEventListener.Get(defaultAvatar).onClick += onClickToDefaultAvatar;
-        } 
-	
 	}
 
 	protected override void OnDisable ()
@@ -48,17 +47,15 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 		base.OnDisable ();
         UIEventListener.Get(btnSubmit).onClick -= onClickSubmit;
         UIEventListener.Get(btnOpenGalery).onClick -= onClickOpenGallery;
-        foreach (GameObject defaultAvatar in btnDefaultAvatars)
-        {
-            UIEventListener.Get(defaultAvatar).onClick -= onClickToDefaultAvatar;
-        } 
 	}
 
     private void onClickOpenGallery(GameObject go)
     {
         BrowseImageService.Instance.BrowseImageFromGallary((status, texture) =>
         {
-            if (status) { 
+            if (status) 
+            {
+                defaultAvatar = string.Empty;
                 isChangedAvatar = true;
                 avatar.mainTexture = texture;
             }
@@ -67,6 +64,7 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
     void onClickToDefaultAvatar(GameObject go)
     {
         isChangedAvatar = true;
+        defaultAvatar = go.GetComponent<ComponentData>().dataString;
         avatar.mainTexture = go.GetComponentInChildren<UITexture>().mainTexture;
     }
 
@@ -94,7 +92,11 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
             if (isChangedAvatar)
             {
                 totalChange++;
-                APIUser.ChangeUseInformation(((Texture2D)avatar.mainTexture).EncodeToPNG(), OnSubmitChangeInfoCallBack);
+
+                if (string.IsNullOrEmpty(defaultAvatar))
+                    APIUser.ChangeUseInformation(((Texture2D)avatar.mainTexture).EncodeToPNG(), OnSubmitChangeInfoCallBack);
+                else
+                    APIGeneric.SaveDefaultAvatar(defaultAvatar, OnSubmitChangeInfoCallBack);
             }
 
             if (totalChange == 0)
@@ -144,13 +146,45 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
 	public void initView()
     {
 		userName.value = data.info.info.userName.Trim();
-        fullName.value = string.Format("{0} {1} {2}", data.info.info.firstName.Trim(), data.info.info.middleName.Trim(), data.info.info.lastName.Trim()).Trim();
-        email.value = data.info.info.email.Trim();
-        phoneNumber.value = data.info.info.mobile.Trim();
-        toggleMale.value = data.info.info.gender == 0;
-        toggleFemale.value = data.info.info.gender == 1;
-        address.value = data.info.info.address.Trim();
+        fullName.value = string.Format("{0} {1} {2}", 
+            data.info.info.firstName != null ? data.info.info.firstName.Trim() : string.Empty,
+            data.info.info.middleName != null ? data.info.info.middleName.Trim() : string.Empty,
+            data.info.info.lastName != null ? data.info.info.lastName.Trim() : string.Empty
+        ).Trim();
+        email.value = data.info.info.email != null ? data.info.info.email.Trim() : string.Empty;
+        phoneNumber.value = data.info.info.mobile != null ? data.info.info.mobile.Trim() : string.Empty;
+        toggleMale.value = data.info.info.gender != null ? data.info.info.gender == 0 : true;
+        toggleFemale.value = data.info.info.gender != null ? data.info.info.gender == 1 : false;
+        address.value = data.info.info.address != null ? data.info.info.address.Trim() : string.Empty;
         PuApp.Instance.GetImage(data.info.info.avatar, (texture) => avatar.mainTexture = texture);
+
+        APIGeneric.GetDefaultAvatar((status, message, listAvatar) =>
+        {
+            if(status && listAvatar.Count > 0)
+            {
+                foreach(string avatarPath in listAvatar)
+                {
+                    GameObject obj = (GameObject)GameObject.Instantiate(prefabAvatarChangeInfo);
+                    obj.transform.parent = avatarTableView.transform;
+                    obj.transform.localScale = Vector3.one;
+                    obj.transform.localPosition = Vector3.zero;
+                    avatarTableView.Reposition();
+                    obj.GetComponent<UIDragScrollView>().scrollView = avatarScrollView;
+                    obj.AddComponent<ComponentData>().dataString = avatarPath;
+
+                    PuApp.Instance.GetImage(AppConfig.HttpUrl + "/static/" + avatarPath, (img) =>
+                    {
+                        obj.GetComponentInChildren<UITexture>().mainTexture = img;
+                    });
+
+                    UIEventListener.Get(obj).onClick += onClickToDefaultAvatar;
+                }
+            }
+            else if(!status)
+            {
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Không thể lấy thông tin các biểu tượng mặc định."));
+            }
+        });
 	}
 
 	void onClickEditFullName (GameObject go)
