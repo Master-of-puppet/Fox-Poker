@@ -1505,7 +1505,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 32, y: 32, z: 0}
+  m_Size: {x: 52, y: 52, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &6500014
 BoxCollider:
@@ -2351,7 +2351,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3028
+  startingRenderQueue: 3017
   mAlpha: 1
   mClipping: 3
   mClipRange: {x: 0, y: 0, z: 560, w: 380}
@@ -3611,8 +3611,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 32
-  mHeight: 32
+  mWidth: 52
+  mHeight: 52
   mDepth: 0
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
@@ -3629,7 +3629,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11400000, guid: 333720a845f28470ebc84d785ff29cc5, type: 2}
-  mSpriteName: btn_clear
+  mSpriteName: btn_close_3
   mFillCenter: 1
 --- !u!114 &11400108
 MonoBehaviour:
@@ -3711,7 +3711,7 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 3
-  mWidth: 744
+  mWidth: 734
   mHeight: 65
   mDepth: 0
   autoResizeBoxCollider: 0
@@ -3929,7 +3929,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3016
+  startingRenderQueue: 3006
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}

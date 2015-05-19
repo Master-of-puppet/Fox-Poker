@@ -1248,6 +1248,7 @@ GameObject:
   - 65: {fileID: 6500002}
   - 114: {fileID: 11400130}
   - 114: {fileID: 11400412}
+  - 114: {fileID: 11436386}
   m_Layer: 0
   m_Name: 2. Tab EXP
   m_TagString: Untagged
@@ -1315,6 +1316,7 @@ GameObject:
   - 65: {fileID: 6500004}
   - 114: {fileID: 11400168}
   - 114: {fileID: 11400140}
+  - 114: {fileID: 11436384}
   m_Layer: 0
   m_Name: 3. Tab Statistics
   m_TagString: Untagged
@@ -1382,6 +1384,7 @@ GameObject:
   - 65: {fileID: 6500006}
   - 114: {fileID: 11400170}
   - 114: {fileID: 11400150}
+  - 114: {fileID: 11436398}
   m_Layer: 0
   m_Name: 1. Tab One Day
   m_TagString: Untagged
@@ -1849,6 +1852,7 @@ GameObject:
   - 65: {fileID: 6500010}
   - 114: {fileID: 11400212}
   - 114: {fileID: 11400210}
+  - 114: {fileID: 11436390}
   m_Layer: 0
   m_Name: 5. Tab One Year
   m_TagString: Untagged
@@ -2281,6 +2285,7 @@ GameObject:
   - 65: {fileID: 6500012}
   - 114: {fileID: 11400264}
   - 114: {fileID: 11400262}
+  - 114: {fileID: 11436392}
   m_Layer: 0
   m_Name: 4. Tab 3 Month
   m_TagString: Untagged
@@ -2412,6 +2417,7 @@ GameObject:
   - 65: {fileID: 6500014}
   - 114: {fileID: 11400284}
   - 114: {fileID: 11400282}
+  - 114: {fileID: 11436394}
   m_Layer: 0
   m_Name: 3. Tab One Month
   m_TagString: Untagged
@@ -3193,6 +3199,7 @@ GameObject:
   - 65: {fileID: 6500016}
   - 114: {fileID: 11400370}
   - 114: {fileID: 11400368}
+  - 114: {fileID: 11436388}
   m_Layer: 0
   m_Name: 1. Tab Money
   m_TagString: Untagged
@@ -3675,6 +3682,7 @@ GameObject:
   - 65: {fileID: 6500018}
   - 114: {fileID: 11400432}
   - 114: {fileID: 11400430}
+  - 114: {fileID: 11436396}
   m_Layer: 0
   m_Name: 2. Tab One Week
   m_TagString: Untagged
@@ -6770,7 +6778,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 32, y: 32, z: 0}
+  m_Size: {x: 52, y: 52, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &6500002
 BoxCollider:
@@ -9616,7 +9624,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3024
+  startingRenderQueue: 3014
   mAlpha: 1
   mClipping: 3
   mClipRange: {x: 3.05175781e-05, y: 0, z: 820.000061, w: 390}
@@ -9920,8 +9928,8 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 32
-  mHeight: 32
+  mWidth: 52
+  mHeight: 52
   mDepth: 0
   autoResizeBoxCollider: 1
   hideIfOffScreen: 0
@@ -9938,7 +9946,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 11400000, guid: 333720a845f28470ebc84d785ff29cc5, type: 2}
-  mSpriteName: btn_clear
+  mSpriteName: btn_close_3
   mFillCenter: 1
 --- !u!114 &11400122
 MonoBehaviour:
@@ -9988,13 +9996,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 156
+  mWidth: 152
   mHeight: 28
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5.57142878
+  aspectRatio: 5.42857122
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -10198,13 +10206,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 114
+  mWidth: 110
   mHeight: 28
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.07142878
+  aspectRatio: 3.92857146
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -10408,13 +10416,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 108
+  mWidth: 106
   mHeight: 28
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.85714293
+  aspectRatio: 3.78571439
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -10775,7 +10783,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3016
+  startingRenderQueue: 3006
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}
@@ -11122,13 +11130,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 3
-  mWidth: 164
+  mWidth: 172
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 6.83333349
+  aspectRatio: 7.16666651
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -11438,13 +11446,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 4
-  mWidth: 52
+  mWidth: 54
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.16666675
+  aspectRatio: 2.25
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -11500,13 +11508,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 3
-  mWidth: 120
+  mWidth: 126
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5
+  aspectRatio: 5.25
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -11562,13 +11570,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 5
-  mWidth: 120
+  mWidth: 124
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5
+  aspectRatio: 5.16666651
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -11624,13 +11632,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 4
-  mWidth: 52
+  mWidth: 54
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.16666675
+  aspectRatio: 2.25
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -11807,13 +11815,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 5
-  mWidth: 120
+  mWidth: 124
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5
+  aspectRatio: 5.16666651
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -12143,13 +12151,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 3
-  mWidth: 98
+  mWidth: 104
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.08333349
+  aspectRatio: 4.33333349
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -12304,13 +12312,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 3
-  mWidth: 88
+  mWidth: 94
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.66666675
+  aspectRatio: 3.91666675
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -13397,13 +13405,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 82
+  mWidth: 78
   mHeight: 28
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.92857146
+  aspectRatio: 2.78571439
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -13971,13 +13979,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 90
+  mWidth: 88
   mHeight: 28
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.21428561
+  aspectRatio: 3.14285707
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -14033,13 +14041,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 4
-  mWidth: 52
+  mWidth: 54
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.16666675
+  aspectRatio: 2.25
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -14326,13 +14334,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 4
-  mWidth: 52
+  mWidth: 54
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 2.16666675
+  aspectRatio: 2.25
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -14816,13 +14824,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 3
-  mWidth: 140
+  mWidth: 148
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 5.83333349
+  aspectRatio: 6.16666651
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -15214,13 +15222,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 108
+  mWidth: 106
   mHeight: 28
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.85714293
+  aspectRatio: 3.78571439
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -16214,13 +16222,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 90
+  mWidth: 88
   mHeight: 28
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.21428561
+  aspectRatio: 3.14285707
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -16418,13 +16426,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 92
+  mWidth: 88
   mHeight: 28
   mDepth: 0
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 3.28571439
+  aspectRatio: 3.14285707
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -16720,13 +16728,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 0, g: .290196091, b: .392156869, a: 1}
   mPivot: 3
-  mWidth: 112
+  mWidth: 118
   mHeight: 24
   mDepth: 6
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 4.66666651
+  aspectRatio: 4.91666651
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: a4f565998a0fb9543b005b6665f50dc0, type: 3}
   mFont: {fileID: 0}
@@ -16752,6 +16760,94 @@ MonoBehaviour:
   mMaxLineHeight: 0
   mLineWidth: 0
   mMultiline: 1
+--- !u!114 &11436384
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e4f239c61715244a817da054c7e9bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11436386
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e4f239c61715244a817da054c7e9bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11436388
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e4f239c61715244a817da054c7e9bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11436390
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e4f239c61715244a817da054c7e9bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11436392
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e4f239c61715244a817da054c7e9bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11436394
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e4f239c61715244a817da054c7e9bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11436396
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e4f239c61715244a817da054c7e9bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11436398
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e4f239c61715244a817da054c7e9bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
