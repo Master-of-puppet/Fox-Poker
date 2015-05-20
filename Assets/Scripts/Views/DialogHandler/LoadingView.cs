@@ -12,58 +12,85 @@ using Puppet.Service;
 using Puppet;
 using UnityEngine;
 
-[PrefabAttribute(Name = "Prefabs/Dialog/DialogLoading", Depth = 99, IsAttachedToCamera = true, IsUIPanel = true)]
+[PrefabAttribute(Name = "Prefabs/Dialog/DialogLoading", Depth = 100, IsUIPanel = true)]
 public class LoadingView : SingletonPrefab<LoadingView>
 {
 	#region UnityEditor
 	public UISprite transparentLeft, transparentRight;
 	public UI2DSprite loadingIcon;
-	private bool isClose = false;
-	int width ;
-	int height;
 	#endregion
-	void Start(){
-//		CalculatorTwoBackground ();
-	}
+	private bool isWillClose = false;
 
-	public void CalculatorTwoBackground(){
-		UIRoot mRoot = NGUITools.FindInParents<UIRoot>(gameObject);
-		float ratio = (float)mRoot.activeHeight / Screen.height;
-		width = Mathf.CeilToInt(Screen.width * ratio);
-		height = Mathf.CeilToInt(Screen.height * ratio);
-		transparentLeft.width = transparentRight.width = (int)width / 2;
-		transparentLeft.height = transparentRight.height = (int)height;
-		transparentLeft.transform.localPosition = new UnityEngine.Vector3(-width/1.3f,0f,0f);
-		transparentRight.transform.localPosition = new UnityEngine.Vector3(width/1.3f,0f,0f);
-		StartTranslate ();
-	}
-	public void Show(bool isClose){
-        this.isClose = isClose;
-        if(!isClose)
-        { 
-		    CalculatorTwoBackground ();
+    public UICamera camera;
+
+    void OnLevelWasLoaded(int level)
+    {
+        HandleInput();
+    }
+
+    void HandleInput()
+    {
+        if(camera == null)
+            camera = GameObject.FindObjectOfType<UICamera>();
+
+        if (camera != null)
+        {
+            camera.useTouch = !loadingIcon.gameObject.activeSelf;
+            camera.useMouse = !loadingIcon.gameObject.activeSelf;
+            camera.useKeyboard = !loadingIcon.gameObject.activeSelf;
+            camera.useController = !loadingIcon.gameObject.activeSelf;
         }
+    }
+
+	void CalculatorTwoBackground()
+    {
+        iTween.Stop(transparentLeft.gameObject);
+        iTween.Stop(transparentRight.gameObject);
+
+        loadingIcon.gameObject.SetActive(true);
+        transparentLeft.gameObject.SetActive(true);
+        transparentRight.gameObject.SetActive(true);
+        transparentLeft.transform.localPosition = new Vector3(-20f, 0f, 0f);
+        transparentRight.transform.localPosition = new Vector3(20f, 0f, 0f);
+		StartTranslate ();
+
+        HandleInput();
 	}
 
-	private void StartTranslate(){
-		iTween.MoveTo(transparentLeft.gameObject,iTween.Hash("islocal", true,"time",.8,"position",new Vector3(-width/4f,0f,0f),"easetype", iTween.EaseType.easeInOutExpo,"oncomplete","CompleteSlideInto","oncompletetarget",gameObject)); 
-		iTween.MoveTo(transparentRight.gameObject,iTween.Hash("islocal", true,"time",.8,"position",new Vector3(width/4f,0f,0f),"easetype", iTween.EaseType.easeInOutExpo,"oncomplete","CompleteSlideInto","oncompletetarget",gameObject));
-	}
-	private void CompleteSlideInto(){
-		loadingIcon.gameObject.SetActive (true);
-	}
-	public void Close(){
-		loadingIcon.gameObject.SetActive (false);
-		iTween.MoveTo(transparentLeft.transform.parent.gameObject,iTween.Hash("islocal", true,"time",.8,"position",new Vector3(0f,height,0f),"easetype", iTween.EaseType.easeInOutExpo,"oncomplete","OnClose","oncompletetarget",gameObject)); 
+	public void Show(bool isWillShow = true)
+    {
+        this.isWillClose = !isWillShow;
+
+        if (isWillShow)
+		    CalculatorTwoBackground ();
+        else
+            Close();
 	}
 
-	private void OnClose(){
-		GameObject.Destroy (gameObject);
+	private void StartTranslate()
+    {
+        iTween.MoveTo(transparentLeft.gameObject, iTween.Hash("islocal", true, "time", .8, "position", Vector3.zero, "easetype", iTween.EaseType.linear, "oncomplete", "CompleteSlideInto", "oncompletetarget", gameObject));
+        iTween.MoveTo(transparentRight.gameObject, iTween.Hash("islocal", true, "time", .8, "position", Vector3.zero, "easetype", iTween.EaseType.linear, "oncomplete", "CompleteSlideInto", "oncompletetarget", gameObject));
 	}
-	void Update(){
-		if (isClose)
-			Close ();
+	private void CompleteSlideInto()
+    {
+	}
+
+	void Close()
+    {
+        iTween.MoveTo(transparentLeft.transform.parent.gameObject, iTween.Hash("islocal", true, "time", .8, "position", new Vector3(-100f, 0f, 0f), "easetype", iTween.EaseType.linear, "oncomplete", "OnClose", "oncompletetarget", gameObject));
+        iTween.MoveTo(transparentRight.transform.parent.gameObject, iTween.Hash("islocal", true, "time", .8, "position", new Vector3(100f, 0f, 0f), "easetype", iTween.EaseType.linear, "oncomplete", "OnClose", "oncompletetarget", gameObject)); 
+	}
+
+	private void OnClose()
+    {
+        loadingIcon.gameObject.SetActive(false);
+        transparentLeft.gameObject.SetActive(false);
+        transparentRight.gameObject.SetActive(false);
+
+        HandleInput();
 	}
 }
+
 
 

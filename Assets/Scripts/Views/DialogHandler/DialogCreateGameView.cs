@@ -69,7 +69,7 @@ public class DialogCreateGameView : BaseDialog<DialogCreateGame,DialogCreateGame
 
 	void OnClickBtnCreateGame (GameObject go)
 	{
-        LoadingView.Instance.Show(false);
+        LoadingView.Instance.Show();
 		APILobby.CreateLobby(currentBetting, data.numberPlayer, OnCreateLobbyCallBack);
 	}
 
@@ -94,7 +94,7 @@ public class DialogCreateGameView : BaseDialog<DialogCreateGame,DialogCreateGame
 	{
 		if (!status)
 			DialogService.Instance.ShowDialog (new DialogMessage ("Lỗi",message,null));
-        LoadingView.Instance.Show(true);
+        LoadingView.Instance.Show(false);
 		GameObject.Destroy (gameObject);
 
 	}

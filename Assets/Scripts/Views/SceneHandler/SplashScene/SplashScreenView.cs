@@ -20,12 +20,12 @@ public class SplashScreenView : MonoBehaviour
 
     IEnumerator Start()
     {
-        for (int i = 255; i >= 0;i-- )
+        for (int i = 254; i >= 0;i-=2 )
         {
             backgroundImage.color = new Color(backgroundImage.color.r, backgroundImage.color.g, backgroundImage.color.b, i/255f);
             yield return new WaitForFixedUpdate();
 
-            if(i == 200)
+            if(i == 100)
                 presenter.OnUIReady();
         }
     }
