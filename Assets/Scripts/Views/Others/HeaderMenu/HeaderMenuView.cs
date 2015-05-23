@@ -111,7 +111,8 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		lobbyChangeTypeCallBack = callback;
 	}
 
-    public void SetSearchSubmitCallBack(Action<string,bool[]> callback) {
+    public void SetSearchSubmitCallBack(Action<string, Dictionary<int, bool>> callback)
+    {
         onSearchSubmitCallBack = callback;
     }
 	void OnLobbyShowTypeHandler ()
@@ -238,7 +239,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		presenter.ShowDialogProfile ();
 	}
 
-    public Action<string, bool[]> onSearchSubmitCallBack { get; set; }
+    public Action<string, Dictionary<int, bool>> onSearchSubmitCallBack { get; set; }
 
 }
 

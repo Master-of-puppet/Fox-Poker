@@ -41,7 +41,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         });
     }
 
-    private void OnSearchLobbyHandler(string arg1, bool[] arg2)
+    private void OnSearchLobbyHandler(string arg1, Dictionary<int, bool> arg2)
     {
         presenter.SearchLobby(arg1, arg2);
     }
@@ -245,12 +245,14 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     private void _UpdateLobbyType1(DataLobby lobby)
     {
         LobbyRowType1 lobbyRow = types1.Find(lb => lb.data.roomId == lobby.roomId);
-        lobbyRow.setData(lobby);
+        if(lobbyRow !=null)
+            lobbyRow.setData(lobby);
     }
     private void _UpdateLobbyType2(DataLobby lobby)
     {
         LobbyRowType2 lobbyRow = types2.Find(lb => lb.data.roomId == lobby.roomId);
-        lobbyRow.setData(lobby);
+        if(lobbyRow!=null)
+            lobbyRow.setData(lobby);
     }
     public void AddLobby(DataLobby lobby)
     {

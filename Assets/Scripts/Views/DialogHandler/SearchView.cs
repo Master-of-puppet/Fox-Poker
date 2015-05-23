@@ -2,16 +2,18 @@
 using System.Collections;
 using Puppet;
 using System;
+using System.Collections.Generic;
 [PrefabAttribute(Name = "Prefabs/Dialog/SearchView/SearchView", Depth = 9,IsAttachedToCamera=true,IsUIPanel=true)]
 public class SearchView : SingletonPrefab<SearchView>
 {
-
+    public static int TYPE_5_PEOPLE = 0;
+    public static int TYPE_9_PEOPLE = 1;
     #region UnityEditor
     public UIInput txtInput;
     public GameObject btnSearch, btnExits;
-    public UIToggle cbTwoPeople, cbFivePeople, cbNinePeople;
+    public UIToggle cbFivePeople, cbNinePeople;
     #endregion
-    Action<string, bool[] > onSearchSubmit;
+    Action<string, Dictionary<int,bool>> onSearchSubmit;
     void Start() {
         btnExits.GetComponent<UISprite>().SetAnchor(NGUITools.GetRoot(gameObject).transform);
         btnExits.GetComponent<UISprite>().topAnchor.absolute = 0;
@@ -19,7 +21,8 @@ public class SearchView : SingletonPrefab<SearchView>
         btnExits.GetComponent<UISprite>().rightAnchor.absolute = 0;
         btnExits.GetComponent<UISprite>().bottomAnchor.absolute = 0;
     }
-    public void SetActionSubmit(  Action<string, bool[] > onSearchSubmit) {
+    public void SetActionSubmit(Action<string, Dictionary<int,bool>> onSearchSubmit)
+    {
         this.onSearchSubmit = onSearchSubmit;
     }
     void OnEnable()
@@ -40,12 +43,12 @@ public class SearchView : SingletonPrefab<SearchView>
     private void OnSearchClick(GameObject go)
     {
         bool[] arrayCheckbox = new bool[3];
-        arrayCheckbox[0] = cbTwoPeople.value;
-        arrayCheckbox[2] = cbFivePeople.value;
-        arrayCheckbox[1] = cbNinePeople.value;
         string text = txtInput.value;
+        Dictionary<int, bool> option = new Dictionary<int, bool>();
+        option.Add(TYPE_5_PEOPLE, cbFivePeople.value);
+        option.Add(TYPE_9_PEOPLE, cbNinePeople.value);
         if (onSearchSubmit != null)
-            onSearchSubmit(text, arrayCheckbox);
+            onSearchSubmit(text, option);
         GameObject.Destroy(gameObject);
     }
     void Update()

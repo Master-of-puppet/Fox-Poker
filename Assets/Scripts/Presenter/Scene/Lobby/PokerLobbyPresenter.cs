@@ -49,7 +49,8 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     private void onDeleteCallback(DataLobby obj)
     {
-        if (Lobbies != null) { 
+        if (Lobbies != null)
+        {
             DataLobby lob = Lobbies.Find(i => i.roomId == obj.roomId);
             if (lob != null)
             {
@@ -68,7 +69,23 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     private void onCreateCallback(DataLobby obj)
     {
-        if (Lobbies != null && Lobbies.Find(item=>item.roomId == obj.roomId) == null)
+        bool canAdded = false;
+        if (!isFiltered)
+        {
+            if (Lobbies != null && Lobbies.Find(item => item.roomId == obj.roomId) == null)
+            {
+                canAdded = true;
+            }
+        }
+        else
+        {
+            List<DataLobby> listLobbyFilter = getListLobbyFilter();
+            if (listLobbyFilter.Contains(obj))
+            {
+                canAdded = true;
+            }
+        }
+        if (canAdded)
         {
             view.AddLobby(obj);
             Lobbies.Add(obj);
@@ -88,7 +105,6 @@ public class PokerLobbyPresenter : ILobbyPresenter
     IEnumerator DrawChannelsAndLoadDefaultsLobbyInChannel(List<DataChannel> data)
     {
         view.DrawChannels(data);
-
         yield return new WaitForEndOfFrame();
         LoadLobbiesByChannel(data[0]);
     }
@@ -102,6 +118,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
     {
         if (lobbies != null)
             lobbies = null;
+        isFiltered = false;
         selectedChannel = channel;
         APILobby.SetSelectChannel(channel, OnGetAllLobbyInChannel);
     }
@@ -157,18 +174,47 @@ public class PokerLobbyPresenter : ILobbyPresenter
     public ILobbyView view { get; set; }
 
 
-    public void SearchLobby(string id, bool[] cbArr)
+    public void SearchLobby(string id, Dictionary<int, bool> cbArr)
     {
-        List<DataLobby> lobbyFilters = new List<DataLobby>();
-        if (!string.IsNullOrEmpty(id))
-        {
-            lobbyFilters.AddRange(lobbies.FindAll(s => s.roomId == Int16.Parse(id)));
-            view.DrawLobbies(lobbyFilters);
-        }
-        else
-        {
-            view.DrawLobbies(lobbies);
-        }
+        searchId = id;
+        searchDictionary = cbArr;
+        FilterLobbies();
     }
+
+    private void FilterLobbies()
+    {
+        isFiltered = true;
+        lobbies = getListLobbyFilter();
+        Logger.Log("==========> lobbies" + lobbies.Count);
+        view.DrawLobbies(lobbies);
+    }
+    private List<DataLobby> getListLobbyFilter()
+    {
+        List<DataLobby> lobbiesData;
+        int? totalPlayer = null;
+        int? index = null;
+        if (searchDictionary != null)
+        {
+            if (!searchDictionary[SearchView.TYPE_5_PEOPLE] && searchDictionary[SearchView.TYPE_9_PEOPLE])
+            {
+                totalPlayer = 9;
+            }
+            else if (searchDictionary[SearchView.TYPE_5_PEOPLE] && !searchDictionary[SearchView.TYPE_9_PEOPLE])
+            {
+                totalPlayer = 5;
+            }
+        }
+        if (string.IsNullOrEmpty(searchId))
+        {
+            index = Convert.ToInt16(searchId);
+        }
+        lobbiesData = Puppet.API.Client.APILobby.FillterCurrentChannel(null, index, null, totalPlayer, null, null);
+        return lobbiesData;
+    }
+    public Dictionary<int, bool> searchDictionary;
+
+    public string searchId;
+
+    public bool isFiltered { get; set; }
 }
 
