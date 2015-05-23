@@ -184,15 +184,14 @@ public class PokerLobbyPresenter : ILobbyPresenter
     private void FilterLobbies()
     {
         isFiltered = true;
-        lobbies = getListLobbyFilter();
-        Logger.Log("==========> lobbies" + lobbies.Count);
+      
         view.DrawLobbies(lobbies);
     }
     private List<DataLobby> getListLobbyFilter()
     {
         List<DataLobby> lobbiesData;
         int? totalPlayer = null;
-        int? index = null;
+        int? roomId = null;
         if (searchDictionary != null)
         {
             if (!searchDictionary[SearchView.TYPE_5_PEOPLE] && searchDictionary[SearchView.TYPE_9_PEOPLE])
@@ -204,11 +203,11 @@ public class PokerLobbyPresenter : ILobbyPresenter
                 totalPlayer = 5;
             }
         }
-        if (string.IsNullOrEmpty(searchId))
+        if (!string.IsNullOrEmpty(searchId))
         {
-            index = Convert.ToInt16(searchId);
+            roomId = Convert.ToInt16(searchId);
         }
-        lobbiesData = Puppet.API.Client.APILobby.FillterCurrentChannel(null, index, null, totalPlayer, null, null);
+        lobbiesData = Puppet.API.Client.APILobby.FillterCurrentChannel(null, null, roomId, totalPlayer, null, null);
         return lobbiesData;
     }
     public Dictionary<int, bool> searchDictionary;
