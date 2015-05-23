@@ -62,9 +62,15 @@ public class LoadingView : SingletonPrefab<LoadingView>
         this.isWillClose = !isWillShow;
 
         if (isWillShow)
-		    CalculatorTwoBackground ();
+        {
+            Invoke("CheckTimeOut", 15f);
+            CalculatorTwoBackground();
+        }
         else
+        {
+            CancelInvoke("CheckTimeOut");
             Close();
+        }
 	}
 
 	private void StartTranslate()
@@ -90,6 +96,12 @@ public class LoadingView : SingletonPrefab<LoadingView>
 
         HandleInput();
 	}
+
+    void CheckTimeOut()
+    {
+        Puppet.API.Client.APIGeneric.RequestTimeOut();
+        Show(false);
+    }
 }
 
 
