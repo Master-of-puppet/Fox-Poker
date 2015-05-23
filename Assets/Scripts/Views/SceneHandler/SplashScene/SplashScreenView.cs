@@ -44,5 +44,14 @@ public class SplashScreenView : MonoBehaviour
     {
         this.progressBar.value = progress;
         this.loadingText.text = loadingText;
+
+        if(progress == 1)
+        {
+            string version;
+            PuGameOption option = Puppet.API.Client.APIGeneric.GetOptionInfo(out version);
+            SoundManager.MuteMusic(!option.isEnableSoundBG);
+            SoundManager.MuteSFX(!option.isEnableSoundEffect);
+            Screen.sleepTimeout = option.isAutoLockScreen ? SleepTimeout.NeverSleep : SleepTimeout.SystemSetting;
+        }
     }
 }

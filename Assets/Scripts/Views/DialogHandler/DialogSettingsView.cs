@@ -69,6 +69,8 @@ namespace Puppet.Service{
             toggleSoundBackground.ForceUpdate();
             option.isEnableSoundBG = toggleSoundBackground.value == 1 ? true : false;
             Puppet.API.Client.APIGeneric.ChangeOptionInfo(option);
+
+            SoundManager.MuteMusic(!option.isEnableSoundBG);
 		}
 
 		void onToggleSoundEffect (GameObject go)
@@ -80,6 +82,8 @@ namespace Puppet.Service{
             toggleSoundEffect.ForceUpdate();
             option.isEnableSoundEffect = toggleSoundEffect.value == 1 ? true : false;
             Puppet.API.Client.APIGeneric.ChangeOptionInfo(option);
+
+            SoundManager.MuteSFX(!option.isEnableSoundEffect);
 		}
 
 		void onToggleLockScreen (GameObject go)
@@ -92,6 +96,8 @@ namespace Puppet.Service{
             toggleLockScreen.ForceUpdate();
             option.isAutoLockScreen = toggleLockScreen.value == 1 ? true : false;
             Puppet.API.Client.APIGeneric.ChangeOptionInfo(option);
+
+            Screen.sleepTimeout = option.isAutoLockScreen ? SleepTimeout.NeverSleep : SleepTimeout.SystemSetting;
 		}
 
         public PuGameOption option { get; set; }
