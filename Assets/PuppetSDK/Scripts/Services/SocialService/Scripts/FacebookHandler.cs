@@ -32,7 +32,8 @@ namespace Puppet.Service
 
 	    public override void SocialLogin()
 	    {
-	        FB.Login("email,publish_actions", (FBResult response) => {
+            FB.Login("email, publish_actions", (FBResult response) =>
+            {
 	            OnLoginCompleted(IsLoggedIn); 
 	        });
 	    }
