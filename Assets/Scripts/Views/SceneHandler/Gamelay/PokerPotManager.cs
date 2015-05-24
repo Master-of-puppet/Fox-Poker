@@ -85,7 +85,8 @@ public class PokerPotManager : MonoBehaviour
 
                 while (listPotItems.Count > 0)
                 {
-                    GameObject.Destroy(listPotItems[0].gameObject);
+                    if (listPotItems[0] != null && listPotItems[0].gameObject != null)
+                        GameObject.Destroy(listPotItems[0].gameObject);
                     listPotItems.RemoveAt(0);
                     yield return new WaitForEndOfFrame();
                 }
@@ -105,14 +106,14 @@ public class PokerPotManager : MonoBehaviour
     IEnumerator _SummaryPot(ResponseResultSummary data, float timeEffect)
     {
         PokerPotItem thisPot = currentPots.Find(p => data.potId == p.Pot.id);
-        if(thisPot != null)
+        if (thisPot != null && thisPot.gameObject != null)
         {
             List<PokerPotItem> listPotItems = new List<PokerPotItem>();
             List<ResponseMoneyExchange> winnerPlayers = new List<ResponseMoneyExchange>(System.Array.FindAll<ResponseMoneyExchange>(data.players, p => p.winner));
             foreach(ResponseMoneyExchange exchange in winnerPlayers)
             {
                 PokerPlayerUI uiPlayer = playmat.GetPlayerUI(exchange.userName);
-                if(exchange.moneyExchange > 0 && uiPlayer != null)
+                if (exchange.moneyExchange > 0 && uiPlayer != null)
                 {
                     PokerPotItem pot = NGUITools.AddChild(thisPot.gameObject, thisPot.gameObject).GetComponent<PokerPotItem>();
                     pot.gameObject.transform.parent = uiPlayer.transform.parent;
