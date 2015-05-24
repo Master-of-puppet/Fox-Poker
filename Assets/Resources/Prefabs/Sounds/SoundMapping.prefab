@@ -41,7 +41,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DataMapping:
   - type: 0
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 7673b6e1305eb074582f0cdc3b902d55, type: 3}
   - type: 1
     clip: {fileID: 8300000, guid: c37a4e73b8e1b544395ea3b7c08532de, type: 3}
   - type: 2

@@ -53,7 +53,10 @@ public class PuSound : SingletonPrefab<PuSound>
     /// <param name="loopTime">more than zero/-1 is forever/0 is no playing</param>
     public void Play(SoundType type, int loopTime = 1)
     {
-        Play(null, type, loopTime);
+        if (type == SoundType.Background)
+            PlayBackground();
+        else
+            Play(null, type, loopTime);
     }
 
     public void Play(AudioSource source, SoundType type, int loopTime)
@@ -61,6 +64,13 @@ public class PuSound : SingletonPrefab<PuSound>
         SoundClip sound = DataMapping.Find(s => s.type == type && s.clip != null);
         if (sound != null)
             SoundManager.StartSound(source, sound.clip, loopTime);
+    }
+
+    public void PlayBackground()
+    {
+        SoundClip sound = DataMapping.Find(s => s.type == SoundType.Background && s.clip != null);
+        if (sound != null)
+            SoundManager.StartMusic(null, sound.clip, -1);
     }
 
     public void Stop(AudioSource source)

@@ -252,7 +252,7 @@ GameObject:
   - 114: {fileID: 11400038}
   - 114: {fileID: 11400034}
   m_Layer: 0
-  m_Name: Toggle
+  m_Name: Toggle - Auto Lock Screen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -461,7 +461,7 @@ GameObject:
   - 114: {fileID: 11400050}
   - 114: {fileID: 11400056}
   m_Layer: 0
-  m_Name: Toggle
+  m_Name: Toggle - Sound Bacground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -559,7 +559,7 @@ GameObject:
   - 114: {fileID: 11400078}
   - 114: {fileID: 11400074}
   m_Layer: 0
-  m_Name: Toggle
+  m_Name: Toggle - Sound Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -768,7 +768,7 @@ GameObject:
   - 114: {fileID: 11400090}
   - 114: {fileID: 11400096}
   m_Layer: 0
-  m_Name: Toggle
+  m_Name: Toggle - Auto Sitdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2048,7 +2048,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100180}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20, y: 7.62939453e-06, z: 0}
+  m_LocalPosition: {x: 20, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400106}
@@ -2526,13 +2526,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: .00392156886, g: .290196091, b: .392156869, a: 1}
   mPivot: 3
-  mWidth: 266
+  mWidth: 264
   mHeight: 24
   mDepth: 2
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 11.083333
+  aspectRatio: 11
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 12800000, guid: 46f8d8f616683b141bab124ad0159680, type: 3}
   mFont: {fileID: 0}
@@ -4593,7 +4593,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3019
+  startingRenderQueue: 3011
   mAlpha: 1
   mClipping: 3
   mClipRange: {x: 0, y: -120.5, z: 850, w: 501}
@@ -4622,8 +4622,8 @@ MonoBehaviour:
   lbVersion: {fileID: 11400004}
   btnLogout: {fileID: 100174}
   toggleAutoSit: {fileID: 11400096}
-  toggleSoundBackground: {fileID: 11400074}
-  toggleSoundEffect: {fileID: 11400056}
+  toggleSoundBackground: {fileID: 11400056}
+  toggleSoundEffect: {fileID: 11400074}
   toggleLockScreen: {fileID: 11400034}
 --- !u!114 &11400128
 MonoBehaviour:
@@ -5409,7 +5409,7 @@ MonoBehaviour:
   anchorOffset: 0
   softBorderPadding: 1
   renderQueue: 0
-  startingRenderQueue: 3014
+  startingRenderQueue: 3006
   mAlpha: 1
   mClipping: 0
   mClipRange: {x: 0, y: 0, z: 300, w: 200}

@@ -52,6 +52,8 @@ public class SplashScreenView : MonoBehaviour
             SoundManager.MuteMusic(!option.isEnableSoundBG);
             SoundManager.MuteSFX(!option.isEnableSoundEffect);
             Screen.sleepTimeout = option.isAutoLockScreen ? SleepTimeout.NeverSleep : SleepTimeout.SystemSetting;
+
+            PuSound.Instance.Play(SoundType.Background);
         }
     }
 }

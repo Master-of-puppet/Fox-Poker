@@ -166,11 +166,18 @@ public class SoundManager : Singleton<SoundManager>
 
         RegisterSource(newSource, isMusic);
 
-        for(int i=0;i<loopTime;i++)
+        if (loopTime > 0)
+        {
+            for (int i = 0; i < loopTime; i++)
+            {
+                PlaySound(newSource, clip, isLoop, isMusic);
+                while (newSource != null && newSource.isPlaying && !isLoop)
+                    yield return null;
+            }
+        }
+        else
         {
             PlaySound(newSource, clip, isLoop, isMusic);
-            while (newSource != null && newSource.isPlaying && !isLoop)
-                yield return null;
         }
 
         if (newSource != null && !isLoop)
