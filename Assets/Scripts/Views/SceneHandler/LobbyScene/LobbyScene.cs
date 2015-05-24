@@ -286,4 +286,13 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     {
         presenter.JoinToGame(lobby);
     }
+    public string roomId()
+    {
+        return presenter.searchId;
+    }
+    public Dictionary<int, bool> options()
+    {
+        return presenter.searchDictionary;
+    }
+
 }

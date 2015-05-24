@@ -157,6 +157,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void ViewEnd()
     {
+
     }
 
 
@@ -184,12 +185,12 @@ public class PokerLobbyPresenter : ILobbyPresenter
     private void FilterLobbies()
     {
         isFiltered = true;
-      
+        lobbies = getListLobbyFilter();
         view.DrawLobbies(lobbies);
     }
     private List<DataLobby> getListLobbyFilter()
     {
-        List<DataLobby> lobbiesData;
+        List<DataLobby> lobbiesData = null;
         int? totalPlayer = null;
         int? roomId = null;
         if (searchDictionary != null)
