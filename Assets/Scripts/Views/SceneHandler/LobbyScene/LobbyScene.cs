@@ -45,16 +45,6 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     {
         presenter.SearchLobby(arg1, arg2);
     }
-    void FixedUpdate()
-    {
-        if (types1.Count == 0)
-        {
-            btnCreateGame.SetActive(true);
-            return;
-        }
-        btnCreateGame.SetActive((tableType1.GetComponent<UICenterOnChild>().centeredObject != null && tableType1.transform.GetChild(0).gameObject.GetComponent<LobbyRowType1>().data.roomId == tableType1.GetComponent<UICenterOnChild>().centeredObject.GetComponent<LobbyRowType1>().data.roomId));
-
-    }
     void OnEnable()
     {
         UIEventListener.Get(btnPlayNow).onClick += OnClickPlayNow;
@@ -62,6 +52,21 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         if (btnHelp != null)
             UIEventListener.Get(btnHelp).onClick += OnClickHelp;
         tableType1.GetComponent<UICenterOnChild>().onFinished += OnDragFinish;
+        tableType1.transform.parent.GetComponent<UIScrollView>().onDragStarted += onScrollViewEvent;
+        tableType1.transform.parent.GetComponent<UIScrollView>().onMomentumMove += onScrollViewEvent;
+        tableType1.transform.parent.GetComponent<UIScrollView>().onStoppedMoving += onScrollViewEvent;
+        tableType1.transform.parent.GetComponent<UIScrollView>().onDragFinished += onScrollViewEvent;
+    }
+
+    private void onScrollViewEvent()
+    {
+        
+        if (tableType1.GetComponent<UICenterOnChild>().centeredObject != null)
+        {
+            Transform centerTransform = tableType1.GetComponent<UICenterOnChild>().centeredObject.transform;
+            int index = tableType1.GetChildList().FindIndex(a => a.GetComponent<LobbyRowType1>().data.roomId == centerTransform.GetComponent<LobbyRowType1>().data.roomId);
+            btnCreateGame.gameObject.SetActive(index == 0);
+        }
     }
 
     void OnClickHelp(GameObject go)
@@ -127,6 +132,9 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         {
             VectorItemCenter = tableType1.GetComponent<UICenterOnChild>().centeredObject.transform.position;
         }
+       
+        
+           
     }
     private IEnumerator _AddRowType1(DataLobby lobby)
     {
@@ -149,10 +157,13 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     {
         ClearAllRow();
         yield return new WaitForEndOfFrame();
-        foreach (DataLobby item in lobbies)
+        for (int i = 0; i < lobbies.Count; i++)
         {
-            types1.Add(LobbyRowType1.Create(item, tableType1, JoinGame));
+            LobbyRowType1 lobby = LobbyRowType1.Create(lobbies[i], tableType1, JoinGame);
+            types1.Add(lobby);
+            
         }
+      
         tableType1.repositionNow = true;
         yield return new WaitForSeconds(0.05f);
         tableType1.GetComponent<UICenterOnChild>().Recenter();

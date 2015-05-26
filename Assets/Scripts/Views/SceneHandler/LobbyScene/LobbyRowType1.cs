@@ -74,8 +74,10 @@ public class LobbyRowType1 : MonoBehaviour
 			gameObject.transform.localScale = new Vector3 (value, value, 1f);
 			if (value > 0.9f) {
 				gameObject.GetComponent<UISprite> ().color = new Color (1f, 1f, 1f);
+                gameObject.collider.enabled = true;
 			} else {
 				gameObject.GetComponent<UISprite> ().color = new Color (69f / 255f, 69f / 255f, 69f / 255f);
+                gameObject.collider.enabled = false;
 			}
     }
 
