@@ -12,6 +12,6 @@ public interface ILobbyPresenter : IScenePresenter
     void LoadLobbiesByChannel(DataChannel channel);
     void JoinToGame(DataLobby lobby);
     void CreateLobby();
-    void SearchLobby(string id, Dictionary<int, bool> cbArr);
+    void SearchLobby(string id, Dictionary<int, bool> cbArr, double[] betValueSearch);
 }
 

@@ -12,8 +12,9 @@ public class SearchView : SingletonPrefab<SearchView>
     public UIInput txtInput;
     public GameObject btnSearch, btnExits;
     public UIToggle cbFivePeople, cbNinePeople;
+    public UITable tableBetValue;
     #endregion
-    Action<string, Dictionary<int, bool>> onSearchSubmit;
+    Action<string, Dictionary<int, bool>, double[]> onSearchSubmit;
 
     void Start()
     {
@@ -23,23 +24,46 @@ public class SearchView : SingletonPrefab<SearchView>
         btnExits.GetComponent<UISprite>().rightAnchor.absolute = 0;
         btnExits.GetComponent<UISprite>().bottomAnchor.absolute = 0;
         LobbyScene lobby = GameObject.Find("Lobby Scene").GetComponent<LobbyScene>();
-        txtInput.value = lobby.roomId();
-        if (lobby.options() != null)
+        valuesBetting = lobby.presenter.SelectedChannel.configuration.betting;
+        for (int i = 0; i < valuesBetting.Length; i++)
         {
-            foreach (int key in lobby.options().Keys)
+            double currentBetting = valuesBetting[i];
+            string value = currentBetting / 2 + "/" + currentBetting;
+            SearchViewCheckbox item = SearchViewCheckbox.Create(value, i);
+            item.name = "" + i;
+            item.transform.parent = tableBetValue.transform;
+            item.transform.localScale = Vector3.one;
+            item.transform.localPosition = Vector3.zero;
+            if (lobby.isFiltered())
+                item.GetComponent<UIToggle>().value = false;
+        }
+        tableBetValue.Reposition();
+        if (lobby.isFiltered())
+        {
+            txtInput.value = lobby.TxtSearch();
+            if (lobby.options() != null)
             {
-                if (key == TYPE_5_PEOPLE)
+                foreach (int key in lobby.options().Keys)
                 {
-                    cbFivePeople.value = lobby.options()[key];
-                } if (key == TYPE_9_PEOPLE)
-                {
-                    cbNinePeople.value = lobby.options()[key];
+                    if (key == TYPE_5_PEOPLE)
+                    {
+                        cbFivePeople.value = lobby.options()[key];
+                    } if (key == TYPE_9_PEOPLE)
+                    {
+                        cbNinePeople.value = lobby.options()[key];
+                    }
                 }
+            }
+
+            foreach (double value in lobby.presenter.betValueSearch)
+            {
+                int index = Array.FindIndex<double>(valuesBetting, a => a == value);
+                tableBetValue.GetChildList()[index].GetComponent<UIToggle>().value = true;    
             }
         }
 
     }
-    public void SetActionSubmit(Action<string, Dictionary<int, bool>> onSearchSubmit)
+    public void SetActionSubmit(Action<string, Dictionary<int, bool>, double[]> onSearchSubmit)
     {
         this.onSearchSubmit = onSearchSubmit;
     }
@@ -64,8 +88,19 @@ public class SearchView : SingletonPrefab<SearchView>
         option = new Dictionary<int, bool>();
         option.Add(TYPE_5_PEOPLE, cbFivePeople.value);
         option.Add(TYPE_9_PEOPLE, cbNinePeople.value);
+        List<double> bettingChoosen = new List<double>();
+        for (int i = 0; i < tableBetValue.transform.childCount; i++)
+        {
+            Transform gobj = tableBetValue.transform.GetChild(i);
+            if (gobj.GetComponent<UIToggle>().value)
+            {
+                int index = gobj.GetComponent<SearchViewCheckbox>().Index;
+                bettingChoosen.Add(valuesBetting[index]);
+            }
+        }
+
         if (onSearchSubmit != null)
-            onSearchSubmit(text, option);
+            onSearchSubmit(text, option,bettingChoosen.ToArray());
         GameObject.Destroy(gameObject);
     }
     void Update()
@@ -73,7 +108,9 @@ public class SearchView : SingletonPrefab<SearchView>
 
     }
 
-    public string text;
+    private string text;
 
-    public Dictionary<int, bool> option;
+    private Dictionary<int, bool> option;
+
+    public double[] valuesBetting;
 }

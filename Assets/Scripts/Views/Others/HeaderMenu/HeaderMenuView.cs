@@ -64,7 +64,6 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnSearch.SetActive (true);
 		btnBack.SetActive (true);
 		logoInLobby.SetActive (true);
-
 		btnCommon.SetActive (false);
 		btnRecharge.SetActive (false);
 		btnMessage.SetActive (false);
@@ -111,7 +110,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		lobbyChangeTypeCallBack = callback;
 	}
 
-    public void SetSearchSubmitCallBack(Action<string, Dictionary<int, bool>> callback)
+    public void SetSearchSubmitCallBack(Action<string, Dictionary<int, bool>,double[]> callback)
     {
         onSearchSubmitCallBack = callback;
     }
@@ -239,7 +238,7 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		presenter.ShowDialogProfile ();
 	}
 
-    public Action<string, Dictionary<int, bool>> onSearchSubmitCallBack { get; set; }
+    public Action<string, Dictionary<int, bool>,double[]> onSearchSubmitCallBack { get; set; }
 
 }
 

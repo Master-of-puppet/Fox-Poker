@@ -34,7 +34,6 @@ public class PokerLobbyPresenter : ILobbyPresenter
     public PokerLobbyPresenter(ILobbyView view)
     {
         HeaderMenuView.Instance.ShowInLobby();
-
         this.view = view;
         ViewStart();
     }
@@ -116,10 +115,11 @@ public class PokerLobbyPresenter : ILobbyPresenter
 
     public void LoadLobbiesByChannel(Puppet.Core.Model.DataChannel channel)
     {
+        selectedChannel = channel;
         if (lobbies != null)
             lobbies = null;
+        
         isFiltered = false;
-        selectedChannel = channel;
         APILobby.SetSelectChannel(channel, OnGetAllLobbyInChannel);
     }
 
@@ -175,12 +175,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
     public ILobbyView view { get; set; }
 
 
-    public void SearchLobby(string id, Dictionary<int, bool> cbArr)
-    {
-        searchId = id;
-        searchDictionary = cbArr;
-        FilterLobbies();
-    }
+ 
 
     private void FilterLobbies()
     {
@@ -214,7 +209,19 @@ public class PokerLobbyPresenter : ILobbyPresenter
     public Dictionary<int, bool> searchDictionary;
 
     public string searchId;
+    public double[] betValueSearch;
 
-    public bool isFiltered { get; set; }
+    public bool isFiltered;
+
+
+    public void SearchLobby(string id, Dictionary<int, bool> cbArr,double[] betValueSearch)
+    {
+        searchId = id;
+        searchDictionary = cbArr;
+        this.betValueSearch = betValueSearch;
+        FilterLobbies();
+    }
+
+    
 }
 

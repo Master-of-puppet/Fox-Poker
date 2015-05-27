@@ -41,9 +41,9 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         });
     }
 
-    private void OnSearchLobbyHandler(string arg1, Dictionary<int, bool> arg2)
+    private void OnSearchLobbyHandler(string arg1, Dictionary<int, bool> arg2,double[] arrayBetValue)
     {
-        presenter.SearchLobby(arg1, arg2);
+        presenter.SearchLobby(arg1, arg2, arrayBetValue);
     }
     void OnEnable()
     {
@@ -90,7 +90,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
                 DialogService.Instance.ShowDialog(new DialogMessage("Message", message, null));
         });
     }
-
+    
     private void OnCreateLobbyHandler(bool status, string message)
     {
         if (!status)
@@ -297,7 +297,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     {
         presenter.JoinToGame(lobby);
     }
-    public string roomId()
+    public string TxtSearch()
     {
         return presenter.searchId;
     }
@@ -306,4 +306,8 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         return presenter.searchDictionary;
     }
 
+
+    public bool isFiltered() {
+        return presenter.isFiltered;
+    }
 }
