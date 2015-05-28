@@ -203,7 +203,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
         {
             roomId = Convert.ToInt16(searchId);
         }
-        lobbiesData = Puppet.API.Client.APILobby.FillterCurrentChannel(null, null, roomId, totalPlayer, null, null);
+        lobbiesData = Puppet.API.Client.APILobby.FillterCurrentChannel(null, null, roomId, totalPlayer, null, null, null);
         return lobbiesData;
     }
     public Dictionary<int, bool> searchDictionary;
