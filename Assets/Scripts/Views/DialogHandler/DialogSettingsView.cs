@@ -5,7 +5,7 @@ namespace Puppet.Service{
 	[PrefabAttribute(Name = "Prefabs/Dialog/DialogSettings", Depth = 7, IsAttachedToCamera = true, IsUIPanel = true)]
 	public class DialogSettingsView : BaseDialog<DialogSetting,DialogSettingsView> {
 		#region Unity Editor
-		public UILabel lbUserName, lbVersion;
+		public UILabel lbUserName, lbVersion, lbSystemInfo;
 		public GameObject btnLogout;
         public UIProgressBar toggleAutoSit,toggleSoundBackground,toggleSoundEffect,toggleLockScreen;
 		#endregion
@@ -33,6 +33,7 @@ namespace Puppet.Service{
 		}
 		void InitData (DialogSetting data)
 		{
+            this.lbSystemInfo.text = API.Client.APIGeneric.GetAppConfig.GetValue("system_info");
             string currentVertion = string.Empty;
             option = Puppet.API.Client.APIGeneric.GetOptionInfo(out currentVertion);
 			this.lbUserName.text = data.userName;
