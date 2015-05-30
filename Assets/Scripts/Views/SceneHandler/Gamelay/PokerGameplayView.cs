@@ -310,7 +310,10 @@ public class PokerGameplayView : MonoBehaviour
         DialogService.Instance.ShowDialog(new DialogConfirm("XÁC NHẬN THOÁT", text, delegate(bool? confirm)
         {
             if (confirm == true)
+            {
+                Puppet.API.Client.APIPokerGame.QuitGame();
                 PuApp.Instance.BackScene();
+            }
         }));
     }
 
