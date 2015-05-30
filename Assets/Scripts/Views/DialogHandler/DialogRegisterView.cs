@@ -55,6 +55,7 @@ public class DialogRegisterView : BaseDialog<DialogRegister,DialogRegisterView>
 
     private void QuickRegisterCallBack(bool status, string message)
     {
+        LoadingView.Instance.Show(false);
         if (status)
         {
             PuMain.Setting.Threading.QueueOnMainThread(() =>

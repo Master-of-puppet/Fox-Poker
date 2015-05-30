@@ -261,7 +261,7 @@ public class PokerPlayerUI : MonoBehaviour
 
     void OnDestroy()
     {
-        if (currentBet != null && !PokerObserver.Game.IsMainPlayer(data.userName))
+        if (currentBet != null)// && !PokerObserver.Game.IsMainPlayer(data.userName))
         {
             currentBet.transform.parent = playmat.transform;
             playmat.MarkerPot(currentBet);
