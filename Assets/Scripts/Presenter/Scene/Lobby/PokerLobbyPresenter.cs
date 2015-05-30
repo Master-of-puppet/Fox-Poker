@@ -118,7 +118,6 @@ public class PokerLobbyPresenter : ILobbyPresenter
         selectedChannel = channel;
         if (lobbies != null)
             lobbies = null;
-        
         isFiltered = false;
         APILobby.SetSelectChannel(channel, OnGetAllLobbyInChannel);
     }
