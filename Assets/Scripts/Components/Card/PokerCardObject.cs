@@ -16,6 +16,7 @@ public class PokerCardObject : MonoBehaviour
         spriteSuit, 
         spriteIcon;
     public GameObject highlightObject;
+    public UISprite maskObject;
 	private int index=-1;
 
     public PokerCard card;
@@ -42,6 +43,7 @@ public class PokerCardObject : MonoBehaviour
         spriteRank.depth += i * 5;
         spriteSuit.depth += i * 5;
         spriteIcon.depth += i * 5;
+        maskObject.depth += i * 5;
     }
 
     public void UpdateUI()
@@ -90,6 +92,11 @@ public class PokerCardObject : MonoBehaviour
     public void SetHighlight(bool state)
     {
         NGUITools.SetActive(highlightObject, state);
+    }
+
+    public void SetMask(bool state)
+    {
+        NGUITools.SetActive(maskObject.gameObject, state);
     }
 
 	System.Collections.IEnumerator ChanceSprite(float time){

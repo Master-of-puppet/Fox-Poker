@@ -296,7 +296,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
                 if (isFaceUp)
                 {
-                    List<GameObject> listCardObject = new List<GameObject>();
+                    List<GameObject> listHightlight = new List<GameObject>();
+                    List<GameObject> listMask = new List<GameObject>();
                     List<int> list = new List<int>();
 
                     if (playerWinRank != null)
@@ -309,16 +310,20 @@ public class PokerGameplayPlaymat : MonoBehaviour
                         if (item.winner)
                         {
                             list.AddRange(item.cards);
-                            listCardObject.AddRange(cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId)));
+                            listHightlight.AddRange(cardsDeal.FindAll(o => list.Contains(o.GetComponent<PokerCardObject>().card.cardId)));
                         }
                     }
 
+                    listMask = cardsDeal.FindAll(o => listHightlight.Contains(o) == false);
+                    foreach (GameObject card in listMask)
+                        card.GetComponent<PokerCardObject>().SetMask(true);
+
                     for (int i = 0; i < 20; i++)
                     {
-                        listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
+                        listHightlight.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(i % 2 == 0));
                         yield return new WaitForSeconds(timeEffectPot / 20f);
                     }
-                    listCardObject.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
+                    listHightlight.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
                     playerWinRank.DestroyUI();
                     yield return new WaitForEndOfFrame();
                 }
