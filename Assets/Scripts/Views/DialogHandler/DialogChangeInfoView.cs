@@ -100,7 +100,9 @@ public class DialogChangeInfoView : BaseDialog<DialogChangeInfo,DialogChangeInfo
                 totalChange++;
 
                 if (string.IsNullOrEmpty(defaultAvatar))
-                    APIUser.ChangeUseInformation(((Texture2D)avatar.mainTexture).EncodeToPNG(), OnSubmitChangeInfoCallBack);
+                {
+                    HttpAPI.ChangeUseAvatar(this, ((Texture2D)avatar.mainTexture).EncodeToPNG(), OnSubmitChangeInfoCallBack);
+                }
                 else
                     APIGeneric.SaveDefaultAvatar(defaultAvatar, OnSubmitChangeInfoCallBack);
             }
