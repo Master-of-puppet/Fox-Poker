@@ -32,7 +32,11 @@ public class BrowseImageService : Singleton<BrowseImageService>
     public void GetImage(string imagePath)
     {
         Texture2D texture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGBA32, false);
+#if UNITY_WEBPLAYER
+        bool status = false;
+#else
         bool status = texture.LoadImage(File.ReadAllBytes(imagePath));
+#endif
         if (callback != null)
             callback(!string.IsNullOrEmpty(imagePath) && status, texture);
     }

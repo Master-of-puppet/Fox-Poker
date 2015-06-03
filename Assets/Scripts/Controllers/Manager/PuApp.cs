@@ -24,11 +24,21 @@ public class PuApp : Singleton<PuApp>
 
     public void StartApplication(Action<float, string> onLoadConfig) 
     {
+#if UNITY_WEBPLAYER
+        if (!Application.isEditor && Application.isWebPlayer)
+        { 
+            //if (!Security.PrefetchSocketPolicy(AppConfig.SocketUrl, AppConfig.SocketPort, 999))
+            if (!Security.PrefetchSocketPolicy("210.245.94.106", 9933, 999))
+                Debug.LogError("Security Exception. Policy file load failed!");
+            else
+                Debug.LogWarning("Security Good. Policy file load success!");
+        }
+#endif
+
         sleepTimeout = Screen.sleepTimeout;
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         setting = new PuSetting(onLoadConfig);
 
-        gameObject.AddComponent<LogViewer>();
         PingManager.Instance.Load();
 
 
