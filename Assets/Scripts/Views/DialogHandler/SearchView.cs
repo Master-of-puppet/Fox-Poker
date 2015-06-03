@@ -28,7 +28,7 @@ public class SearchView : SingletonPrefab<SearchView>
         for (int i = 0; i < valuesBetting.Length; i++)
         {
             double currentBetting = valuesBetting[i];
-            string value = currentBetting / 2 + "/" + currentBetting;
+            string value = Utility.Convert.ConvertShortcutMoney(currentBetting / 2) + "/" + Utility.Convert.ConvertShortcutMoney(currentBetting);
             SearchViewCheckbox item = SearchViewCheckbox.Create(value, i);
             item.name = "" + i;
             item.transform.parent = tableBetValue.transform;
