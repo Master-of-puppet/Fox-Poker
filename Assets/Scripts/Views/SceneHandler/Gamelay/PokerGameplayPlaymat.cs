@@ -325,6 +325,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                         yield return new WaitForSeconds(timeEffectPot / 20f);
                     }
                     listHightlight.ForEach(o => o.GetComponent<PokerCardObject>().SetHighlight(false));
+                    listMask.ForEach(o => o.GetComponent<PokerCardObject>().SetMask(false));
                     playerWinRank.DestroyUI();
                     yield return new WaitForEndOfFrame();
                 }
