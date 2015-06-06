@@ -54,7 +54,10 @@ public class PuSound : SingletonPrefab<PuSound>
     public void Play(SoundType type, int loopTime = 1)
     {
         if (type == SoundType.Background)
+        {
+            SoundManager.Instance.MusicVolume = 0.5f;
             PlayBackground();
+        }
         else
             Play(null, type, loopTime);
     }
