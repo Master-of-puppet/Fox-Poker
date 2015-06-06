@@ -43,7 +43,7 @@ public class PokerObserver
     public void StartGame()
     {
         isWaitingFinishGame = false;
-        Puppet.Poker.EventDispatcher.onGameEvent += EventDispatcher_onGameEvent;
+        Puppet.Poker.EventDispatcher.onGameEvent = EventDispatcher_onGameEvent;
         Game.IsClientListening = true;
     }
 
@@ -100,10 +100,7 @@ public class PokerObserver
         APIGeneric.BackScene((status, message) =>
         {
             if (status)
-            {
-                Puppet.Poker.EventDispatcher.onGameEvent -= EventDispatcher_onGameEvent;
                 _instance = null;
-            }
         });
     }
 

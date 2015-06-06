@@ -263,7 +263,8 @@ public class PokerPlayerUI : MonoBehaviour
     {
         if (PokerObserver.Game.IsMainPlayer(data.userName))
         {
-            GameObject.Destroy(currentBet.gameObject);
+            if (currentBet != null && currentBet.gameObject != null)
+                GameObject.Destroy(currentBet.gameObject);
             currentBet = null;
         }
 

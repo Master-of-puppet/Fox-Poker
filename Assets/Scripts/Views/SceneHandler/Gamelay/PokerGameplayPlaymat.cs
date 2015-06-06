@@ -190,7 +190,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
             if (PokerObserver.Game.IsMainPlayer(p.userName))
             {
-                if (hands.Length == handSize)
+                if (hands != null && hands.Length == handSize)
                     for (int i = 0; i < handSize; i++)
                         cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(hands[i]), i);
                 else
@@ -364,14 +364,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
             int[] hands = null;
             foreach (PokerPlayerController player in data.players)
             {
-                if (player.hand != null)
-                {
-                    string cardInHand = string.Empty;
-                    foreach (int c in player.hand)
-                        cardInHand += c + ",";
-                    Logger.LogError("Player {0} - Card {1}", player.userName, cardInHand);
-                }
-                
                 if (PokerObserver.Game.IsMainPlayer(player.userName))
                     hands = player.hand;
 
