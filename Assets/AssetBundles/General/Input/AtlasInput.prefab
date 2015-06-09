@@ -173,7 +173,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: btn_15
     x: 164
-    y: 82
+    y: 35
     width: 40
     height: 40
     borderLeft: 10
@@ -186,7 +186,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: btn_16
     x: 164
-    y: 209
+    y: 162
     width: 40
     height: 50
     borderLeft: 10
@@ -276,7 +276,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_8
-    x: 406
+    x: 407
     y: 316
     width: 46
     height: 46
@@ -302,7 +302,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_back_recharge
-    x: 453
+    x: 454
     y: 316
     width: 46
     height: 46
@@ -315,8 +315,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_clear
-    x: 293
-    y: 274
+    x: 164
+    y: 2
     width: 32
     height: 32
     borderLeft: 0
@@ -341,7 +341,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_close_3
-    x: 300
+    x: 247
     y: 364
     width: 52
     height: 52
@@ -354,7 +354,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: btn_share_facebook
-    x: 247
+    x: 300
     y: 364
     width: 52
     height: 52
@@ -368,7 +368,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: check_box
     x: 164
-    y: 166
+    y: 119
     width: 42
     height: 42
     borderLeft: 0
@@ -394,7 +394,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: dot_empty
     x: 74
-    y: 357
+    y: 374
     width: 16
     height: 16
     borderLeft: 0
@@ -407,7 +407,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: dot_full
     x: 74
-    y: 374
+    y: 357
     width: 16
     height: 16
     borderLeft: 0
@@ -419,7 +419,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: icon_league
-    x: 210
+    x: 260
     y: 313
     width: 49
     height: 49
@@ -444,8 +444,21 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
+  - name: icon_searched
+    x: 359
+    y: 315
+    width: 47
+    height: 47
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
   - name: icon_table
-    x: 260
+    x: 210
     y: 313
     width: 49
     height: 49
@@ -471,8 +484,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: input_2
-    x: 164
-    y: 41
+    x: 293
+    y: 266
     width: 40
     height: 40
     borderLeft: 10
@@ -484,8 +497,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: input_3
-    x: 359
-    y: 316
+    x: 164
+    y: 213
     width: 46
     height: 46
     borderLeft: 10
@@ -511,7 +524,7 @@ MonoBehaviour:
     paddingBottom: 0
   - name: input_5
     x: 164
-    y: 123
+    y: 76
     width: 42
     height: 42
     borderLeft: 10
@@ -523,7 +536,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: input_6
-    x: 211
+    x: 252
     y: 266
     width: 40
     height: 40
@@ -536,7 +549,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: input_7
-    x: 252
+    x: 211
     y: 266
     width: 40
     height: 40
@@ -627,8 +640,8 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: radio_button_background
-    x: 164
-    y: 4
+    x: 334
+    y: 270
     width: 36
     height: 36
     borderLeft: 0
@@ -640,7 +653,7 @@ MonoBehaviour:
     paddingTop: 0
     paddingBottom: 0
   - name: radio_button_bendmark
-    x: 326
+    x: 371
     y: 286
     width: 20
     height: 20

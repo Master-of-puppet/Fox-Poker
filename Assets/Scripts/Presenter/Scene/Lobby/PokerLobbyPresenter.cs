@@ -69,7 +69,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
     private void onCreateCallback(DataLobby obj)
     {
         bool canAdded = false;
-        if (!isFiltered)
+        if (!IsFiltered)
         {
             if (Lobbies != null && Lobbies.Find(item => item.roomId == obj.roomId) == null)
             {
@@ -118,7 +118,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
         selectedChannel = channel;
         if (lobbies != null)
             lobbies = null;
-        isFiltered = false;
+        IsFiltered = false;
         APILobby.SetSelectChannel(channel, OnGetAllLobbyInChannel);
     }
 
@@ -174,11 +174,11 @@ public class PokerLobbyPresenter : ILobbyPresenter
     public ILobbyView view { get; set; }
 
 
- 
+
 
     private void FilterLobbies()
     {
-        isFiltered = true;
+        IsFiltered = true;
         lobbies = getListLobbyFilter();
         view.DrawLobbies(lobbies);
     }
@@ -210,10 +210,20 @@ public class PokerLobbyPresenter : ILobbyPresenter
     public string searchId;
     public double[] betValueSearch;
 
-    public bool isFiltered;
+
+    private bool isFiltered;
+    public bool IsFiltered
+    {
+        get { return isFiltered; }
+        set
+        {
+            isFiltered = value;
+            HeaderMenuView.Instance.btnSearch.transform.GetChild(0).GetComponent<UISprite>().spriteName = isFiltered ? "icon_searched" : "icon_search";
+        }
+    }
 
 
-    public void SearchLobby(string id, Dictionary<int, bool> cbArr,double[] betValueSearch)
+    public void SearchLobby(string id, Dictionary<int, bool> cbArr, double[] betValueSearch)
     {
         searchId = id;
         searchDictionary = cbArr;
@@ -221,6 +231,5 @@ public class PokerLobbyPresenter : ILobbyPresenter
         FilterLobbies();
     }
 
-    
 }
 

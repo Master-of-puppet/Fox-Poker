@@ -10,8 +10,8 @@ import android.util.Log;
  */
 public class ImageAPI {
 	public static String objectName;
-	public static String methodName;
-	public static String fileName;
+	public static String methodName = "default_method";
+	public static String fileName = "default.png";
 
 	public static final String TAG = "SmartLog - ImageAPI";
 

@@ -308,6 +308,6 @@ public class LobbyScene : MonoBehaviour, ILobbyView
 
 
     public bool isFiltered() {
-        return presenter.isFiltered;
+        return presenter.IsFiltered;
     }
 }

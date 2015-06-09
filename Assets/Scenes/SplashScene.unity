@@ -177,13 +177,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1129
+  mWidth: 1366
   mHeight: 720
   mDepth: -97
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.33333337
+  aspectRatio: 2.2796874
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -393,7 +393,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 272714563}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 564.459961, y: 0, z: 0}
+  m_LocalPosition: {x: 682.804443, y: 1.32841325, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1079692554}
@@ -553,13 +553,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1129
+  mWidth: 1366
   mHeight: 720
   mDepth: -99
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.56805551
+  aspectRatio: 2.2796874
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -596,7 +596,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 509923986}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -564.459961, y: 0, z: 0}
+  m_LocalPosition: {x: -682.804443, y: 1.32841325, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1079692554}
@@ -1017,13 +1017,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 124
+  mWidth: 122
   mHeight: 20
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 6.19999981
+  aspectRatio: 6.0999999
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -1235,13 +1235,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1129
+  mWidth: 1366
   mHeight: 720
   mDepth: -98
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.33333337
+  aspectRatio: 2.2796874
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
