@@ -67,23 +67,22 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnCommon.SetActive (false);
 		btnRecharge.SetActive (false);
 		btnMessage.SetActive (false);
-		btnSettings.SetActive (false);
+		btnSettings.SetActive (true);
 		btnLeague.SetActive (false);
 		tableLeft.Reposition ();
 		tableButton.Reposition ();
 	}
     public void ShowInGameplay(Action onClickQuit, UIEventListener.VoidDelegate handleStandUp)
     {
-		btnSearch.SetActive (true);
+        btnSettings.SetActive(true);
 		btnRecharge.SetActive (true);
 		btnBack.SetActive (true);
 		btnUp.SetActive (true);
-
 		formInfo.SetActive (false);
 		btnLobbyChangeTypeShow.SetActive (false);
 		btnCommon.SetActive (false);
 		btnMessage.SetActive (false);
-		btnSettings.SetActive (false);
+        btnSearch.SetActive(false);
 		btnLeague.SetActive (false);
 		tableLeft.Reposition ();
 		tableButton.Reposition ();

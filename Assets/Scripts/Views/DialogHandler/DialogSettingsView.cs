@@ -13,6 +13,18 @@ namespace Puppet.Service{
 		{
 			base.ShowDialog (data);
 			InitData (data);
+            Logger.Log("==========> " + PuApp.Instance.setting.sceneName);
+            if (PuApp.Instance.setting.sceneName == Scene.GameplayScene.ToString())
+            {
+                
+                btnLogout.gameObject.collider.enabled = false;
+                btnLogout.GetComponent<UISprite>().alpha = 125/255f;
+            }
+            else
+            {
+                btnLogout.gameObject.collider.enabled = true;
+                btnLogout.GetComponent<UISprite>().alpha = 1f;
+            }
 		}
 		protected override void OnEnable(){
 			base.OnEnable();
