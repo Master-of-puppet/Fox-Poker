@@ -241,7 +241,8 @@ public class PokerGameplayView : MonoBehaviour
 
     void Game_onFirstTimeJoinGame(ResponseUpdateGame data)
     {
-        SetCountDown(data.remainingTime, data.totalTime);
+        if(data.players.Length == 0)
+            SetCountDown(data.remainingTime, data.totalTime);
     }
 
     void Instance_onEventUpdateHand(ResponseUpdateHand data)

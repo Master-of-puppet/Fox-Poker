@@ -68,6 +68,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         PokerObserver.Instance.onNewRound += Instance_onNewRound;
         PokerObserver.Instance.onFinishGame += Instance_onFinishGame;
         PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
+        PokerObserver.Game.onFirstTimeJoinGame += Game_onFirstTimeJoinGame;
 
         foreach(ButtonItem item in itemButtons)
         {
@@ -87,6 +88,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
         PokerObserver.Instance.onNewRound -= Instance_onNewRound;
         PokerObserver.Instance.onFinishGame -= Instance_onFinishGame;
         PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
+        PokerObserver.Game.onFirstTimeJoinGame -= Game_onFirstTimeJoinGame;
 
         foreach (ButtonItem item in itemButtons)
         {
@@ -356,5 +358,13 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (PokerObserver.Game.IsMainPlayerSatDown)
             SetEnableButtonType(EButtonType.InGame);
+    }
+
+    void Game_onFirstTimeJoinGame(ResponseUpdateGame data)
+    {
+        if (PokerObserver.Game.IsMainPlayerSatDown)
+        {
+            SetEnableButtonType(EButtonType.InGame);
+        }
     }
 }

@@ -355,11 +355,15 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void Instance_dataUpdateGame(ResponseUpdateGame data)
     {
-        ResetNewRound();
+        //ResetNewRound();
     }
 
     void Game_onFirstTimeJoinGame(ResponseUpdateGame data)
     {
+        ResetNewRound();
+
+        Logger.Log(ELogColor.YELLOW, "**** Game_onFirstTimeJoinGame " + DateTime.Now.ToString("hh:mm:ss") + " - Data:\n" + data.ToString());
+
         if (data.players != null && data.players.Length > 0 && Array.FindAll<PokerPlayerController>(data.players, p => p.GetPlayerState() != PokerPlayerState.none).Length > 0)
         {
             int[] hands = null;
