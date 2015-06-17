@@ -26,6 +26,8 @@ public class PuSetting
 
         PuMain.Dispatcher.onChangeScene += ChangeScene;
         PuMain.Instance.Load(onLoadConfig);
+
+        Puppet.Poker.PokerMain.Instance.StartListen();
     }
 
     void ChangeScene(EScene fromScene, EScene toScene)

@@ -12,7 +12,6 @@ public class PokerPlazaPresenter : IPlazaPresenter
 {
     public PokerPlazaPresenter(IPlazaView view)
     {
-        Puppet.Poker.PokerMain.Instance.EnterPoker();
         this.view = view;
         ViewStart();
     }
