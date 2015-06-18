@@ -364,7 +364,7 @@ public class PokerGameplayButtonHandler : MonoBehaviour
     {
         if (PokerObserver.Game.IsMainPlayerSatDown)
         {
-            SetEnableButtonType(EButtonType.InGame);
+            SetEnableButtonType(PokerObserver.Game.MainPlayer.inTurn ? EButtonType.InTurn : EButtonType.OutTurn);
         }
     }
 }

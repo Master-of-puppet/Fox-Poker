@@ -93,6 +93,7 @@ public class PokerGPSide : MonoBehaviour
         UIEventListener.Get(btnSit).onClick += OnClickSit;
 
         PokerObserver.Instance.onPlayerListChanged += Instance_onPlayerListChanged;
+        PokerObserver.Game.onFirstTimeJoinGame += Game_onFirstTimeJoinGame;
     }
 
     void OnDisable()
@@ -102,19 +103,18 @@ public class PokerGPSide : MonoBehaviour
         UIEventListener.Get(btnSit).onClick -= OnClickSit;
 
         PokerObserver.Instance.onPlayerListChanged -= Instance_onPlayerListChanged;
+        PokerObserver.Game.onFirstTimeJoinGame -= Game_onFirstTimeJoinGame;
     }
 
     void Instance_onPlayerListChanged(ResponsePlayerListChanged data)
     {
-        if(PokerObserver.Game.IsMainPlayer(data.player.userName))
+        if (PokerObserver.Game.IsMainPlayer(data.player.userName))
         {
-            bool showSit = false;
-            switch(data.GetActionState())
+            switch (data.GetActionState())
             {
                 case PokerPlayerChangeAction.playerQuitGame:
                 case PokerPlayerChangeAction.playerRemoved:
                 case PokerPlayerChangeAction.waitingPlayerAdded:
-                    showSit = true;
                     wasBuyChip = false;
                     break;
                 case PokerPlayerChangeAction.playerAdded:
@@ -124,8 +124,13 @@ public class PokerGPSide : MonoBehaviour
                     break;
 
             }
-            SetActiveButton(showSit);
+            SetActiveButton(!wasBuyChip);
         }
+    }
+
+    void Game_onFirstTimeJoinGame(ResponseUpdateGame data)
+    {
+        SetActiveButton(!PokerObserver.Game.IsMainPlayerSatDown);
     }
 
     static event Action<int> onPlayerPickSide;
@@ -162,7 +167,7 @@ public class PokerGPSide : MonoBehaviour
 
     void OnClickSit(GameObject go)
     {
-        if(onPlayerPickSide != null)
+        if (onPlayerPickSide != null)
             onPlayerPickSide((int)CurrentSide);
     }
 }
