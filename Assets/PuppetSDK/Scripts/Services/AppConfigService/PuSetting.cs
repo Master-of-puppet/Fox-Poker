@@ -139,6 +139,11 @@ public class PuSetting
             get { return UnityPlayerPrefab.Instance; }
         }
 
+        public override IMainMono MainMono
+        {
+            get { return SimpleMonoBehaviour.Instance; }
+        }
+
         public override string PathCache
         {
             get { return PuSetting.persistentDataPath; }
@@ -157,6 +162,21 @@ public class PuSetting
             get
             {
 				return UniqueDeviceId ?? SystemInfo.deviceUniqueIdentifier;
+            }
+        }
+
+        class SimpleMonoBehaviour : Singleton<SimpleMonoBehaviour>, IMainMono
+        {
+            public void BeginCoroutine(IEnumerator routine)
+            {
+                StartCoroutine(routine);
+            }
+            public void EndCoroutine(IEnumerator routine)
+            {
+                StopCoroutine(routine);
+            }
+            protected override void Init()
+            {
             }
         }
 
