@@ -343,6 +343,7 @@ public class PokerGameplayView : MonoBehaviour
     }
 
     #region TEST MODE - ORDER CARD
+    /*
     void OnGUI()
     {
         if (!PokerObserver.Game.IsMainPlayerInGame && PokerObserver.Game.MainPlayer != null && PokerObserver.Game.MainPlayer.isMaster)
@@ -351,6 +352,7 @@ public class PokerGameplayView : MonoBehaviour
                 TestModeGUI.Create(ActionRequestOrderHand);
         }
     }
+    */
     public void ActionRequestOrderHand(Dictionary<string, int[]> obj)
     {
         foreach (var item in obj.Keys)

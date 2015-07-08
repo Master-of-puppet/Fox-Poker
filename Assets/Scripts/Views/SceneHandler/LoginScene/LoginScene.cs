@@ -25,7 +25,7 @@ public class LoginScene : MonoBehaviour, ILoginView
         if (Application.platform == RuntimePlatform.WindowsPlayer)
             Screen.SetResolution(960, 640, false);
 
-        PuSetting.UniqueDeviceId = SystemInfo.deviceUniqueIdentifier;
+        //PuSetting.UniqueDeviceId = SystemInfo.deviceUniqueIdentifier;
     }
 
     void Start()
@@ -54,6 +54,8 @@ public class LoginScene : MonoBehaviour, ILoginView
         UIEventListener.Get(btnHelp).onClick += this.onBtnHelpClick;
         presenter.ViewEnd();
     }
+
+    /*
     void OnGUI()
     {
         PuSetting.UniqueDeviceId = GUI.TextField(new Rect(0, 0, Screen.width / 4, Screen.height / 15), PuSetting.UniqueDeviceId);
@@ -63,6 +65,8 @@ public class LoginScene : MonoBehaviour, ILoginView
         //    TestModeGUI.Create(ActionRequestOrderHand);
         //}
     }
+    */
+
     public void ActionRequestOrderHand(Dictionary<string, int[]> obj) {
         List<PokerCard> idsCard = new List<PokerCard>();
         foreach (var item in obj.Keys)
@@ -80,10 +84,12 @@ public class LoginScene : MonoBehaviour, ILoginView
     {
         string userName = txtUsername.value;
         string password = txtPassword.value;
-        if (string.IsNullOrEmpty(userName))
-            userName = Application.platform == RuntimePlatform.WindowsPlayer ? "dungnv2" : "dungnv";
-        if (string.IsNullOrEmpty(password))
-            password = Application.platform == RuntimePlatform.WindowsPlayer ? "1234" : "puppet#89";
+        //if (string.IsNullOrEmpty(userName))
+        //    DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Vui lòng nhập thông tin về tài khoản của bạn"));
+        //    userName = Application.platform == RuntimePlatform.WindowsPlayer ? "dungnv2" : "dungnv";
+        //if (string.IsNullOrEmpty(password))
+        //    DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Vui lòng nhập mật khẩu truy cập."));
+        //    password = Application.platform == RuntimePlatform.WindowsPlayer ? "1234" : "puppet#89";
         presenter.LoginWithUserName(userName, password);
     }
 

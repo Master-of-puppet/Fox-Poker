@@ -39,8 +39,7 @@ public class PuApp : Singleton<PuApp>
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         setting = new PuSetting(onLoadConfig);
 
-        PingManager.Instance.Load();
-
+        //PingManager.Instance.Load();
 
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {

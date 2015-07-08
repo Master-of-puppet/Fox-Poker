@@ -7,6 +7,7 @@ using Puppet.Core;
 [Prefab(Name = "Prefabs/Others/Debug/PingUI")]
 public class PingManager : SingletonPrefab<PingManager>
 {
+    /*
     [SerializeField]
     UnityEngine.UI.Text pingValue;
 
@@ -32,5 +33,5 @@ public class PingManager : SingletonPrefab<PingManager>
         else
             pingValue.text = string.Empty;
     }
-
+    */
 }
