@@ -55,30 +55,6 @@ public class LoginScene : MonoBehaviour, ILoginView
         presenter.ViewEnd();
     }
 
-    /*
-    void OnGUI()
-    {
-        PuSetting.UniqueDeviceId = GUI.TextField(new Rect(0, 0, Screen.width / 4, Screen.height / 15), PuSetting.UniqueDeviceId);
-        //if (GUI.Button(new Rect(0, 150, Screen.width - Screen.width * 0.9f, 35f), "TEST MODE"))
-        //{
-        //    Logger.Log("========> " + APIPokerGame.GetPokerGameplay().ListPlayer.Count);
-        //    TestModeGUI.Create(ActionRequestOrderHand);
-        //}
-    }
-    */
-
-    public void ActionRequestOrderHand(Dictionary<string, int[]> obj) {
-        List<PokerCard> idsCard = new List<PokerCard>();
-        foreach (var item in obj.Keys)
-        {
-
-            foreach (var items in obj[item])
-            {
-                idsCard.Add(new PokerCard(items));
-            }
-
-        }        
-    }
 
     void onBtnLoginClick(GameObject gobj)
     {

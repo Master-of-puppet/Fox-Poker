@@ -17,7 +17,6 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     List<LobbyTab> tabs = new List<LobbyTab>();
     void Start()
     {
-        HeaderMenuView.Instance.ShowInLobby();
         HeaderMenuView.Instance.SetSearchSubmitCallBack(OnSearchLobbyHandler);
         presenter = new PokerLobbyPresenter(this);
         HeaderMenuView.Instance.SetChangeTypeLobbyCallBack(delegate()
@@ -41,7 +40,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         });
     }
 
-    private void OnSearchLobbyHandler(string arg1, Dictionary<int, bool> arg2,double[] arrayBetValue)
+    private void OnSearchLobbyHandler(string arg1, Dictionary<int, bool> arg2, double[] arrayBetValue)
     {
         presenter.SearchLobby(arg1, arg2, arrayBetValue);
     }
@@ -60,7 +59,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
 
     private void onScrollViewEvent()
     {
-        
+
         if (tableType1.GetComponent<UICenterOnChild>().centeredObject != null)
         {
             Transform centerTransform = tableType1.GetComponent<UICenterOnChild>().centeredObject.transform;
@@ -90,7 +89,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
                 DialogService.Instance.ShowDialog(new DialogMessage("Message", message, null));
         });
     }
-    
+
     private void OnCreateLobbyHandler(bool status, string message)
     {
         if (!status)
@@ -132,9 +131,9 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         {
             VectorItemCenter = tableType1.GetComponent<UICenterOnChild>().centeredObject.transform.position;
         }
-       
-        
-           
+
+
+
     }
     private IEnumerator _AddRowType1(DataLobby lobby)
     {
@@ -161,9 +160,9 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         {
             LobbyRowType1 lobby = LobbyRowType1.Create(lobbies[i], tableType1, JoinGame);
             types1.Add(lobby);
-            
+
         }
-      
+
         tableType1.repositionNow = true;
         yield return new WaitForSeconds(0.05f);
         tableType1.GetComponent<UICenterOnChild>().Recenter();
@@ -215,6 +214,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         {
             StartCoroutine(initShowRowType2(lobbies));
         }
+
     }
 
     public void RemoveLobby(DataLobby lobby)
@@ -256,13 +256,13 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     private void _UpdateLobbyType1(DataLobby lobby)
     {
         LobbyRowType1 lobbyRow = types1.Find(lb => lb.data.roomId == lobby.roomId);
-        if(lobbyRow !=null)
+        if (lobbyRow != null)
             lobbyRow.setData(lobby);
     }
     private void _UpdateLobbyType2(DataLobby lobby)
     {
         LobbyRowType2 lobbyRow = types2.Find(lb => lb.data.roomId == lobby.roomId);
-        if(lobbyRow!=null)
+        if (lobbyRow != null)
             lobbyRow.setData(lobby);
     }
     public void AddLobby(DataLobby lobby)
@@ -307,7 +307,19 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     }
 
 
-    public bool isFiltered() {
+    public bool isFiltered()
+    {
         return presenter.IsFiltered;
+    }
+
+
+    public void ShowLoading()
+    {
+        LoadingView.Instance.Show(true);
+    }
+
+    public void HideLoading()
+    {
+        LoadingView.Instance.Show(false);
     }
 }

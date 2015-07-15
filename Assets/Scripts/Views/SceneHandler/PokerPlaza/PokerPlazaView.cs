@@ -15,7 +15,7 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 	public UITable tableEvent,tablePromotion;
     public UISprite indicatorEvent, indicatorPromotion;
 	#endregion
-
+    bool isDestroyed = false;
 	void Start () {
 		HeaderMenuView.Instance.ShowInWorldGame();
         presenter = new PokerPlazaPresenter(this);
@@ -35,28 +35,31 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
         fetchEvent();
 	}
 
- 
+
     private void fetchEvent()
     {
         Puppet.API.Client.APIGeneric.GetInfoEvents((status, message, data) =>
         {
-            if (status)
-            {
-                foreach (DataEvent e in data.items)
+            if (!isDestroyed) { 
+                if (status)
                 {
-                    PlazaEventItem itemEvent = PlazaEventItem.Create(e);
-                    itemEvent.transform.parent = tableEvent.transform;
-                    itemEvent.transform.localPosition = Vector3.zero;
-                    itemEvent.transform.localScale= Vector3.one;
-                    UIEventListener.Get(itemEvent.gameObject).onClick += OnClickToEvent;
-                    btnEvents.Add(itemEvent.gameObject);
+                    foreach (DataEvent e in data.items)
+                    {
+                        PlazaEventItem itemEvent = PlazaEventItem.Create(e);
+                        itemEvent.transform.parent = tableEvent.transform;
+                        itemEvent.transform.localPosition = Vector3.zero;
+                        itemEvent.transform.localScale= Vector3.one;
+                        UIEventListener.Get(itemEvent.gameObject).onClick += OnClickToEvent;
+                        btnEvents.Add(itemEvent.gameObject);
+                    }
+                    tableEvent.Reposition();
+                    initIndicator(btnEvents.Count, indicatorEvent);
                 }
-                tableEvent.Reposition();
-                initIndicator(btnEvents.Count, indicatorEvent);
+                tableEvent.GetComponent<UICenterOnChild>().CenterOn(btnEvents[0].transform);
             }
-            tableEvent.GetComponent<UICenterOnChild>().CenterOn(btnEvents[0].transform);
         });
     }
+
 
     private void OnClickToEvent(GameObject go)
     {
@@ -131,11 +134,15 @@ public class PokerPlazaView : MonoBehaviour ,IPlazaView{
 
     private void OnBtnLeagueClick(GameObject go)
     {
+        DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", "Tính năng đang được phát triển."));
 		#if UNITY_ANDROID
 		AndroidLocalPushNotification.sendPushNotification (10, "Fox Poker", "Ban vua bam tham gia giai dau");
 		#endif
+        
 	}
-	void OnDestroy(){
+    void OnDestroy()
+    {
+        isDestroyed = true;
         UIEventListener.Get(btnPlayNow).onClick -= this.OnBtnPlayNowClick;
         UIEventListener.Get(btnLobby).onClick -= this.OnBtnLobbyClick;
 		UIEventListener.Get(btnHelp).onClick -= this.OnBtnHelpClick;

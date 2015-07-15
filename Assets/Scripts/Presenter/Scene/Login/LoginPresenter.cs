@@ -79,8 +79,10 @@ public class LoginPresenter : ILoginPresenter
 	#region ILoginPresenter implementation
     public void LoginTrail()
     {
+        LoadingView.Instance.Show();
         APILogin.LoginTrial((bool status, string message) =>
         {
+            LoadingView.Instance.Show(false);
             if (status == false)
                 ShowDialogErrorInMainThread(message);
         });

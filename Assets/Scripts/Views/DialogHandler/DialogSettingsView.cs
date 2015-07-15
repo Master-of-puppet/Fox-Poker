@@ -13,7 +13,6 @@ namespace Puppet.Service{
 		{
 			base.ShowDialog (data);
 			InitData (data);
-            Logger.Log("==========> " + PuApp.Instance.setting.sceneName);
             if (PuApp.Instance.setting.sceneName == Scene.GameplayScene.ToString())
             {
                 

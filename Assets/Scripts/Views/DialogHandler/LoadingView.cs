@@ -93,7 +93,6 @@ public class LoadingView : SingletonPrefab<LoadingView>
         loadingIcon.gameObject.SetActive(false);
         transparentLeft.gameObject.SetActive(false);
         transparentRight.gameObject.SetActive(false);
-
         HandleInput();
 	}
 

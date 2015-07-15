@@ -36,7 +36,6 @@ public class HeaderMenuView : SingletonPrefab<HeaderMenuView>,IHeaderMenuView
 		btnMessage.SetActive (true);
 		btnSettings.SetActive (true);
 		avatar.transform.parent.gameObject.SetActive (true);
-
 		btnBack.SetActive (false);
 		btnLobbyChangeTypeShow.SetActive (false);
 		btnLeague.SetActive (false);
