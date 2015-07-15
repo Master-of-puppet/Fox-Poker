@@ -18,7 +18,6 @@ public class PokerPlazaPresenter : IPlazaPresenter
 
     public void GetEvent()
     {
-        throw new NotImplementedException();
     }
 
     public void JoinLobby()

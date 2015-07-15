@@ -8,7 +8,6 @@ using System.Text;
 public interface ILobbyPresenter : IScenePresenter
 {
     void LoadChannels();
-    void LoadAllLobbies();
     void LoadLobbiesByChannel(DataChannel channel);
     void JoinToGame(DataLobby lobby);
     void CreateLobby();

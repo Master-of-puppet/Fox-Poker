@@ -12,5 +12,7 @@ public interface ILobbyView : IView
     void RemoveLobby(DataLobby lobby);
     void UpdateLobby(DataLobby lobby);
     void AddLobby(DataLobby lobby);
+    void ShowLoading();
+    void HideLoading();
 }
 

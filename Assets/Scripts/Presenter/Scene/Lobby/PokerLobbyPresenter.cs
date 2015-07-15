@@ -44,6 +44,7 @@ public class PokerLobbyPresenter : ILobbyPresenter
     {
         APILobby.AddListener(onCreateCallback, onUpdateCallback, onDeleteCallback);
         APILobby.GetGroupsLobby(OnGetGroupNameCallback);
+        view.ShowLoading();
     }
 
     private void onDeleteCallback(DataLobby obj)
@@ -108,29 +109,23 @@ public class PokerLobbyPresenter : ILobbyPresenter
         LoadLobbiesByChannel(data[0]);
     }
 
-    public void LoadAllLobbies()
-    {
-        APILobby.GetAllLobby(OnGetAllLobbyInChannel);
-    }
-
     public void LoadLobbiesByChannel(Puppet.Core.Model.DataChannel channel)
     {
+        view.ShowLoading();
         selectedChannel = channel;
-        if (lobbies != null)
-            lobbies = null;
+        lobbies = new List<DataLobby>();
         IsFiltered = false;
-        APILobby.SetSelectChannel(channel, OnGetAllLobbyInChannel);
+        view.DrawLobbies(lobbies);
+        APILobby.SetSelectChannel(channel, OnCallbackAllLobbyInSelectedChannel);
     }
 
-    private void OnGetAllLobbyInChannel(bool status, string message, List<Puppet.Core.Model.DataLobby> data)
+    private void OnCallbackAllLobbyInSelectedChannel(bool status, string message, List<Puppet.Core.Model.DataLobby> data)
     {
+        view.HideLoading();
         if (status)
-        {
-            if (lobbies == null)
-            {
-                this.lobbies = data;
-                view.DrawLobbies(data);
-            }
+        {            
+            this.lobbies = data;
+            view.DrawLobbies(data);   
         }
         else
             view.ShowError(message);
@@ -142,8 +137,10 @@ public class PokerLobbyPresenter : ILobbyPresenter
     }
     public void JoinToGame(Puppet.Core.Model.DataLobby lobby)
     {
+        view.ShowLoading();
         APILobby.JoinLobby(lobby, (bool status, string message) =>
         {
+            view.HideLoading();
             if (!status)
                 view.ShowError(message);
         });

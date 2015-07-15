@@ -81,12 +81,18 @@ public class HeaderMenuPresenter : IHeaderMenuPresenter
 
 	public void ShowDialogRecharge ()
 	{
+
+        LoadingView.Instance.Show();
 		APIGeneric.GetInfoRecharge((status, message, dataRecharge) =>
-		                           {
-			if(status){
-				DialogRecharge recharge = new DialogRecharge(dataRecharge);
-				DialogService.Instance.ShowDialog(recharge);
-			}
+        {
+            LoadingView.Instance.Show(false);
+            if (status)
+            {
+                DialogRecharge recharge = new DialogRecharge(dataRecharge);
+                DialogService.Instance.ShowDialog(recharge);
+            }
+            else
+                DialogService.Instance.ShowDialog(new DialogMessage("Thông báo", message));
 		});
 
 	}
