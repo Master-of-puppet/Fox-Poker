@@ -144,6 +144,11 @@ public class PuSetting
             get { return SimpleMonoBehaviour.Instance; }
         }
 
+        public override ENetworkDataType NetworkDataType
+        {
+            get { return Utility.Convert.ConvertDataType(Application.internetReachability); }
+        }
+
         public override string PathCache
         {
             get { return PuSetting.persistentDataPath; }

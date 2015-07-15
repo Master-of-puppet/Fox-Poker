@@ -58,6 +58,15 @@ public class Utility
 				return moneyArray;
 			}
 		}
+
+        public static ENetworkDataType ConvertDataType(NetworkReachability type)
+        {
+            return type == NetworkReachability.NotReachable ?
+                ENetworkDataType.None :
+                type == NetworkReachability.ReachableViaCarrierDataNetwork ?
+                ENetworkDataType.MobileData :
+                ENetworkDataType.Cable;
+        }
 	}
     
     public static class ReadData

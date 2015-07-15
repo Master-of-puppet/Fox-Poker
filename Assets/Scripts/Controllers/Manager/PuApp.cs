@@ -17,6 +17,8 @@ public class PuApp : Singleton<PuApp>
     public PuSetting setting;
 
     private int sleepTimeout;
+    NetworkReachability currentNetworkType;
+
 
     List<KeyValuePair<EMessage, string>> listMessage = new List<KeyValuePair<EMessage, string>>();
 
@@ -49,6 +51,8 @@ public class PuApp : Singleton<PuApp>
         });
 
         SocialService.SocialStart();
+
+        currentNetworkType = Application.internetReachability;
     }
 
     void Dispatcher_onNoticeMessage(EMessage type, string message)
@@ -98,8 +102,24 @@ public class PuApp : Singleton<PuApp>
 
     void OnApplicationPause(bool pauseStatus)
     {
+        if(!pauseStatus)
+        {
+            NetworkReachability nowDataType = Application.internetReachability;
+            if (currentNetworkType != nowDataType)
+            {
+                PuMain.ClientDispatcher.SetClientChangeNetworkData(Utility.Convert.ConvertDataType(currentNetworkType),
+                    Utility.Convert.ConvertDataType(nowDataType));
+                currentNetworkType = nowDataType;
+            }
+        }
+
         if (setting != null)
             setting.OnApplicationPause(pauseStatus);
+    }
+
+    void OnApplicationFocus(bool focusStatus)
+    {
+        
     }
 
     void OnApplicationQuit()
