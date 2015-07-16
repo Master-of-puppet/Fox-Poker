@@ -63,7 +63,11 @@ public class LoadingView : SingletonPrefab<LoadingView>
 
         if (isWillShow)
         {
-            Invoke("CheckTimeOut", 15f);
+            int timeOut = 15;
+            if (Application.loadedLevelName == "LoginScene" && Application.internetReachability == NetworkReachability.ReachableViaCarrierDataNetwork)
+                timeOut = 120;
+
+            Invoke("CheckTimeOut", timeOut);
             CalculatorTwoBackground();
         }
         else

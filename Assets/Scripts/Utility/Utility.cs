@@ -61,6 +61,7 @@ public class Utility
 
         public static ENetworkDataType ConvertDataType(NetworkReachability type)
         {
+            //return ENetworkDataType.MobileData;
             return type == NetworkReachability.NotReachable ?
                 ENetworkDataType.None :
                 type == NetworkReachability.ReachableViaCarrierDataNetwork ?
