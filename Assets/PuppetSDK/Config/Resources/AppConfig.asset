@@ -19,7 +19,7 @@ MonoBehaviour:
   httpPorts: 50000000
   socketUrls:
   - foxpokers.com
-  socketPorts: cd260000
+  socketPorts: 21050000
   appVersionValues: 01000000000000000000000064000000
   platformLabels:
   - pc
