@@ -41,7 +41,7 @@ public class PuApp : Singleton<PuApp>
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         setting = new PuSetting(onLoadConfig);
 
-        PingManager.Instance.Load();
+        //PingManager.Instance.Load();
 
         PuMain.Setting.Threading.QueueOnMainThread(() =>
         {
@@ -53,10 +53,6 @@ public class PuApp : Singleton<PuApp>
         SocialService.SocialStart();
 
         currentNetworkType = Application.internetReachability;
-
-        Security.PrefetchSocketPolicy("210.245.94.95", 9933);
-        Security.PrefetchSocketPolicy("210.245.94.95", 8080);
-        Security.PrefetchSocketPolicy("210.245.94.95", 1313);
     }
 
     void Dispatcher_onNoticeMessage(EMessage type, string message)
