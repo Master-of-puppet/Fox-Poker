@@ -17,7 +17,7 @@ public class LobbyRowType2 : MonoBehaviour
         go.transform.localScale = Vector3.one;
         go.name = data.roomId + " - " + data.roomName;
         LobbyRowType2 item = go.GetComponent<LobbyRowType2>();
-        item.setData(data);
+        item.StartCoroutine(item.setData(data));
         return item;
     }
 
@@ -25,8 +25,10 @@ public class LobbyRowType2 : MonoBehaviour
     void Start () {
 	
 	}
-    public void setData(DataLobby data)
+    public IEnumerator setData(DataLobby data)
     {
+        
+        yield return new WaitForEndOfFrame();
         this.data = data;
         lbRoomNumber.text = data.roomId.ToString();
         double smallBind = data.gameDetails.betting / 2;
