@@ -130,11 +130,6 @@ public class PokerLobbyPresenter : ILobbyPresenter
         else
             view.ShowError(message);
     }
-    IEnumerator DrawLobbies(List<DataLobby> data)
-    {
-        yield return new WaitForSeconds(0.5f);
-        view.DrawLobbies(data);
-    }
     public void JoinToGame(Puppet.Core.Model.DataLobby lobby)
     {
         view.ShowLoading();

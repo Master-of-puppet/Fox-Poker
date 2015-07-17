@@ -69,7 +69,7 @@ public class PokerPotManager : MonoBehaviour
                     PokerPlayerUI uiPlayer = playmat.GetPlayerUI(data.contributors[i]);
                     if (uiPlayer != null)
                     {
-                        PokerPotItem pot = NGUITools.AddChild(uiPlayer.side.positionMoney, playmat.prefabBetObject).GetComponent<PokerPotItem>();
+                        PokerPotItem pot = NGUITools.AddChild( uiPlayer.side.positionMoney, playmat.prefabBetObject).GetComponent<PokerPotItem>();
                         pot.gameObject.transform.parent = thisPot.transform;
                         pot.OnMove();
                         listPotItems.Add(pot);

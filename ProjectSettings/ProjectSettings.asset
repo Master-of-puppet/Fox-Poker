@@ -8,6 +8,7 @@ PlayerSettings:
   defaultScreenOrientation: 3
   targetDevice: 2
   targetGlesGraphics: 1
+  targetIOSGraphics: -1
   targetResolution: 0
   accelerometerFrequency: 60
   companyName: Puppet Team
@@ -72,11 +73,11 @@ PlayerSettings:
   metroEnableLowLatencyPresentationAPI: 0
   productGUID: 1ee0f50c0fbdc5f409cf3f99069e19dc
   iPhoneBundleVersion: 1.0.0.100
+  iPhoneShortBundleVersion: 1.0
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 9
   AndroidPreferredInstallLocation: 1
   aotOptions: nimt-trampolines=512
-  aotOptions: 
   apiCompatibilityLevel: 2
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
@@ -111,6 +112,15 @@ PlayerSettings:
     type: 3}
   iPadHighResLandscapeSplashScreen: {fileID: 2800000, guid: ea01d5b31371431479519f58a786ceb2,
     type: 3}
+  iOSLaunchScreenType: 0
+  iOSLaunchScreenPortrait: {fileID: 0}
+  iOSLaunchScreenLandscape: {fileID: 0}
+  iOSLaunchScreenBackgroundColor:
+    serializedVersion: 2
+    rgba: 4285163857
+  iOSLaunchScreenFillPct: 100
+  iOSLaunchScreenSize: 100
+  iOSLaunchScreenCustomXibPath: 
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 1
   AndroidKeystoreName: foxpoker.keystore
@@ -257,6 +267,12 @@ PlayerSettings:
   tizenGPSPermissions: 0
   tizenMicrophonePermissions: 0
   stvDeviceAddress: 
+  wp8UnprocessedPlugins: []
+  intPropertyNames:
+  - iOS::Architecture
+  - iOS::ScriptingBackend
+  iOS::Architecture: 2
+  iOS::ScriptingBackend: 0
   firstStreamedLevelWithResources: 0
   unityRebuildLibraryVersion: 9
   unityForwardCompatibleVersion: 39
