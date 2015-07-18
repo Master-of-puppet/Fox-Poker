@@ -48,6 +48,7 @@ public class PokerGameplayView : MonoBehaviour
     {
         //For Ensure all was init!!!!!
         yield return new WaitForSeconds(0.5f);
+        LoadingView.Instance.Show(false);
         PokerObserver.Instance.StartGame();
 		showInfoGame ();
     }

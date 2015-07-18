@@ -94,16 +94,10 @@ public class DialogCreateGameView : BaseDialog<DialogCreateGame,DialogCreateGame
 	{
 		if (!status)
 			DialogService.Instance.ShowDialog (new DialogMessage ("Lỗi",message,null));
-        
+
+        LoadingView.Instance.Show(false);
 		GameObject.Destroy (gameObject);
 	}
-
-    protected override void OnDestroy()
-    {
-        LoadingView.Instance.Show(false);
-
-        base.OnDestroy();
-    }
 
     public LoadingView loadingView { get; set; }
 }
