@@ -162,17 +162,20 @@ public class PokerPlayerUI : MonoBehaviour
             if (PokerObserver.Game.IsMainPlayer(cardPlayer.userName))
                 return;
 
-            //FP-128 Người chơi bỏ bài, chờ ván mới, đứng xem không nhìn thấy bài tay của những người chơi so bài
-            bool isFaceUp = PokerObserver.Game.GetTotalPlayerNotFold > 1;
-            if (isFaceUp)
+            if (cardOnHands != null)
             {
-                for (int i = 0; i < cardPlayer.cards.Length; i++)
+                //FP-128 Người chơi bỏ bài, chờ ván mới, đứng xem không nhìn thấy bài tay của những người chơi so bài
+                bool isFaceUp = PokerObserver.Game.GetTotalPlayerNotFold > 1;
+                if (isFaceUp)
                 {
-                    cardOnHands[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cardPlayer.cards[i]));
-                    cardOnHands[i].transform.parent = side.positionCardGameEnd[i].transform;
-                    cardOnHands[i].transform.localRotation = Quaternion.identity;
-                    cardOnHands[i].transform.localPosition = Vector3.zero;
-                    cardOnHands[i].transform.localScale = Vector3.one;
+                    for (int i = 0; i < cardPlayer.cards.Length; i++)
+                    {
+                        cardOnHands[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cardPlayer.cards[i]));
+                        cardOnHands[i].transform.parent = side.positionCardGameEnd[i].transform;
+                        cardOnHands[i].transform.localRotation = Quaternion.identity;
+                        cardOnHands[i].transform.localPosition = Vector3.zero;
+                        cardOnHands[i].transform.localScale = Vector3.one;
+                    }
                 }
             }
         }
@@ -295,6 +298,11 @@ public class PokerPlayerUI : MonoBehaviour
         btnGift.transform.localPosition = giftPosition;
     }
 
+    public void ResetDataOnFinishGame()
+    {
+        cardOnHands = null;
+    }
+
     public void ChangeCardPosition()
     {
         //Change card on hand of player when main player change position
@@ -325,7 +333,6 @@ public class PokerPlayerUI : MonoBehaviour
     }
     public void UpdateSetCardObject(GameObject cardOnHands,int index)
     {
-
         try
         {
             this.cardOnHands[index] = cardOnHands;
@@ -338,7 +345,6 @@ public class PokerPlayerUI : MonoBehaviour
         {
             this.cardOnHands[index] = cardOnHands;
         }
-        
 
         cardOnHands.transform.parent = PokerObserver.Game.IsMainPlayer(data.userName) ? side.positionCardMainPlayer[index].transform : side.positionCardFaceCards[index].transform;
         cardOnHands.transform.localRotation = Quaternion.identity;

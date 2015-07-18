@@ -348,6 +348,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
         if (isFaceUp)
             Array.ForEach<PokerPlayerUI>(playerUI, p => { if (p != null) p.SetTitle(null); });
 
+        Array.ForEach<PokerPlayerUI>(playerUI, p => p.ResetDataOnFinishGame());
+
         ResetNewRound();
         PokerObserver.Instance.isWaitingFinishGame = false;
         PokerObserver.Game.EndFinishGame();
@@ -421,11 +423,14 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
     void DestroyCardObject(GameObject[] cards)
     {
-        for (int i = cards.Length - 1; i >= 0; i--)
+        if (cards != null)
         {
-            GameObject card = cards[i];
-            cardsDeal.Remove(card);
-            GameObject.Destroy(card);
+            for (int i = cards.Length - 1; i >= 0; i--)
+            {
+                GameObject card = cards[i];
+                cardsDeal.Remove(card);
+                GameObject.Destroy(card);
+            }
         }
     }
 
