@@ -219,6 +219,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         float totalTimeFinishGame = responseData.time / 1000f;
         float waitTimeViewResultCard = totalTimeFinishGame > 2f ? 1f : 0f;
         float timeEffectPot = totalTimeFinishGame - waitTimeViewResultCard;
+        Logger.Log("============> " + responseData.pots.Length);
         if (responseData.pots.Length > 0)
             timeEffectPot /= responseData.pots.Length;
 

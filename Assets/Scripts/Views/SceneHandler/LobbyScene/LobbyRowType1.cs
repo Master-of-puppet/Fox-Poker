@@ -11,20 +11,20 @@ public class LobbyRowType1 : MonoBehaviour
     public UILabel title;
     #endregion
     public DataLobby data;
-    
-	private Action<DataLobby> action ;
-    int[] arrayIndex5Player = {0,2,4,5,7 };
-    public static LobbyRowType1 Create(DataLobby data, UITable parent,Action<DataLobby> callBack)
+
+    private Action<DataLobby> action;
+    int[] arrayIndex5Player = { 0, 2, 4, 5, 7 };
+    public static LobbyRowType1 Create(DataLobby data, UITable parent, Action<DataLobby> callBack)
     {
         GameObject go = GameObject.Instantiate(Resources.Load("Prefabs/Lobby/LobbyRowType1")) as GameObject;
         go.transform.parent = parent.transform;
         go.transform.localPosition = Vector3.zero;
         go.transform.localScale = Vector3.one;
         go.GetComponent<UIDragScrollView>().scrollView = parent.GetComponentInParent<UIScrollView>();
-        go.name = "#"+data.roomId;
+        go.name = "#" + data.roomId;
         LobbyRowType1 item = go.GetComponent<LobbyRowType1>();
         item.setData(data);
-		item.action = callBack;
+        item.action = callBack;
         return item;
     }
     public void setData(DataLobby lobby)
@@ -33,10 +33,10 @@ public class LobbyRowType1 : MonoBehaviour
             slots[i].SetActive(false);
 
         this.data = lobby;
-		double smallBind = lobby.gameDetails.betting / 2;
-		title.text = "Phòng : " + lobby.roomId + " - $" + smallBind+"/"+lobby.gameDetails.betting;
-        
-		if (data.users != null && data.users.Length > 0) 
+        double smallBind = lobby.gameDetails.betting / 2;
+        title.text = "Phòng : " + lobby.roomId + " - $" + smallBind + "/" + lobby.gameDetails.betting;
+
+        if (data.users != null && data.users.Length > 0)
         {
             foreach (DataPlayerController item in data.users)
             {
@@ -47,7 +47,7 @@ public class LobbyRowType1 : MonoBehaviour
                 slots[index].SetActive(true);
                 slots[index].GetComponent<LobbySlot>().setData(item);
             }
-		}
+        }
     }
     void Start()
     {
@@ -60,25 +60,29 @@ public class LobbyRowType1 : MonoBehaviour
     }
     private void onTableClick(GameObject go)
     {
-		if (action != null)
-			action (data);
+        if (action != null)
+            action(data);
     }
 
     void Update()
     {
+        if (transform.parent.GetComponent<UICenterOnChild>().centeredObject == null)
+            return;
+        if (gameObject.transform.GetComponentInParent<UIScrollView>().isDragging || gameObject != gameObject.GetComponentInParent<UICenterOnChild>().centeredObject)
+        {
+            gameObject.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
+            gameObject.GetComponent<UISprite>().color = new Color(69f / 255f, 69f / 255f, 69f / 255f);
+            gameObject.collider.enabled = false;
+            return;
+        }
+        if (gameObject == gameObject.GetComponentInParent<UICenterOnChild>().centeredObject)
+        {
+            gameObject.transform.localScale = new Vector3(1.1f, 1.1f, 1f);
+            gameObject.GetComponent<UISprite>().color = new Color(1f, 1f, 1f);
+            gameObject.collider.enabled = true;
+        }
 
-		if (gameObject.transform.parent.GetComponent<UICenterOnChild> ().centeredObject == null) {
-			return;
-		}
-			float value = Mathf.Lerp (0.731f, 1.1f, 0.2f / Vector3.SqrMagnitude (gameObject.transform.position - LobbyScene.VectorItemCenter));
-			gameObject.transform.localScale = new Vector3 (value, value, 1f);
-			if (value > 0.9f) {
-				gameObject.GetComponent<UISprite> ().color = new Color (1f, 1f, 1f);
-                gameObject.collider.enabled = true;
-			} else {
-				gameObject.GetComponent<UISprite> ().color = new Color (69f / 255f, 69f / 255f, 69f / 255f);
-                gameObject.collider.enabled = false;
-			}
+       
     }
 
 
