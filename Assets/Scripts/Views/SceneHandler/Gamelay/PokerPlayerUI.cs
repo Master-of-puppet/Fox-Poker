@@ -295,6 +295,30 @@ public class PokerPlayerUI : MonoBehaviour
         btnGift.transform.localPosition = giftPosition;
     }
 
+    public void ChangeCardPosition()
+    {
+        //Change card on hand of player when main player change position
+        if (cardOnHands == null)
+            return;
+
+        for (int i =0; i< cardOnHands.Length; i++)
+        {
+            Vector3 cardMoveTo = Vector3.one;
+            GameObject cardObjects = cardOnHands[i];
+            if (PokerObserver.Game.IsMainPlayer(data.userName))
+            {
+                cardMoveTo = side.positionCardMainPlayer[i].transform.localPosition;
+                cardObjects.transform.parent = side.positionCardMainPlayer[i].transform.parent;
+            }
+            else
+            {
+                cardMoveTo = side.positionCardFaceCards[i].transform.localPosition;
+                cardObjects.transform.parent = side.positionCardFaceCards[i].transform.parent;
+            }
+            cardObjects.transform.localPosition = cardMoveTo;
+        }
+    }
+
     void playerModel_onDataChanged(IDataModel model)
     {
         UpdateUI(data);

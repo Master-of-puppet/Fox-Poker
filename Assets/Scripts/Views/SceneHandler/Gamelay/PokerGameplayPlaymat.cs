@@ -452,11 +452,14 @@ public class PokerGameplayPlaymat : MonoBehaviour
         }
 
         PokerGPSide playerSide = Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == player.GetSide());
-        obj.GetComponent<PokerPlayerUI>().side = playerSide;
-        obj.GetComponent<PokerPlayerUI>().SetData(player);
+        PokerPlayerUI playerUI = obj.GetComponent<PokerPlayerUI>();
+
+        playerUI.side = playerSide;
+        playerUI.SetData(player);
         obj.transform.parent = playerSide.transform;
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localScale = Vector3.one;
+        playerUI.ChangeCardPosition();
     }
 
     public void SetDealerObjectToPlayer(PokerPlayerController player)
