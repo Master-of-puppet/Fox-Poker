@@ -23,6 +23,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
     #endregion
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
+    List<PokerPlayerUI> listPlayerQuit = new List<PokerPlayerUI>();
+    
     List<PokerPotItem> _listPotMarkers = new List<PokerPotItem>();
     List<GameObject> cardsDeal = new List<GameObject>();
     int countGenericCard = 0;
@@ -134,6 +136,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
         {
             foreach (PokerPlayerController p in playerDeal)
             {
+                PokerPlayerUI playerUI = GetPlayerUI(p.userName);
                 GameObject cardObjects = (GameObject)GameObject.Instantiate(prefabCard);
                 cardObjects.transform.parent = positionEffectDealCard.transform;
                 cardObjects.transform.localRotation = Quaternion.identity;
@@ -143,13 +146,13 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 Vector3 cardMoveTo = Vector3.zero;
                 if (PokerObserver.Game.IsMainPlayer(p.userName))
                 {
-                    cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardMainPlayer[i].transform.localPosition;
-                    cardObjects.transform.parent = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardMainPlayer[i].transform.parent;
+                    cardMoveTo = playerUI.side.positionCardMainPlayer[i].transform.localPosition;
+                    cardObjects.transform.parent = playerUI.side.positionCardMainPlayer[i].transform.parent;
                 }
                 else
                 {
-                    cardMoveTo = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardFaceCards[i].transform.localPosition;
-                    cardObjects.transform.parent = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().side.positionCardFaceCards[i].transform.parent;
+                    cardMoveTo = playerUI.side.positionCardFaceCards[i].transform.localPosition;
+                    cardObjects.transform.parent = playerUI.side.positionCardFaceCards[i].transform.parent;
                 }
                 Hashtable tweenValue = new Hashtable();
                 tweenValue.Add("cardObject", cardObjects);
@@ -165,13 +168,17 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerObserver.Game.IsClientListening = true;
     }
     void onMoveCardComplete(object vals) {
+
         Hashtable table = (Hashtable)vals;
         string userName = (string)table["userName"];
         GameObject cardObjects = (GameObject)table["cardObject"];
         int index = (int)table["index"];
         int cardId = (int)table["cardId"];
+
+        PokerPlayerUI playerUI = GetPlayerUI(userName);
+
         cardObjects.GetComponent<PokerCardObject>().SetDataCard( PokerObserver.Game.IsMainPlayer(userName) ? new PokerCard(cardId) : new PokerCard(), index);
-        dictPlayerObject[userName].GetComponent<PokerPlayerUI>().UpdateSetCardObject(cardObjects, index);
+        playerUI.UpdateSetCardObject(cardObjects, index);
         cardsDeal.Add(cardObjects);
     }
 
@@ -179,9 +186,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         foreach(PokerPlayerController p in players)
         {
+            PokerPlayerUI playerUI = GetPlayerUI(p.userName);
+
             int handSize = p.handSize;
-            GameObject[] cardObjects = dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().cardOnHands.Length > 0 
-                ? dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().cardOnHands 
+            GameObject[] cardObjects = playerUI.cardOnHands.Length > 0
+                ? playerUI.cardOnHands 
                 : new GameObject[handSize];
 
             for (int i = 0; i < handSize; i++)
@@ -200,7 +209,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 for (int i = 0; i < handSize; i++)
                     cardObjects[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(), i);
 
-            dictPlayerObject[p.userName].GetComponent<PokerPlayerUI>().UpdateSetCardObject(cardObjects);
+            playerUI.UpdateSetCardObject(cardObjects);
 
             cardsDeal.AddRange(cardObjects);
         }
@@ -290,8 +299,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 if (lstWinner.Count > 0)
                 {
                     for (int i = 0; i < lstWinner.Count(); i++)
-                        if (dictPlayerObject.ContainsKey(lstWinner[i]))
-                            dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(true);
+                        if (GetPlayerUI(lstWinner[i]) != null)
+                            GetPlayerUI(lstWinner[i]).SetResult(true);
                 }
 
                 potContainer.SummaryPot(summary, timeEffectPot);
@@ -336,8 +345,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 if (lstWinner.Count > 0)
                 {
                     for (int i = 0; i < lstWinner.Count(); i++)
-                        if (dictPlayerObject.ContainsKey(lstWinner[i]))
-                            dictPlayerObject[lstWinner[i]].GetComponent<PokerPlayerUI>().SetResult(false);
+                        if (GetPlayerUI(lstWinner[i]) != null)
+                            GetPlayerUI(lstWinner[i]).SetResult(false);
                 }
             }
         }
@@ -349,6 +358,12 @@ public class PokerGameplayPlaymat : MonoBehaviour
             Array.ForEach<PokerPlayerUI>(playerUI, p => { if (p != null) p.SetTitle(null); });
 
         Array.ForEach<PokerPlayerUI>(playerUI, p => p.ResetDataOnFinishGame());
+
+        foreach(PokerPlayerUI p in listPlayerQuit)
+        {
+            dictPlayerObject.Remove(p.UserName);
+            GameObject.Destroy(p);
+        }
 
         ResetNewRound();
         PokerObserver.Instance.isWaitingFinishGame = false;
@@ -407,15 +422,20 @@ public class PokerGameplayPlaymat : MonoBehaviour
         else if ((state == PokerPlayerChangeAction.playerRemoved || state == PokerPlayerChangeAction.playerQuitGame)
             && dictPlayerObject.ContainsKey(dataPlayer.player.userName))
         {
+            PokerPlayerUI playerUI = GetPlayerUI(dataPlayer.player.userName);
+
             if (PokerObserver.Game.IsMainPlayer(dataPlayer.player.userName))
                 PuSound.Instance.Play(SoundType.StandUp);
 
             if(PokerObserver.Game.Dealer == dataPlayer.player.userName)
                 objectDealer.SetActive(false);
 
-            DestroyCardObject(dictPlayerObject[dataPlayer.player.userName].GetComponent<PokerPlayerUI>().cardOnHands);
-            GameObject.Destroy(dictPlayerObject[dataPlayer.player.userName]);
-            dictPlayerObject.Remove(dataPlayer.player.userName);
+            DestroyCardObject(playerUI.cardOnHands);
+            //GameObject.Destroy(playerUI);
+            NGUITools.SetActive(playerUI.gameObject, false);
+            listPlayerQuit.Add(playerUI);
+            playerUI.PlayerOutGame();
+            //dictPlayerObject.Remove(dataPlayer.player.userName);
         }
 
         UpdatePositionPlayers(dataPlayer.player.userName);

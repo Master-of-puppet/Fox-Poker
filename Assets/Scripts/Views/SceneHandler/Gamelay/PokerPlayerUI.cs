@@ -262,7 +262,7 @@ public class PokerPlayerUI : MonoBehaviour
         NGUITools.SetActive(spriteResultIcon.gameObject, isWinner);
     }
 
-    void OnDestroy()
+    public void PlayerOutGame()
     {
         if (PokerObserver.Game.IsMainPlayer(data.userName))
         {
@@ -276,6 +276,11 @@ public class PokerPlayerUI : MonoBehaviour
             currentBet.transform.parent = playmat.transform;
             playmat.MarkerPot(currentBet);
         }
+    }
+
+    void OnDestroy()
+    {
+        PlayerOutGame();
 
         data.onDataChanged -= playerModel_onDataChanged;
     }
@@ -313,6 +318,10 @@ public class PokerPlayerUI : MonoBehaviour
         {
             Vector3 cardMoveTo = Vector3.one;
             GameObject cardObjects = cardOnHands[i];
+
+            if (cardObjects == null) 
+                continue;
+
             if (PokerObserver.Game.IsMainPlayer(data.userName))
             {
                 cardMoveTo = side.positionCardMainPlayer[i].transform.localPosition;
