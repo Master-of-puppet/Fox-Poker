@@ -168,15 +168,6 @@ public class PokerPlayerUI : MonoBehaviour
             {
                 for (int i = 0; i < cardPlayer.cards.Length; i++)
                 {
-                    if (cardOnHands == null)
-                        Debug.LogError("LogError: NULL 1");
-
-                    if(cardOnHands[i] == null)
-                        Debug.LogError("LogError: NULL 2");
-
-                    if(cardOnHands[i].GetComponent<PokerCardObject>() == null)
-                        Debug.LogError("LogError: NULL 3");
-
                     cardOnHands[i].GetComponent<PokerCardObject>().SetDataCard(new PokerCard(cardPlayer.cards[i]));
                     cardOnHands[i].transform.parent = side.positionCardGameEnd[i].transform;
                     cardOnHands[i].transform.localRotation = Quaternion.identity;

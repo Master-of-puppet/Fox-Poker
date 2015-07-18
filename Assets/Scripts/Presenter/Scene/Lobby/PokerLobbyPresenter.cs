@@ -44,7 +44,6 @@ public class PokerLobbyPresenter : ILobbyPresenter
     {
         APILobby.AddListener(onCreateCallback, onUpdateCallback, onDeleteCallback);
         APILobby.GetGroupsLobby(OnGetGroupNameCallback);
-        view.ShowLoading();
     }
 
     private void onDeleteCallback(DataLobby obj)
