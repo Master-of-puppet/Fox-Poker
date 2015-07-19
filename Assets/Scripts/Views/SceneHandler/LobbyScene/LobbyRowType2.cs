@@ -6,7 +6,8 @@ using Puppet;
 public class LobbyRowType2 : MonoBehaviour
 {
     #region Unity Editor
-    public UILabel lbRoomNumber, lbMoneyStep, lbMoneyMinMax, lbPeopleNumber;
+    public GameObject lbRoomNumber, lbMoneyStep, lbMoneyMinMax, lbPeopleNumber;
+    public UISprite divider;
     #endregion
     public DataLobby data;
     public static LobbyRowType2 Create(DataLobby data, UITable parent)
@@ -17,26 +18,27 @@ public class LobbyRowType2 : MonoBehaviour
         go.transform.localScale = Vector3.one;
         go.name = data.roomId + " - " + data.roomName;
         LobbyRowType2 item = go.GetComponent<LobbyRowType2>();
-        item.StartCoroutine(item.setData(data));
+        item.SetData(data);
         return item;
     }
 
 
-    void Start () {
-	
-	}
-    public IEnumerator setData(DataLobby data)
+    public void SetData(DataLobby data)
     {
-        
-        yield return new WaitForEndOfFrame();
+        divider.leftAnchor.Set(gameObject.transform.parent.parent, 0, 0);
+        divider.rightAnchor.Set(gameObject.transform.parent.parent, 1, 0);
         this.data = data;
-        lbRoomNumber.text = data.roomId.ToString();
+        lbRoomNumber.GetComponent<UILabel>().text = data.roomId.ToString();
         double smallBind = data.gameDetails.betting / 2;
         double minBind = smallBind * 20;
         double maxBind = smallBind * 400;
-        lbMoneyStep.text = "$" + smallBind + "/" + data.gameDetails.betting;
-        lbMoneyMinMax.text = "$" + Utility.Convert.ConvertShortcutMoney(minBind) + "/" + Utility.Convert.ConvertShortcutMoney(maxBind); 
-		lbPeopleNumber.text = data.users.Length + "/" + data.gameDetails.numPlayers;
+        lbMoneyStep.GetComponent<UILabel>().text = "$" + smallBind + "/" + data.gameDetails.betting;
+        lbMoneyMinMax.GetComponent<UILabel>().text = "$" + Utility.Convert.ConvertShortcutMoney(minBind) + "/" + Utility.Convert.ConvertShortcutMoney(maxBind);
+		string numberUser = "0/" +  data.gameDetails.numPlayers;
+		if(data.users != null){
+			numberUser = data.users.Length + "/" + data.gameDetails.numPlayers;
+		}
+        lbPeopleNumber.GetComponent<UILabel>().text = numberUser;
     }
 
     void OnClick()

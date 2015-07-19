@@ -2455,7 +2455,7 @@ MonoBehaviour:
   lbUserName: {fileID: 11400040}
   lbChip: {fileID: 11400036}
   lbLevel: {fileID: 11400026}
-  lbPercentWin: {fileID: 0}
+  lbPercentWin: {fileID: 11480672}
   avatar: {fileID: 11400042}
   btnGift: {fileID: 100002}
   btnItem: {fileID: 100006}

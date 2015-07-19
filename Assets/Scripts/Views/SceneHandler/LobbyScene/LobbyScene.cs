@@ -11,6 +11,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     public GameObject btnCreateGame, btnHelp, btnPlayNow;
     public UITable tableType1, tableType2, tableTab;
     bool isShowType1 = true;
+
     List<LobbyRowType1> types1 = new List<LobbyRowType1>();
     List<LobbyRowType2> types2 = new List<LobbyRowType2>();
     List<LobbyTab> tabs = new List<LobbyTab>();
@@ -23,15 +24,19 @@ public class LobbyScene : MonoBehaviour, ILobbyView
             if (isShowType1)
             {
                 isShowType1 = false;
+                //          go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu_type_2";
                 tableType1.transform.parent.parent.gameObject.SetActive(false);
                 tableType2.transform.parent.parent.gameObject.SetActive(true);
                 StartCoroutine(initShowRowType2(presenter.Lobbies));
-                return;
             }
-            isShowType1 = true;
-            tableType1.transform.parent.parent.gameObject.SetActive(true);
-            tableType2.transform.parent.parent.gameObject.SetActive(false);
-            StartCoroutine(initShowRowType1(presenter.Lobbies));
+            else
+            {
+                isShowType1 = true;
+                //            go.transform.GetChild(0).GetComponent<UISprite>().spriteName = "icon_menu";
+                tableType1.transform.parent.parent.gameObject.SetActive(true);
+                tableType2.transform.parent.parent.gameObject.SetActive(false);
+                StartCoroutine(initShowRowType1(presenter.Lobbies));
+            }
         });
     }
     void Update()
@@ -46,6 +51,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
             return;
         }
         btnCreateGame.SetActive(true);
+
     }
     private void OnSearchLobbyHandler(string arg1, Dictionary<int, bool> arg2, double[] arrayBetValue)
     {
@@ -57,9 +63,26 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         UIEventListener.Get(btnCreateGame).onClick += OnClickCreateGame;
         if (btnHelp != null)
             UIEventListener.Get(btnHelp).onClick += OnClickHelp;
-        //tableType1.GetComponent<UICenterOnChild>().onFinished += OnDragFinish;
-       
+        tableType1.GetComponentInParent<UIScrollView>().onDragFinished += onDragScrollViewFinished ;
+        tableType1.GetComponentInParent<UIScrollView>().onStoppedMoving += onScrollViewStopMoving ;
+        tableType1.GetComponent<UICenterOnChild>().onFinished += onFinishCenter;
     }
+
+    private void onFinishCenter()
+    {
+    }
+
+
+    private void onScrollViewStopMoving()
+    {
+        tableType1.GetComponent<UICenterOnChild>().Recenter();
+    }
+
+    private void onDragScrollViewFinished()
+    {
+        tableType1.GetComponent<UICenterOnChild>().Recenter();
+    }
+
 
     void OnClickHelp(GameObject go)
     {
@@ -88,6 +111,8 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         if (!status)
             Logger.LogError(message);
     }
+
+
     void OnDisable()
     {
         UIEventListener.Get(btnPlayNow).onClick -= OnClickPlayNow;
@@ -118,6 +143,8 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         tableType1.repositionNow = true;
         yield return new WaitForSeconds(0.2f);
         tableType1.GetComponent<UICenterOnChild>().Recenter();
+        //tableType1.GetComponent<UICenterOnChild>().onFinished = OnDragFinish;
+        //OnDragFinish();
     }
     private IEnumerator _AddRowType2(DataLobby lobby)
     {
@@ -133,16 +160,16 @@ public class LobbyScene : MonoBehaviour, ILobbyView
 
         if (lobbies.Count > 0)
         {
-            for (int i = 0; i < lobbies.Count; i++)
-            {
+        for (int i = 0; i < lobbies.Count; i++)
+        {
                 if (types1.Find(lb => lb.data.roomId == lobbies[i].roomId) != null)
                     continue;
-                LobbyRowType1 lobby = LobbyRowType1.Create(lobbies[i], tableType1, JoinGame);
-                types1.Add(lobby);
+            LobbyRowType1 lobby = LobbyRowType1.Create(lobbies[i], tableType1, JoinGame);
+            types1.Add(lobby);
 
-            }
-            tableType1.repositionNow = true;
+        }
 
+        tableType1.repositionNow = true;
             yield return new WaitForEndOfFrame();
             tableType1.GetComponent<UICenterOnChild>().CenterOn(tableType1.transform.GetChild(0));
         }
@@ -154,6 +181,8 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         yield return new WaitForEndOfFrame();
         foreach (DataLobby item in lobbies)
         {
+			if (types2.Find(lb => lb.data.roomId == item.roomId) != null)
+				continue;
             types2.Add(LobbyRowType2.Create(item, tableType2));
         }
         tableType2.repositionNow = true;
@@ -242,7 +271,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     {
         LobbyRowType2 lobbyRow = types2.Find(lb => lb.data.roomId == lobby.roomId);
         if (lobbyRow != null)
-            lobbyRow.setData(lobby);
+            lobbyRow.SetData(lobby);
     }
     public void AddLobby(DataLobby lobby)
     {

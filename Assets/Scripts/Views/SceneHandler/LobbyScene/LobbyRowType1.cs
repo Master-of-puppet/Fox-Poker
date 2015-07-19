@@ -21,7 +21,7 @@ public class LobbyRowType1 : MonoBehaviour
         go.transform.localPosition = Vector3.zero;
         go.transform.localScale = Vector3.one;
         go.GetComponent<UIDragScrollView>().scrollView = parent.GetComponentInParent<UIScrollView>();
-        go.name = "#" + data.roomId;
+        go.name = data.roomId + " - " + data.roomName;
         LobbyRowType1 item = go.GetComponent<LobbyRowType1>();
         item.setData(data);
         item.action = callBack;
@@ -31,7 +31,6 @@ public class LobbyRowType1 : MonoBehaviour
     {
         for (int i = 0; i < slots.Length; i++)
             slots[i].SetActive(false);
-
         this.data = lobby;
         double smallBind = lobby.gameDetails.betting / 2;
         title.text = "Phòng : " + lobby.roomId + " - $" + smallBind + "/" + lobby.gameDetails.betting;

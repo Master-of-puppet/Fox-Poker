@@ -48,9 +48,9 @@ namespace Puppet.Service
             Vector3 topLeft = UICamera.mainCamera.WorldToScreenPoint(TopLeft.transform.position);
             Vector3 bottomRight = UICamera.mainCamera.WorldToScreenPoint(BottomRight.transform.position);
             aTop = Screen.height - Mathf.FloorToInt(topLeft.y);
-            aLeft = Mathf.FloorToInt(topLeft.x);
+            aLeft = Mathf.FloorToInt(topLeft.x) - 100;
             aBottom = Mathf.FloorToInt(bottomRight.y);
-            aRight = Screen.width - Mathf.FloorToInt(bottomRight.x);
+            aRight = Screen.width - Mathf.FloorToInt(bottomRight.x) - 100;
 #if UNITY_ANDROID || UNITY_IOS
             SetWebView();
 #endif

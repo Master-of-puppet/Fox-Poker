@@ -75,7 +75,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
         for (int i = cardsDeal.Count - 1; i >= 0; i--)
             GameObject.Destroy(cardsDeal[i]);
         cardsDeal.Clear();
-
+        gpView.HideHandType();
+        gpView.HideDialogBetting();
         potContainer.DestroyAllPot();
         UnMarkPot();
     }
@@ -219,7 +220,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
         float totalTimeFinishGame = responseData.time / 1000f;
         float waitTimeViewResultCard = totalTimeFinishGame > 2f ? 1f : 0f;
         float timeEffectPot = totalTimeFinishGame - waitTimeViewResultCard;
-        Logger.Log("============> " + responseData.pots.Length);
         if (responseData.pots.Length > 0)
             timeEffectPot /= responseData.pots.Length;
 
