@@ -43,6 +43,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
     {
         if (tableType1.transform.parent.GetComponent<UIScrollView>().isDragging)
         {
+            
             btnCreateGame.SetActive(false); 
             return;
         }
@@ -50,6 +51,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
             btnCreateGame.SetActive(tableType1.GetComponent<UICenterOnChild>().centeredObject == tableType1.transform.GetChild(0).gameObject);
             return;
         }
+        
         btnCreateGame.SetActive(true);
 
     }
@@ -63,9 +65,14 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         UIEventListener.Get(btnCreateGame).onClick += OnClickCreateGame;
         if (btnHelp != null)
             UIEventListener.Get(btnHelp).onClick += OnClickHelp;
+        tableType1.GetComponentInParent<UIScrollView>().onDragStarted += onDragScrollViewStarted;
+        tableType1.GetComponentInParent<UIScrollView>().centerOnChild = tableType1.GetComponent<UICenterOnChild>();
         tableType1.GetComponentInParent<UIScrollView>().onDragFinished += onDragScrollViewFinished ;
         tableType1.GetComponentInParent<UIScrollView>().onStoppedMoving += onScrollViewStopMoving ;
-        tableType1.GetComponent<UICenterOnChild>().onFinished += onFinishCenter;
+    }
+
+    private void onDragScrollViewStarted()
+    {
     }
 
     private void onFinishCenter()
@@ -75,7 +82,7 @@ public class LobbyScene : MonoBehaviour, ILobbyView
 
     private void onScrollViewStopMoving()
     {
-        tableType1.GetComponent<UICenterOnChild>().Recenter();
+        //tableType1.GetComponent<UICenterOnChild>().Recenter();
     }
 
     private void onDragScrollViewFinished()
@@ -119,6 +126,10 @@ public class LobbyScene : MonoBehaviour, ILobbyView
         UIEventListener.Get(btnCreateGame).onClick -= OnClickCreateGame;
         if (btnHelp != null)
             UIEventListener.Get(btnHelp).onClick -= OnClickHelp;
+        tableType1.GetComponentInParent<UIScrollView>().onDragStarted -= onDragScrollViewStarted;
+        
+        tableType1.GetComponentInParent<UIScrollView>().onDragFinished -= onDragScrollViewFinished;
+        tableType1.GetComponentInParent<UIScrollView>().onStoppedMoving -= onScrollViewStopMoving;
         presenter.ViewEnd();
     }
 
