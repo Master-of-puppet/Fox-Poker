@@ -22,9 +22,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
     public GameObject objectDealer;
     #endregion
     PokerGPSide[] arrayPokerSide;
+
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
+    Dictionary<string, GameObject> dictReJoinGame = new Dictionary<string, GameObject>();
     List<PokerPlayerUI> listPlayerQuit = new List<PokerPlayerUI>();
-    Dictionary<string, GameObject> dictPlayerJoinGameInPlaying = new Dictionary<string, GameObject>();
 
     
     List<PokerPotItem> _listPotMarkers = new List<PokerPotItem>();
@@ -231,7 +232,6 @@ public class PokerGameplayPlaymat : MonoBehaviour
         float totalTimeFinishGame = responseData.time / 1000f;
         float waitTimeViewResultCard = totalTimeFinishGame > 2f ? 1f : 0f;
         float timeEffectPot = totalTimeFinishGame - waitTimeViewResultCard;
-        Logger.Log("============> " + responseData.pots.Length);
         if (responseData.pots.Length > 0)
             timeEffectPot /= responseData.pots.Length;
 
@@ -369,11 +369,11 @@ public class PokerGameplayPlaymat : MonoBehaviour
             GameObject.Destroy(p.gameObject);
         }
         listPlayerQuit.Clear();
-        foreach(string key in dictPlayerJoinGameInPlaying.Keys)
+        foreach(string key in dictReJoinGame.Keys)
         {
-            dictPlayerObject.Add(key, dictPlayerJoinGameInPlaying[key]);
+            dictPlayerObject.Add(key, dictReJoinGame[key]);
         }
-        dictPlayerJoinGameInPlaying.Clear();
+        dictReJoinGame.Clear();
         #endregion
 
         ResetNewRound();
@@ -417,8 +417,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         if(dictPlayerObject.ContainsKey(userName))
             return dictPlayerObject[userName].GetComponent<PokerPlayerUI>();
-        if(dictPlayerJoinGameInPlaying.ContainsKey(userName))
-            return dictPlayerJoinGameInPlaying[userName].GetComponent<PokerPlayerUI>();
+        if(dictReJoinGame.ContainsKey(userName))
+            return dictReJoinGame[userName].GetComponent<PokerPlayerUI>();
 
         return null;
     }
@@ -446,10 +446,10 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
             DestroyCardObject(playerUI.cardOnHands);
 
-            if (dictPlayerJoinGameInPlaying.ContainsKey(dataPlayer.player.userName))
+            if (dictReJoinGame.ContainsKey(dataPlayer.player.userName))
             {
-                GameObject.Destroy(dictPlayerJoinGameInPlaying[dataPlayer.player.userName]);
-                dictPlayerJoinGameInPlaying.Remove(dataPlayer.player.userName);
+                GameObject.Destroy(dictReJoinGame[dataPlayer.player.userName]);
+                dictReJoinGame.Remove(dataPlayer.player.userName);
             }
             else
             {
@@ -493,13 +493,15 @@ public class PokerGameplayPlaymat : MonoBehaviour
         GameObject obj;
         if (dictPlayerObject.ContainsKey(userName) && listPlayerQuit.Find(p => p.UserName == userName) == null)
             obj = dictPlayerObject[userName];
+        else if (dictReJoinGame.ContainsKey(userName))
+            obj = dictReJoinGame[userName];
         else
         {
             obj = (GameObject)GameObject.Instantiate(prefabPlayer);
-            if(listPlayerQuit.Find(p => p.UserName == userName) == null)
+            if (listPlayerQuit.Find(p => p.UserName == userName) == null)
                 dictPlayerObject.Add(player.userName, obj);
-            else
-                dictPlayerJoinGameInPlaying.Add(player.userName, obj);
+            else if (dictReJoinGame.ContainsKey(player.userName) == false)
+                dictReJoinGame.Add(player.userName, obj);
         }
 
         PokerGPSide playerSide = Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == player.GetSide());
