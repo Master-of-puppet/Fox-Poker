@@ -24,6 +24,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
     PokerGPSide[] arrayPokerSide;
     Dictionary<string, GameObject> dictPlayerObject = new Dictionary<string, GameObject>();
     List<PokerPlayerUI> listPlayerQuit = new List<PokerPlayerUI>();
+    Dictionary<string, GameObject> dictPlayerJoinGameInPlaying = new Dictionary<string, GameObject>();
+
     
     List<PokerPotItem> _listPotMarkers = new List<PokerPotItem>();
     List<GameObject> cardsDeal = new List<GameObject>();
@@ -154,6 +156,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
                     cardMoveTo = playerUI.side.positionCardFaceCards[i].transform.localPosition;
                     cardObjects.transform.parent = playerUI.side.positionCardFaceCards[i].transform.parent;
                 }
+
                 Hashtable tweenValue = new Hashtable();
                 tweenValue.Add("cardObject", cardObjects);
                 tweenValue.Add("index", i);
@@ -359,11 +362,19 @@ public class PokerGameplayPlaymat : MonoBehaviour
 
         Array.ForEach<PokerPlayerUI>(playerUI, p => p.ResetDataOnFinishGame());
 
-        foreach(PokerPlayerUI p in listPlayerQuit)
+        #region Handle Disconnect and Reconnect
+        foreach (PokerPlayerUI p in listPlayerQuit)
         {
             dictPlayerObject.Remove(p.UserName);
-            GameObject.Destroy(p);
+            GameObject.Destroy(p.gameObject);
         }
+
+        foreach(string key in dictPlayerJoinGameInPlaying.Keys)
+        {
+            dictPlayerObject.Add(key, dictPlayerJoinGameInPlaying[key]);
+        }
+        dictPlayerJoinGameInPlaying.Clear();
+        #endregion
 
         ResetNewRound();
         PokerObserver.Instance.isWaitingFinishGame = false;
@@ -406,6 +417,9 @@ public class PokerGameplayPlaymat : MonoBehaviour
     {
         if(dictPlayerObject.ContainsKey(userName))
             return dictPlayerObject[userName].GetComponent<PokerPlayerUI>();
+        if(dictPlayerJoinGameInPlaying.ContainsKey(userName))
+            return dictPlayerJoinGameInPlaying[userName].GetComponent<PokerPlayerUI>();
+
         return null;
     }
 
@@ -431,11 +445,20 @@ public class PokerGameplayPlaymat : MonoBehaviour
                 objectDealer.SetActive(false);
 
             DestroyCardObject(playerUI.cardOnHands);
-            //GameObject.Destroy(playerUI);
-            NGUITools.SetActive(playerUI.gameObject, false);
-            listPlayerQuit.Add(playerUI);
-            playerUI.PlayerOutGame();
-            //dictPlayerObject.Remove(dataPlayer.player.userName);
+
+            if (dictPlayerJoinGameInPlaying.ContainsKey(dataPlayer.player.userName))
+            {
+                GameObject.Destroy(dictPlayerJoinGameInPlaying[dataPlayer.player.userName]);
+                dictPlayerJoinGameInPlaying.Remove(dataPlayer.player.userName);
+            }
+            else
+            {
+                //GameObject.Destroy(playerUI);
+                NGUITools.SetActive(playerUI.gameObject, false);
+                listPlayerQuit.Add(playerUI);
+                playerUI.PlayerOutGame();
+                //dictPlayerObject.Remove(dataPlayer.player.userName);
+            }
         }
 
         UpdatePositionPlayers(dataPlayer.player.userName);
@@ -468,12 +491,15 @@ public class PokerGameplayPlaymat : MonoBehaviour
         PokerPlayerController player = PokerObserver.Game.GetPlayer(userName);
 
         GameObject obj;
-        if (dictPlayerObject.ContainsKey(userName))
+        if (dictPlayerObject.ContainsKey(userName) && listPlayerQuit.Find(p => p.UserName == userName) == null)
             obj = dictPlayerObject[userName];
         else
         {
             obj = (GameObject)GameObject.Instantiate(prefabPlayer);
-            dictPlayerObject.Add(player.userName, obj);
+            if(listPlayerQuit.Find(p => p.UserName == userName) == null)
+                dictPlayerObject.Add(player.userName, obj);
+            else
+                dictPlayerJoinGameInPlaying.Add(player.userName, obj);
         }
 
         PokerGPSide playerSide = Array.Find<PokerGPSide>(arrayPokerSide, s => s.CurrentSide == player.GetSide());
