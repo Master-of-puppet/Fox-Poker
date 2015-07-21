@@ -368,7 +368,7 @@ public class PokerGameplayPlaymat : MonoBehaviour
             dictPlayerObject.Remove(p.UserName);
             GameObject.Destroy(p.gameObject);
         }
-
+        listPlayerQuit.Clear();
         foreach(string key in dictPlayerJoinGameInPlaying.Keys)
         {
             dictPlayerObject.Add(key, dictPlayerJoinGameInPlaying[key]);
