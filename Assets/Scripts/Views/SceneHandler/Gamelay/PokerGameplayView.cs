@@ -173,11 +173,14 @@ public class PokerGameplayView : MonoBehaviour
         GameObject.Destroy(gobj);
     }
 
+    public void HideHandType()
+    {
+        lbMyRanking.text = string.Empty;
+    }
     public void ShowRank()
     {
-        if (listMyPokerCard.Count == 0) 
+        if (listMyPokerCard.Count == 0)
             return;
-
         string pocketHand = HandEvaluatorConvert.ConvertPokerCardsToString(listMyPokerCard);
         string boards = HandEvaluatorConvert.ConvertPokerCardsToString(PokerObserver.Game.DealComminityCards);
         int count = 0;
@@ -286,6 +289,7 @@ public class PokerGameplayView : MonoBehaviour
 
     private void OnButtonClickStandUp(GameObject go)
     {
+        HideDialogBetting();
         if(PokerObserver.Game.IsMainPlayerInGame)
         {
             string text = "Bạn có chắc muốn đứng dậy ?";
@@ -301,7 +305,13 @@ public class PokerGameplayView : MonoBehaviour
         else
             PokerObserver.Instance.StandUp();
     }
-
+    public void HideDialogBetting()
+    {
+        if (GameObject.Find("DialogBettingView") != null)
+        {
+            GameObject.Destroy(GameObject.Find("DialogBettingView"));
+        }
+    }
     private void OnClickQuitGame()
     {
         string text = "Bạn có chắc chắn muốn thoát khỏi bàn chơi?";
@@ -317,10 +327,12 @@ public class PokerGameplayView : MonoBehaviour
                 PuApp.Instance.BackScene();
             }
         }));
+    
     }
 
     private void OnButtonRuleClickCallBack(GameObject go)
     {
+        HideDialogBetting();
         double[] player = new double[9];
         double[] opponent = new double[9];
         if (listMyPokerCard != null && listMyPokerCard.Count > 0)
@@ -393,7 +405,10 @@ public class PokerGameplayView : MonoBehaviour
             }
         }
     }
-
+    void OnDestroy()
+    {
+        HideDialogBetting();
+    }
     void SetCountDown(int remainingTime, int totalTime)
     {
         timeStartGame = Time.realtimeSinceStartup + (remainingTime / 1000f);

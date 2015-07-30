@@ -80,7 +80,8 @@ public class PokerGameplayPlaymat : MonoBehaviour
         for (int i = cardsDeal.Count - 1; i >= 0; i--)
             GameObject.Destroy(cardsDeal[i]);
         cardsDeal.Clear();
-
+        gpView.HideHandType();
+        gpView.HideDialogBetting();
         potContainer.DestroyAllPot();
         UnMarkPot();
     }
