@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &121690
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 421690}
+  - 114: {fileID: 11421690}
+  m_Layer: 0
+  m_Name: GAv4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &421690
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 121690}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11421690
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 121690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d19fcca4c3864274a625305eece3f48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  androidTrackingCode: 
+  IOSTrackingCode: 
+  otherTrackingCode: 
+  productName: Fox Poker
+  bundleIdentifier: com.puppet.game.foxpoker
+  bundleVersion: 1.0.0.100
+  dispatchPeriod: 5
+  sampleFrequency: 100
+  logLevel: 1
+  anonymizeIP: 0
+  UncaughtExceptionReporting: 1
+  sendLaunchEvent: 1
+  dryRun: 0
+  sessionTimeout: 1800
+  enableAdId: 0
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 121690}
+  m_IsPrefabParent: 1
+  m_IsExploded: 1

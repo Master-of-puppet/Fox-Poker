@@ -177,13 +177,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1152
+  mWidth: 1813
   mHeight: 720
   mDepth: -97
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.33333337
+  aspectRatio: 2.2796874
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -222,7 +222,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 105669299}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.608169556, y: 0, z: 90}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 820154488}
@@ -300,7 +300,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 148858088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .608108103, y: 360, z: 0}
+  m_LocalPosition: {x: 0, y: 360, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1079692554}
@@ -393,7 +393,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 272714563}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 575.878357, y: 0, z: 0}
+  m_LocalPosition: {x: 906.315796, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1079692554}
@@ -553,13 +553,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1152
+  mWidth: 1813
   mHeight: 720
   mDepth: -99
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.33333337
+  aspectRatio: 2.2796874
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -596,7 +596,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 509923986}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -575.878357, y: 0, z: 0}
+  m_LocalPosition: {x: -906.315796, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1079692554}
@@ -827,6 +827,54 @@ MonoBehaviour:
   rawValue: 1
   direction: 2
   mInverted: 0
+--- !u!1001 &876712440
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 421690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 421690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 421690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 421690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 421690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 421690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 421690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 421690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 121690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+      propertyPath: m_Name
+      value: GoogleAnalyticsV4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+  m_RootGameObject: {fileID: 2113031897}
+  m_IsPrefabParent: 0
+  m_IsExploded: 1
 --- !u!1 &1079692553
 GameObject:
   m_ObjectHideFlags: 0
@@ -1017,13 +1065,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 122
+  mWidth: 124
   mHeight: 20
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 6.0999999
+  aspectRatio: 6.19999981
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   mFont: {fileID: 0}
@@ -1235,13 +1283,13 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 1152
+  mWidth: 1813
   mHeight: 720
   mDepth: -98
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.33333337
+  aspectRatio: 2.2796874
   mType: 1
   mFillDirection: 4
   mFillAmount: 1
@@ -1280,7 +1328,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1952958886}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .608108103, y: -360, z: 0}
+  m_LocalPosition: {x: 0, y: -360, z: 0}
   m_LocalScale: {x: .999872983, y: .999872983, z: .999872983}
   m_Children:
   - {fileID: 820154488}
@@ -1485,3 +1533,58 @@ MonoBehaviour:
   mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
   mBorder: {x: 0, y: 0, z: 0, w: 0}
   nextSprite: {fileID: 0}
+--- !u!1 &2113031897
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 121690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+  m_PrefabInternal: {fileID: 876712440}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2113031899}
+  - 114: {fileID: 2113031898}
+  m_Layer: 0
+  m_Name: GoogleAnalyticsV4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2113031898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 11421690, guid: 0bc31e9629f93ea418615694edb31704,
+    type: 2}
+  m_PrefabInternal: {fileID: 876712440}
+  m_GameObject: {fileID: 2113031897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d19fcca4c3864274a625305eece3f48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  androidTrackingCode: 
+  IOSTrackingCode: 
+  otherTrackingCode: 
+  productName: Fox Poker
+  bundleIdentifier: com.puppet.game.foxpoker
+  bundleVersion: 1.0.0.100
+  dispatchPeriod: 5
+  sampleFrequency: 100
+  logLevel: 1
+  anonymizeIP: 0
+  UncaughtExceptionReporting: 1
+  sendLaunchEvent: 1
+  dryRun: 0
+  sessionTimeout: 1800
+  enableAdId: 0
+--- !u!4 &2113031899
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 421690, guid: 0bc31e9629f93ea418615694edb31704, type: 2}
+  m_PrefabInternal: {fileID: 876712440}
+  m_GameObject: {fileID: 2113031897}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
