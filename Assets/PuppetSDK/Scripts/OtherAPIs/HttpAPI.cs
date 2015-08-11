@@ -9,6 +9,42 @@ namespace Puppet
 {
     public class HttpAPI
     {
+        #region Send Tracking for Campaign Ads
+        public static void TrackCampaign(MonoBehaviour behaviour, DelegateAPICallback callback)
+        {
+            behaviour.StartCoroutine(_TrackCampaign(callback));
+        }
+
+        static IEnumerator _TrackCampaign(DelegateAPICallback callback)
+        {
+            string uniqueId = DeviceInfoService.Instance.DeviceUniqueId;
+            string device_imei = DeviceInfoService.Instance.IMEI;
+
+            Debug.Log("UniqueID : " + uniqueId);
+            Debug.Log("DeviceIMEI : " + device_imei);
+
+            WWWForm postForm = new WWWForm();
+            postForm.AddField("imei", device_imei);
+            postForm.AddField("device_id", uniqueId);
+            postForm.AddField("utm_campaign", string.Empty);
+            postForm.AddField("utm_source", string.Empty);
+            postForm.AddField("utm_medium", string.Empty);
+            postForm.AddField("utm_term", string.Empty);
+            postForm.AddField("utm_content", string.Empty);
+            postForm.AddField("gclid", string.Empty);
+            WWW www = new WWW("http://mobileasia.vn/api/receiver.php", postForm);
+            yield return www;
+
+            bool status = string.IsNullOrEmpty(www.error);
+            string message = string.IsNullOrEmpty(www.error) ? www.text : www.error;
+
+            if (callback != null)
+                callback(status, message);
+        }
+        #endregion
+
+
+        #region ChangeUseAvatar
         public static void ChangeUseAvatar(MonoBehaviour behaviour, byte[] avatar, DelegateAPICallback callback)
         {
             if (avatar == null)
@@ -44,5 +80,6 @@ namespace Puppet
             if (callback != null)
                 callback(status, message);
         }
+        #endregion
     }
 }

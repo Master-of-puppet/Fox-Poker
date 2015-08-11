@@ -53,6 +53,22 @@ public class PuApp : Singleton<PuApp>
         SocialService.SocialStart();
 
         currentNetworkType = Application.internetReachability;
+
+        TrackCampaignAds();
+    }
+
+    void TrackCampaignAds()
+    {
+        bool firstTime = PlayerPrefs.GetInt("SentTrackCampaignAds", 0) == 0;
+        if (firstTime)
+        {
+            HttpAPI.TrackCampaign(this, (bool status, string message) =>
+            {
+                Debug.LogWarning("** TrackCampaign: " + status + " - " + message);
+                if(status)
+                    PlayerPrefs.SetInt("SentTrackCampaignAds", 0);
+            });
+        }
     }
 
     void Dispatcher_onNoticeMessage(EMessage type, string message)
