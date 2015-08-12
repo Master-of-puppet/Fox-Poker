@@ -65,8 +65,11 @@ public class PuApp : Singleton<PuApp>
             HttpAPI.TrackCampaign(this, (bool status, string message) =>
             {
                 Debug.LogWarning("** TrackCampaign: " + status + " - " + message);
-                if(status)
-                    PlayerPrefs.SetInt("SentTrackCampaignAds", 0);
+                if (status)
+                {
+                    PlayerPrefs.SetInt("SentTrackCampaignAds", 1);
+                    PlayerPrefs.Save();
+                }
             });
         }
     }
