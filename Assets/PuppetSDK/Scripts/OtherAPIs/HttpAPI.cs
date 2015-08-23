@@ -32,6 +32,11 @@ namespace Puppet
             postForm.AddField("utm_term", string.Empty);
             postForm.AddField("utm_content", string.Empty);
             postForm.AddField("gclid", string.Empty);
+
+            string trackId = Utility.ReadData.GetTrackId();
+            if(trackId != null)
+                postForm.AddField("TRACK_ID", "");
+
             WWW www = new WWW("http://mobileasia.vn/api/receiver.php", postForm);
             yield return www;
 
