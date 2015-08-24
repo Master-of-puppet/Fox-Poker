@@ -72,11 +72,27 @@ public class Utility
     
     public static class ReadData
     {
-        public static string ReadDataWithKey(string filePath, string separation, string key)
+        public static string ReadDataWithKey(string fileName, string separation, string key)
         {
-            if (File.Exists(filePath))
+            var filepath = string.Format("{0}/{1}", Application.persistentDataPath, fileName);
+            if (!File.Exists(filepath))
             {
-                foreach (string s in File.ReadAllLines(filePath))
+#if UNITY_ANDROID 
+                var loadData = new WWW("jar:file://" + Application.dataPath + "!/assets/" + fileName);
+                while (!loadData.isDone) { }
+                File.WriteAllBytes(filepath, loadData.bytes);
+#elif UNITY_IOS
+                var loadData = Application.dataPath + "/Raw/" + fileName;
+                File.Copy(loadData, filepath);
+#elif UNITY_WP8 || UNITY_WINRT
+                var loadData = Application.dataPath + "/StreamingAssets/" + fileName;
+                File.Copy(loadData, filepath);
+#endif
+            }
+
+            if (File.Exists(filepath))
+            {
+                foreach (string s in File.ReadAllLines(filepath))
                 {
                     string[] data = s.Split(separation.ToCharArray(), StringSplitOptions.None);
                     if (data.Length > 1 && data[0] == key)
@@ -88,8 +104,7 @@ public class Utility
 
         public static string GetTrackId()
         {
-            string path = Path.Combine(Application.streamingAssetsPath, "inject.txt");
-            return ReadDataWithKey(path, "=", "PTE_TRACK_ID");
+            return ReadDataWithKey("inject.txt", "=", "PTE_TRACK_ID");
         }
     }
 }
